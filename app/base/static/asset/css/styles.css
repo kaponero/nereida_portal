@@ -1,0 +1,48 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Raleway:wght@300&display=swap');
+
+
+:root{
+	--primary: rgb(0, 0, 51);
+	--secondary: #bfc0c0;
+    --terciary: #989eaa;
+	--white: #fff;
+	--text-clr: #5b6475;
+	--header-clr: #25273d;
+	--next-btn-hover: rgb(0, 84, 119);
+	--back-btn-hover: #8b8b8c;
+}
+
+*{
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+	list-style: none;
+	outline: none;
+	font-family: 'Open Sans', sans-serif;
+}
+
+header{
+    background-color: var(--primary);
+    color: var(--white);
+
+}
+header .container-fluid h1{
+    
+    font-family: 'Orbitron', sans-serif;
+	color: rgb(255, 165, 0);
+}
+
+header .container-fluid h2{
+    
+    font-family: 'Raleway', sans-serif;
+}
+
+#login{
+    background-color: var(--primary);
+}
+
+#nereida{
+	display: inline-block;
+	vertical-align: top;
+  }
