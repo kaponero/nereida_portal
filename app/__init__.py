@@ -1,4 +1,5 @@
 from flask import Flask
+from flask_tryton import Tryton
 
 from importlib import import_module
 from logging import DEBUG
@@ -19,5 +20,6 @@ app_config = config_dict[get_config_mode.capitalize()]
 app.config.from_object(Config)
 app.config['MAX_CONTENT_LENGTH'] = 1024 * 1024 * 3
 
+tryton = Tryton(app, configure_jinja=True)
 register_blueprints(app)
 

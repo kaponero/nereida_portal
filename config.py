@@ -14,9 +14,9 @@ class Config(object):
 
 
     #tryton config
-    #TRYTON_DATABASE = os.environ.get('prueba','prueba')
-    #TRYTON_CONFIG = 'trytond.conf'
-    #TRYTON_USER = 1
+    TRYTON_DATABASE = os.environ.get('dimante','dimante')
+    TRYTON_CONFIG = 'trytond.conf'
+    TRYTON_USER = 1
 
     # This will create a file in <app> FOLDER
     #SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'db.sqlite3')
