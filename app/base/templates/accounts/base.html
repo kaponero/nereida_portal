@@ -7,7 +7,7 @@
       {% block title %}
       {% endblock %}
     </title>
-    <link rel="stylesheet" href="{{ url_for("static", filename="asset/css/portalstyles.css") }}">
+    
     <link rel=icon href= static/asset/img/favicon.png type=imagex-icon>
 
     {% block links %}
@@ -19,13 +19,6 @@
     {%endblock%}
 
 
-    <!-- --------------------- scripts ----------------------- -->
-    <script type="text/javascript" src="{{ url_for('static',filename='asset/js/main.js') }}"></script>
-
-    <!-- -------------------- ionicons ----------------------- -->
-    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
-    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
-    
     {% block javascripts %}
     {% endblock javascripts %}
 </body>
