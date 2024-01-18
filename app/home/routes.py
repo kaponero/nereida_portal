@@ -12,6 +12,10 @@ from functools import wraps
 def index():
     return render_template('/index.html')
 
+@blueprint.route('/')
+def comprobantes():
+    return render_template('/comprobantes.html')
+
 @blueprint.route('/<template>')
 def route_template(template):
     try:

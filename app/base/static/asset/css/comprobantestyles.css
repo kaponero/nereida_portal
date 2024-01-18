@@ -169,57 +169,34 @@ font-size: 1.75rem;
 
 }
 
-/*----------------------- cards ----------------------------- */
+/*----------------------- List ----------------------------- */
 
-.cardBox {
+.details{
 	position: relative;
 	width: 100%;
-	padding: 40px 70px;
+	padding: 20px;
 	display: grid;
-	grid-template-columns: repeat(2, 1fr);
-	grid-gap: 60px;
-	font-family: 'Rubik', sans-serif;
-	justify-content: space-around;
-  }
+	grid-template-columns: 2fr 1fr;
+	grid-gap: 70px;
+}
 
-  .cardBox .card {
-	margin: 0,50px;
+.details .comprobantes{
 	position: relative;
+	display: grid;
+	min-height: 500px;
 	background: var(--white);
-	padding: 40px;
+	padding: 20px;
+	box-shadow: 0 7px 25px rgba(0, 0,0, 0.08);
 	border-radius: 20px;
+
+}
+.details .cardHeader{
 	display: flex;
 	justify-content: space-between;
-	cursor: pointer;
-	box-shadow: 0 7px 25px rgba(0, 0, 0, 0.08);
-	min-width: 300px;
-  }
+	align-items: flex-start;
 
-  .cardBox .card .data{
-	position: relative;
-	font-weight: 500;
-	font-size: 2.50rem;
-	color: var(--blue);
-  }
+}
 
-  .cardBox .card .cardName {
-	color: var(--gray);
-	font-size: 1.10rem;
-	margin-top: 5px;
-  }
-
-  .cardBox .card .iconBx {
-	font-size: 3.0rem;
-	color: var(--orange);
-  }
-
-  .cardBox .card:hover{
-	background-color: var(--blue);
-  }
-
-  .cardBox .card:hover .data{
-	color: var(--white);
-  }
 }
 
 @media only screen and (min-width:600px) and (max-width:999px){
@@ -389,50 +366,7 @@ font-size: 1.75rem;
 	
 	}
 	
-	/*----------------------- cards ----------------------------- */
-	
-	.cardBox {
-		position: relative;
-		width: 100%;
-		padding: 40px 70px;
-		display: grid;
-		grid-template-columns: repeat(1, 1fr);
-		grid-gap: 60px;
-		font-family: 'Rubik', sans-serif;
-		justify-content: space-around;
-	  }
-	
-	  .cardBox .card {
-		margin: 0,50px;
-		position: relative;
-		background: var(--white);
-		padding: 40px;
-		border-radius: 20px;
-		display: flex;
-		justify-content: space-between;
-		cursor: pointer;
-		box-shadow: 0 7px 25px rgba(0, 0, 0, 0.08);
-		min-width: 300px;
-	  }
-	
-	  .cardBox .card .data{
-		position: relative;
-		font-weight: 500;
-		font-size: 2.50rem;
-		color: var(--blue);
-	  }
-	
-	  .cardBox .card .cardName {
-		color: var(--gray);
-		font-size: 1.10rem;
-		margin-top: 5px;
-	  }
-	
-	  .cardBox .card .iconBx {
-		font-size: 3.0rem;
-		color: var(--orange);
-	  }
-	}
+}
 
 	@media only screen and (max-width:599px){
 
@@ -600,51 +534,8 @@ font-size: 1.75rem;
 			font-size: 2.5rem;
 			cursor: pointer;
 		
-		}
+			}
 		
-		/*----------------------- cards ----------------------------- */
-		
-		.cardBox {
-			position: relative;
-			width: 100%;
-			padding: 40px 70px;
-			display: grid;
-			grid-template-columns: repeat(1, 1fr);
-			grid-gap: 60px;
-			font-family: 'Rubik', sans-serif;
-			justify-content: space-around;
-		  }
-		
-		  .cardBox .card {
-			margin: 0,50px;
-			position: relative;
-			background: var(--white);
-			padding: 30px 10px;
-			border-radius: 20px;
-			display: flex;
-			justify-content: space-between;
-			cursor: pointer;
-			box-shadow: 0 7px 25px rgba(0, 0, 0, 0.08);
-			
-		  }
-		
-		  .cardBox .card .data{
-			position: relative;
-			font-weight: 500;
-			font-size: 2.50rem;
-			color: var(--blue);
-		  }
-		
-		  .cardBox .card .cardName {
-			color: var(--gray);
-			font-size: 1.10rem;
-			margin-top: 5px;
-		  }
-		
-		  .cardBox .card .iconBx {
-			font-size: 3.0rem;
-			color: var(--orange);
-		  }
 		}
 	
 	
