@@ -156,6 +156,10 @@ font-size: 1.75rem;
 	cursor: pointer;
 	
 }
+.name{
+	font-family: 'Rubik', sans-serif;
+	color: var(--blue);
+}
 
 .user{
 	position: relative;
@@ -388,6 +392,11 @@ font-size: 1.75rem;
 		cursor: pointer;
 	
 	}
+
+	.name{
+		font-family: 'Rubik', sans-serif;
+		color: var(--blue);
+	}
 	
 	/*----------------------- cards ----------------------------- */
 	
@@ -600,6 +609,11 @@ font-size: 1.75rem;
 			font-size: 2.5rem;
 			cursor: pointer;
 		
+		}
+
+		.name{
+			font-family: 'Rubik', sans-serif;
+			color: var(--blue);
 		}
 		
 		/*----------------------- cards ----------------------------- */

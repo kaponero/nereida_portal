@@ -415,6 +415,84 @@ font-size: 1.75rem;
 		cursor: pointer;
 	
 	}
+	/*----------------------- List ----------------------------- */
+
+.details{
+	position: relative;
+	width: 100%;
+	padding: 20px;
+	display: table;
+}
+
+.details .comprobantes{
+	position: relative;
+	display: grid;
+	min-height: 200px;
+	background: var(--white);
+	padding: 20px;
+	box-shadow: 0 7px 25px rgba(0, 0,0, 0.08);
+	border-radius: 20px;
+	
+}
+.details .cardHeader{
+	display: flex;
+	justify-content: space-between;
+	align-items: flex-start;
+
+}
+
+.cardHeader h2{
+	font-weight: 600;
+	color: var(--blue);
+	font-family: 'Rubik', sans-serif;
+	margin-bottom: 10px;
+}
+
+.details table{
+	width: 100%;
+	border-collapse: collapse;
+	font-family: 'Rubik', sans-serif;
+}
+
+.details table thead td{
+	font-weight: 600;
+}
+
+.details .comprobantes table tr{
+	color: var(--blue);
+	border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+.details .comprobantes table tr:last-child{
+	border-bottom: none;
+}
+
+.details .comprobantes table tbody tr:hover{
+	background: var(--blue);
+	color: var(--white);
+}
+
+.details .comprobantes table tr td{
+	padding: 10px;
+	text-align: center;
+}
+
+.estado.pagado{
+	padding: 2px 4px;
+	background: #8de02c;
+	color: var(--white);
+	border-radius: 4px;
+	font-size: 14px;
+	font-weight: 500;
+} 
+
+.estado.pendiente{
+	padding: 2px 4px;
+	background: #f00;
+	color: var(--white);
+	border-radius: 4px;
+	font-size: 14px;
+	font-weight: 500;
+}
 	
 }
 
@@ -585,7 +663,93 @@ font-size: 1.75rem;
 			cursor: pointer;
 		
 			}
+
+		/*----------------------- List ----------------------------- */
+
+.details{
+	position: relative;
+	width: 100%;
+	padding: 20px;
+	display: table;
+	
+}
+
+
+.details .comprobantes{
+	position: relative;
+	display: grid;
+	min-height: 200px;
+	background: var(--white);
+	padding: 20px;
+	box-shadow: 0 7px 25px rgba(0, 0,0, 0.08);
+	border-radius: 20px;
+	
+
+}
+
+.comprobantes{
+	overflow:scroll;
+}
+.details .cardHeader{
+	display: flex;
+	justify-content: space-between;
+	align-items: flex-start;
+
+}
+
+.cardHeader h2{
+	font-weight: 600;
+	color: var(--blue);
+	font-family: 'Rubik', sans-serif;
+	margin-bottom: 10px;
+}
+
+.details table{
+	width: 100%;
+	border-collapse: collapse;
+	font-family: 'Rubik', sans-serif;
+}
+
+.details table thead td{
+	font-weight: 600;
+}
+
+.details .comprobantes table tr{
+	color: var(--blue);
+	border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+.details .comprobantes table tr:last-child{
+	border-bottom: none;
+}
+
+.details .comprobantes table tbody tr:hover{
+	background: var(--blue);
+	color: var(--white);
+}
+
+.details .comprobantes table tr td{
+	padding: 10px;
+	text-align: center;
+}
+
+.estado.pagado{
+	padding: 2px 4px;
+	background: #8de02c;
+	color: var(--white);
+	border-radius: 4px;
+	font-size: 14px;
+	font-weight: 500;
+} 
+
+.estado.pendiente{
+	padding: 2px 4px;
+	background: #f00;
+	color: var(--white);
+	border-radius: 4px;
+	font-size: 14px;
+	font-weight: 500;
+}
 		
-		}
+}
 	
 	
