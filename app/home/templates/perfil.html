@@ -4,7 +4,7 @@
 
 <!-- Specific Page CSS goes HERE  -->
 {% block links %}
-<link rel="stylesheet" href="{{ url_for("static", filename="asset/css/portalstyles.css") }}">
+<link rel="stylesheet" href="{{ url_for("static", filename="asset/css/perfilstyles.css") }}">
 {% endblock %}
 
 {% block content %}
@@ -23,7 +23,7 @@
                 </li>
 
                 <li>
-                    <a href="#">
+                    <a href="/index">
                         <span class="icon">
                             <ion-icon name="planet-outline"></ion-icon>
                         </span>
@@ -32,7 +32,7 @@
                 </li>
 
                 <li>
-                    <a href="/comprobantes">
+                    <a href="#">
                         <span class="icon">
                             <ion-icon name="receipt-outline"></ion-icon>
                         </span>
@@ -41,7 +41,7 @@
                 </li>
 
                 <li>
-                    <a href="/perfil">
+                    <a href="#">
                         <span class="icon">
                             <ion-icon name="person-outline"></ion-icon>
                         </span>
@@ -50,7 +50,7 @@
                 </li>
 
                 <li>
-                    <a href="/notificaciones">
+                    <a href="#">
                         <span class="icon">
                             <ion-icon name="notifications-outline"></ion-icon>
                         </span>
@@ -59,14 +59,15 @@
                 </li>
 
                 <li>
-                    <a href="/logout">
+                    <a href="#">
                         <span class="icon">
                             <ion-icon name="log-out-outline"></ion-icon>
                         </span>
-                        <span class="title" href="/logout">Salir</span>
+                        <span class="title">Salir</span>
                     </a>
                 </li>
             </ul>
+            
         </div>
 
         <!-- -------------------------- Main ------------------------------->
@@ -75,60 +76,15 @@
                 <div class="toggle">
                     <ion-icon name="menu-outline"></ion-icon>
                 </div>
-                <div class="name">
-                <h2>[Nombre del usuario]</h2>
-                </div>
+               
                 <div class="user">
                     <ion-icon name="person-circle-outline"></ion-icon>
                 </div>
             </div>
 
-            <!-- -------------------- cards -------------------------------->
-            <div class="cardBox">
-                <div class="card">
-                    <div>
-                        <div class="data">12/01/24</div>
-                        <div class="cardName">Primer vencimiento</div>
-                    </div>
-                    <div class="iconBx">
-                        <ion-icon name="calendar-outline"></ion-icon>
-                    </div>
-
-                </div>
-
-                <div class="card">
-                    <div>
-                        <div class="data">12/01/24</div>
-                        <div class="cardName">Segundo vencimiento</div>
-                    </div>
-                    <div class="iconBx">
-                        <ion-icon name="calendar-outline"></ion-icon>
-                    </div>
-
-                </div>
-
-                <div class="card">
-                    <div>
-                        <div class="data">$10.000</div>
-                        <div class="cardName">Importe</div>
-                    </div>
-                    <div class="iconBx">
-                        <ion-icon name="logo-usd"></ion-icon>
-                    </div>
-
-                </div>
-
-                <div class="card">
-                    <div>
-                        <div class="data">Pendiente</div>
-                        <div class="cardName">Estado</div>
-                    </div>
-                    <div class="iconBx">
-                        <ion-icon name="alert-outline"></ion-icon>
-                    </div>
-
-                </div>
-            </div>
+            <!-- -------------------- Perfil -------------------------------->
+            
+            
             
         </div>
 

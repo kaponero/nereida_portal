@@ -22,3 +22,15 @@ def formulario():
 @login_required
 def comprobantes():
     return render_template('/comprobantes.html')
+
+@blueprint.route('/perfil')
+@tryton.transaction()
+@login_required
+def perfil():
+    return render_template('/perfil.html')
+
+@blueprint.route('/notificaciones')
+@tryton.transaction()
+@login_required
+def notificaciones():
+    return render_template('/notificaciones.html')
