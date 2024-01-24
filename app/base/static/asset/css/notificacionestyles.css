@@ -2,7 +2,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;700&display=swap');
 
 
-
 /* ------------------ Globales------------------- */
 * {
 	
@@ -174,8 +173,7 @@ font-size: 1.75rem;
 	position: relative;
 	width: 100%;
 	padding: 20px;
-	display: grid;
-	
+	display: table;
 }
 
 .details .comprobantes{
@@ -265,10 +263,6 @@ font-size: 1.75rem;
 	}
 	.main.active{
 		left: 300px;
-	}
-
-	.comprobantes {
-		overflow-x: auto;
 	}
 }
 	
