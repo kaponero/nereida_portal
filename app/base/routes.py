@@ -11,7 +11,6 @@ from app.auth.routes import login_required
 @login_required
 def formulario():
     if request.method == 'POST':
-        print(20*'\n', 'llegamos al index')
         return "all ok"
     else:
         return render_template('/index.html')
