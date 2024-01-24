@@ -88,7 +88,7 @@
             <div class="cardBox">
                 <div class="card">
                     <div>
-                        <div class="data">{{ subscriptor.vouchers[-1].first_due_date }}</div>
+                        <div class="data">{{ subscriptor.vouchers[-1].first_due_date | replace("-", "/")}}</div>
                         <div class="cardName">Primer vencimiento</div>
                     </div>
                     <div class="iconBx">
@@ -99,7 +99,7 @@
 
                 <div class="card">
                     <div>
-                        <div class="data">{{ subscriptor.vouchers[-1].second_due_date }}</div>
+                        <div class="data">{{ subscriptor.vouchers[-1].second_due_date | replace("-", "/")}}</div>
                         <div class="cardName">Segundo vencimiento</div>
                     </div>
                     <div class="iconBx">
@@ -131,7 +131,7 @@
                         {% if subscriptor.vouchers[-1].state == 'posted' %}
                         <ion-icon name="alert-outline"></ion-icon>
                         {% elif subscriptor.vouchers[-1].state == 'paid' %}
-                        <ion-icon name="ok-outline"></ion-icon>
+                        <ion-icon name="checkmark-outline"></ion-icon>
                         {% endif %}
                     </div>
 
