@@ -8,13 +8,21 @@ from flask import render_template, redirect, url_for, request, session
 from jinja2 import TemplateNotFound
 
 from functools import wraps
+from trytond.transaction import Transaction
 
 
 @blueprint.route('/')
 @tryton.transaction()
 @login_required
 def index():
-    return render_template('/index.html')
+    Subscriptor = tryton.pool.get('delco.subscriptor')
+    Session = tryton.pool.get('web.user.session')
+    user = Session.get_user(session['session_key'])
+    if Subscriptor.search([('web_user', '=', user)]):
+        with Transaction().set_context(company=1):
+            subscriptor, = Subscriptor.search([('web_user', '=', user)])
+        return render_template('/index.html', subscriptor=subscriptor)
+    return render_template('page-500.html'), 500
 
 @blueprint.route('/<template>')
 @tryton.transaction()

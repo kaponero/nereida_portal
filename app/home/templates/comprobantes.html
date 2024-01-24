@@ -67,7 +67,6 @@
                     </a>
                 </li>
             </ul>
-            
         </div>
 
         <!-- -------------------------- Main ------------------------------->
@@ -93,48 +92,42 @@
                         <thead>
                             <tr>
                                 <td>N° de cupón</td>
-                                <td>1° vencimiento</td>
+                               <td>1° vencimiento</td>
                                 <td>2° vencimiento</td>
                                 <td>Mes</td>
                                 <td>Año</td>
                                 <td>Fecha de pago</td>
                                 <td>Monto</td>
                                 <td>Recargo</td>
+                                <td>Monto a pagar hoy</td>
                                 <td>Estado</td>
                             </tr>
                         </thead>
                         <tbody>
+                            {% for line in subscriptor.vouchers %}
                             <tr>
-                                <td>123</td>
-                                <td>11/10/2005</td>
-                                <td>15/10/2005</td>
-                                <td>10</td>
-                                <td>2005</td>
-                                <td>17/10/2005</td>
-                                <td>$3000</td>
-                                <td>$50</td>
+                                <td>{{ line.voucher_number }}</td>
+                               <td>{{ line.first_due_date }}</td>
+                                <td>{{ line.second_due_date }}</td>
+                                <td>{{ line.month }}</td>
+                                <td>{{ line.year }}</td>
+                                <td>{{ line.paid_date or ''}}</td>
+                                <td>{{ line.amount_to_pay }}</td>
+                                <td>{{ line.surcharge or 0}}</td>
+                                <td>{{ line.amount_to_pay_today }}</td>
+                               {% if line.state == 'paid' %}
                                 <td><span class="estado pagado">Pagado</span></td>
-                            </tr>
-                            <tr>
-                                <td>123</td>
-                                <td>11/10/2005</td>
-                                <td>15/10/2005</td>
-                                <td>10</td>
-                                <td>2005</td>
-                                <td> - - </td>
-                                <td>$3000</td>
-                                <td>$50</td>
+                                {% elif line.state == 'posted' %}
                                 <td><span class="estado pendiente">Pendiente</span></td>
+                                {% endif %}
                             </tr>
-                            
+                            {% endfor %}
                         </tbody>
 
                     </table>
 
                 </div>
             </div>
-            
-            
         </div>
 
     </div>

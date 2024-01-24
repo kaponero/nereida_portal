@@ -5,22 +5,35 @@ from app import tryton
 from app.base import blueprint
 from app.auth.routes import login_required
 
+from trytond.transaction import Transaction
 
-@blueprint.route('/index', methods = ['GET','POST'])
+@blueprint.route('/index')
 @tryton.transaction()
 @login_required
 def formulario():
-    if request.method == 'POST':
-        return "all ok"
-    else:
-        return render_template('/index.html')
+    Subscriptor = tryton.pool.get('delco.subscriptor')
+    Session = tryton.pool.get('web.user.session')
+    user = Session.get_user(session['session_key'])
+    if Subscriptor.search([('web_user', '=', user)]):
+        with Transaction().set_context(company=1):
+            subscriptor, = Subscriptor.search([('web_user', '=', user)])
+        return render_template('/index.html', subscriptor=subscriptor)
+    return render_template('page-500.html'), 500
 
 
 @blueprint.route('/comprobantes')
-@tryton.transaction()
+@tryton.transaction(user=1)
 @login_required
 def comprobantes():
-    return render_template('/comprobantes.html')
+    Subscriptor = tryton.pool.get('delco.subscriptor')
+    Session = tryton.pool.get('web.user.session')
+    user = Session.get_user(session['session_key'])
+    if Subscriptor.search([('web_user', '=', user)]):
+        with Transaction().set_context(company=1):
+            subscriptor, = Subscriptor.search([('web_user', '=', user)])
+            return render_template('/comprobantes.html', subscriptor=subscriptor)
+    return render_template('page-500.html'), 500
+
 
 @blueprint.route('/perfil')
 @tryton.transaction()
