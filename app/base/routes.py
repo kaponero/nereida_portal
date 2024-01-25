@@ -4,7 +4,7 @@ from flask import (render_template, redirect, request, url_for,
 from app import tryton
 from app.base import blueprint
 from app.auth.routes import login_required
-
+from app.download_attachment.routes import download_report
 from trytond.transaction import Transaction
 
 @blueprint.route('/index')
@@ -20,6 +20,13 @@ def formulario():
         return render_template('/index.html', subscriptor=subscriptor)
     return render_template('page-500.html'), 500
 
+@blueprint.route('/download_ticket/<id>')
+@tryton.transaction()
+@login_required
+def download_ticket(id):
+    with Transaction().set_context(company=1):
+        return download_report('delco.create_voucher.report', 'comprobante', id)
+    return render_template('page-500.html'), 500
 
 @blueprint.route('/comprobantes')
 @tryton.transaction(user=1)
