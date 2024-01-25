@@ -21,3 +21,24 @@ toggle.onclick = function(){
     main.classList.toggle("active");
 }
 
+
+//tamaño del archivo
+let fileInput = document.getElementById("fotoPerfil");
+let fileResult = document.getElementById("file-result");
+let fileSubmit = document.getElementById("file-submit");
+
+fileInput.addEventListener("change", function () {  
+    if (fileInput.files.length > 0) {
+      const fileSize = fileInput.files.item(0).size;
+      const fileMb = fileSize / 1024 ** 2;
+      if (fileMb >= 3) {
+        fileResult.style.color = 'red'
+        fileResult.innerHTML = "Por favor seleccionar un archivo de menos de 3MB";
+        fileSubmit.disabled = true;
+      } else {
+        fileResult.style.color = 'green'
+        fileResult.innerHTML = "Su archivo es de " + fileMb.toFixed(1) + "MB.";
+        fileSubmit.disabled = false;
+      }
+    }
+  });

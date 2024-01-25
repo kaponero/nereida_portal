@@ -78,7 +78,9 @@
                 <div class="toggle">
                     <ion-icon name="menu-outline"></ion-icon>
                 </div>
-
+                <div class="name">
+                    <h2>{{ subscriptor.party.rec_name }}</h2>
+                </div>
                 <div class="user">
                     <ion-icon name="person-circle-outline"></ion-icon>
                 </div>
@@ -126,7 +128,7 @@
                                 {% else %}
                                 <td>{{ line.state_string }}</td>
                                 {% endif %}
-                                <td><a href="/download_ticket/{{ line.id }}">Descargar</a></td>
+                                <td><a class="comprobante" href="/download_ticket/{{ line.id }}">Descargar</a></td>
                             </tr>
                             {% endfor %}
                         </tbody>

@@ -76,14 +76,37 @@
                 <div class="toggle">
                     <ion-icon name="menu-outline"></ion-icon>
                 </div>
-               
+                <div class="name">
+                    <h2>{{ subscriptor.party.rec_name }}</h2>
+                </div>
                 <div class="user">
                     <ion-icon name="person-circle-outline"></ion-icon>
                 </div>
             </div>
 
             <!-- -------------------- Perfil -------------------------------->
-            
+            <div class="configuracion">
+                <h2>Configuracion del perfil</h2>
+                <div class="foto">
+                    <h3>Cambiar imagen de perfil</h3>
+                    <form action="">
+                        <label for="fotoperfil">Sube una imagen de perfil</label>
+                        <input type="file" name="fotoPerfil" accept="image/png, .jpeg, .jpg, image/gif">
+                        <small><p class="text-center mt-2" id="file-result"></p></small>
+                        <button>Guardar</button>
+                    </form>
+                </div>
+                <div class="contrasenia">
+                    <h3>Cambiar contraseña</h3>
+                    <form action="">
+                        <label for="nueva">Nueva contraseña</label>
+                        <input type="password" name="nueva" id="nueva">
+                        <label for="repetir">Repetir contraseña</label>
+                        <input type="password" name="repetir" id="repetir">
+                        <button>Guardar</button>
+                    </form>
+                </div>
+            </div>
             
             
         </div>

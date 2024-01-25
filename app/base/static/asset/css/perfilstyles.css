@@ -155,6 +155,11 @@ font-size: 1.75rem;
 	
 }
 
+.name{
+	font-family: 'Rubik', sans-serif;
+	color: var(--blue);
+}
+
 .user{
 	position: relative;
 	width: 60px;
