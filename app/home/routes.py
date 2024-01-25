@@ -4,6 +4,7 @@ from app import app, tryton
 from app.home import blueprint
 from app.auth.routes import login_required
 
+
 from flask import render_template, redirect, url_for, request, session
 from jinja2 import TemplateNotFound
 
@@ -19,7 +20,8 @@ def index():
     Session = tryton.pool.get('web.user.session')
     user = Session.get_user(session['session_key'])
     if Subscriptor.search([('web_user', '=', user)]):
-        with Transaction().set_context(company=1):
+        with Transaction().set_context(company=1, language='es'):
+            print(Transaction().context)
             subscriptor, = Subscriptor.search([('web_user', '=', user)])
         return render_template('/index.html', subscriptor=subscriptor)
     return render_template('page-500.html'), 500

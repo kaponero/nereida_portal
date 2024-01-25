@@ -111,11 +111,11 @@
                             {% for line in subscriptor.vouchers %}
                             <tr>
                                 <td>{{ line.voucher_number }}</td>
-                               <td>{{ line.first_due_date | replace("-", "/")}}</td>
-                                <td>{{ line.second_due_date | replace("-", "/")}}</td>
+                               <td>{{ line.first_due_date.strftime('%d-%m-%Y') | replace("-", "/")}}</td>
+                                <td>{{ line.second_due_date.strftime('%d-%m-%Y') | replace("-", "/")}}</td>
                                 <td>{{ line.month }}</td>
                                 <td>{{ line.year }}</td>
-                                <td>{{ (line.paid_date or '') | replace("-", "/") |truncate(13,false,'')}}</td>
+                                <td>{{ (line.paid_date and line.paid_date.strftime('%d-%m-%Y') or '') | replace("-", "/") |truncate(13,false,'')}}</td>
                                 <td>{{ line.amount_to_pay }}</td>
                                 <td>{{ line.surcharge or 0}}</td>
                                 <td>{{ line.amount_to_pay_today }}</td>

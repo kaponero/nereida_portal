@@ -8,7 +8,7 @@ from decouple import config
 
 
 def register_blueprints(app):
-    for module_name in ('base', 'home', 'auth'):
+    for module_name in ('base', 'home', 'auth', 'download_attachment'):
         module = import_module('app.{}.routes'.format(module_name))
         app.register_blueprint(module.blueprint)
 
@@ -21,5 +21,6 @@ app.config.from_object(Config)
 app.config['MAX_CONTENT_LENGTH'] = 1024 * 1024 * 3
 
 tryton = Tryton(app, configure_jinja=True)
+
 register_blueprints(app)
 
