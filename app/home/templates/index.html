@@ -88,7 +88,7 @@
             <div class="cardBox">
                 <div class="card">
                     <div>
-                        <div class="data">{{ subscriptor.vouchers[-1].first_due_date.strftime('%d-%m-%Y') | replace("-", "/")}}</div>
+                        <div class="data">{{ subscriptor.vouchers[-1].first_due_date | dateformat}}</div>
                         <div class="cardName">Primer vencimiento</div>
                     </div>
                     <div class="iconBx">
@@ -100,7 +100,7 @@
                 <div class="card">
                     <div>
                         <div class="data">
-                        {{ subscriptor.vouchers[-1].second_due_date.strftime('%d-%m-%Y') | replace("-", "/") }}</div>
+                        {{ subscriptor.vouchers[-1].second_due_date | dateformat }}</div>
                         <div class="cardName">Segundo vencimiento</div>
                     </div>
                     <div class="iconBx">
@@ -110,7 +110,7 @@
 
                 <div class="card">
                     <div>
-                        <div class="data">{{ subscriptor.vouchers[-1].amount_to_pay_today }}</div>
+                        <div class="data">{{ subscriptor.vouchers[-1].amount_to_pay_today | currencyformat(subscriptor.vouchers[-1].currency)}}</div>
                         <div class="cardName">Importe</div>
                     </div>
                     <div class="iconBx">
