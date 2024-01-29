@@ -172,83 +172,95 @@ font-size: 1.75rem;
 
 }
 
-/*----------------------- List ----------------------------- */
-
-.details{
-	position: relative;
-	width: 100%;
-	padding: 20px;
-	display: table;
-}
-
-.details .comprobantes{
-	position: relative;
-	display: grid;
-	min-height: 200px;
+/*--------------------------- configuracion -------------------------*/
+.configuracion{
+	position: absolute;
+	left: 50%;
+	transform: translate(-50%, 0);
+	width: 600px;
 	background: var(--white);
 	padding: 20px;
 	box-shadow: 0 7px 25px rgba(0, 0,0, 0.08);
 	border-radius: 20px;
-
-}
-.details .cardHeader{
-	display: flex;
-	justify-content: space-between;
-	align-items: flex-start;
-
+	margin: 20px;
 }
 
-.cardHeader h2{
-	font-weight: 600;
-	color: var(--blue);
+.configuracion h2{
 	font-family: 'Rubik', sans-serif;
-	margin-bottom: 10px;
-}
-
-.details table{
-	width: 100%;
-	border-collapse: collapse;
-	font-family: 'Rubik', sans-serif;
-}
-
-.details table thead td{
-	font-weight: 600;
-}
-
-.details .comprobantes table tr{
 	color: var(--blue);
-	border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-}
-.details .comprobantes table tr:last-child{
-	border-bottom: none;
-}
-
-.details .comprobantes table tbody tr:hover{
-	background: var(--blue);
-	color: var(--white);
-}
-
-.details .comprobantes table tr td{
-	padding: 10px;
 	text-align: center;
+	padding: 0 0 20px 0;
+	border-bottom: 1px solid silver;
+	margin-bottom: 20px;
 }
 
-.estado.pagado{
-	padding: 2px 4px;
-	background: #8de02c;
-	color: var(--white);
-	border-radius: 4px;
-	font-size: 14px;
-	font-weight: 500;
-} 
+.configuracion form{
+	padding: 0 40px;
+	box-sizing: border-box;
+}
 
-.estado.pendiente{
-	padding: 2px 4px;
-	background: #f00;
-	color: var(--white);
-	border-radius: 4px;
+form .username{
+	position: relative;
+	border-bottom: 2px solid var(--orange);
+	margin: 30px 0;
+	font-family: 'Rubik', sans-serif;
+}
+
+.username input{
+	width: 100%;
+	padding: 0 5px;
+	height: 42px;
+	font-size: 15px;
+	border: none;
+	background: none;
+	outline: none;
+	font-family: 'Rubik', sans-serif;
+}
+
+.username label{
+	position: absolute;
+	top: 50%;
+	left: 5px;
+	top: -5px;
+	color: #adadad;
+	transform: translateY(-50%);
 	font-size: 14px;
-	font-weight: 500;
+	pointer-events: none;
+	transition: .5s;
+}
+
+.username span::before{
+	content: '';
+	position: absolute;
+	top: 40px;
+	left: 0;
+	width: 100%;
+	height: 2px;
+	background: var(--blue);
+}
+
+.username input:focus ~ label, 
+.username input:focus ~ label{
+	color: var(--blue);
+}
+
+input[type="submit"]{
+	width: 100%;
+	height: 40px;
+	border: 1px solid;
+	background: var(--blue);
+	border-radius: 25px;
+	font-size: 14px;
+	color: var(--white);
+	cursor: pointer;
+	outline: none;
+	font-family: 'Rubik', sans-serif;
+}
+
+input[type="submit"]:hover{
+	border-color: rgb(3, 3, 85);
+	transition: .5s;
+
 }
 
 /*---------------------------Diseño responsivo -------------------------*/

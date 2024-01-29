@@ -208,6 +208,7 @@ font-size: 1.75rem;
 }
 
 .details table{
+	font-size: 14px;
 	width: 100%;
 	border-collapse: collapse;
 	font-family: 'Rubik', sans-serif;
