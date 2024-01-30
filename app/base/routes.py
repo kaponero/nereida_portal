@@ -49,6 +49,7 @@ def perfil():
     Subscriptor = tryton.pool.get('delco.subscriptor')
     Session = tryton.pool.get('web.user.session')
     user = Session.get_user(session['session_key'])
+    
     if Subscriptor.search([('web_user', '=', user)]):
         with Transaction().set_context(company=1):
             subscriptor, = Subscriptor.search([('web_user', '=', user)])

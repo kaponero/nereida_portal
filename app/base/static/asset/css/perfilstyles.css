@@ -183,8 +183,6 @@ font-size: 1.75rem;
 	padding: 20px;
 	box-shadow: 0 7px 25px rgba(0, 0,0, 0.08);
 	border-radius: 20px;
-	margin: 20px;
-	margin-bottom: 50px;
 }
 
 .configuracion h2{
@@ -282,6 +280,18 @@ input[type="submit"]:hover{
 	}
 	.main.active{
 		left: 300px;
+	}
+	.configuracion form{
+		padding: 0 20px;
+		
+	}
+	.configuracion{
+		
+		width: 400px;
+		
+		padding: 20px;
+		
+		
 	}
 }
 	
