@@ -89,39 +89,32 @@
             <div class="perfil">
                 <div class="configuracion">
                     <h2>Configuracion del perfil</h2>
-                    <form action="">
+                    <form action="" method="POST" enctype="multipart/form-data">
                         <div class="username">
-                            <input type="text" required>
-                            <label for="">Nombre</label>
+                            <input name="nombre" type="text" value="{{ subscriptor.party.rec_name }}" required>
+                            <label for="nombre">Nombre</label>
                         </div>
                         <div class="username">
-                            <input type="text" required>
-                            <label for="">DNI</label>
+                            <input name="dni" type="text" value="{{ subscriptor.party.dni }}" required>
+                            <label for="dni">DNI</label>
                         </div>
                         <div class="username">
-                            <input type="text" required>
-                            <label for="">Direccion</label>
+                            <input name="direccion" type="text" value="{{ subscriptor.address.rec_name}}" required>
+                            <label for="direccion">Dirección</label>
                         </div>
                         <div class="username">
-                            <input type="text" required>
-                            <label for="">Teléfono</label>
+                            <input telefono type="number" value="{{ subscriptor.cellphone }}" required>
+                            <label for="telefono">Teléfono</label>
                         </div>
                         <div class="username">
-                            <input type="text" required>
-                            <label for="">Email</label>
+                            <input name="email" type="mail" value="{{ subscriptor.email }}" required>
+                            <label for="email">Email</label>
                         </div>
                         <input type="submit" value="Guardar">
-                    </form>
-                    
-                       
+                    </form>  
                 </div>
-                
             </div>
-            
-            
-            
         </div>
-
     </div>
 
 

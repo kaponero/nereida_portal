@@ -173,16 +173,18 @@ font-size: 1.75rem;
 }
 
 /*--------------------------- configuracion -------------------------*/
+
 .configuracion{
 	position: absolute;
 	left: 50%;
 	transform: translate(-50%, 0);
-	width: 600px;
+	width: 500px;
 	background: var(--white);
 	padding: 20px;
 	box-shadow: 0 7px 25px rgba(0, 0,0, 0.08);
 	border-radius: 20px;
 	margin: 20px;
+	margin-bottom: 50px;
 }
 
 .configuracion h2{
