@@ -62,3 +62,19 @@ def perfil():
 @login_required
 def notificaciones():
     return render_template('/notificaciones.html')
+
+
+@blueprint.route('/seguridad')
+@tryton.transaction()
+@login_required
+def seguridad():
+    Subscriptor = tryton.pool.get('delco.subscriptor')
+    Session = tryton.pool.get('web.user.session')
+    user = Session.get_user(session['session_key'])
+    
+    if Subscriptor.search([('web_user', '=', user)]):
+        with Transaction().set_context(company=1):
+            subscriptor, = Subscriptor.search([('web_user', '=', user)])
+            return render_template('/seguridad.html', subscriptor=subscriptor)
+    return render_template('page-500.html'), 500
+    

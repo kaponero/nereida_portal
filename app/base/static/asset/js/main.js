@@ -42,3 +42,19 @@ fileInput.addEventListener("change", function () {
       }
     }
   });
+
+
+function verificarPasswords() {
+ 
+  pass1 = document.getElementById('new_psw');
+  pass2 = document.getElementById('repite_psw');
+
+  if (pass1.value != pass2.value){
+    alert("las contraseñas deben ser iguales");
+    return false;
+  }
+  else{
+    document.getElementById("f-psw").submit()
+  }
+ 
+}

@@ -4,7 +4,7 @@
 
 <!-- Specific Page CSS goes HERE  -->
 {% block links %}
-<link rel="stylesheet" href="{{ url_for("static", filename="asset/css/perfilstyles.css") }}">
+<link rel="stylesheet" href="{{ url_for("static", filename="asset/css/seguridadstyles.css") }}">
 {% endblock %}
 
 {% block content %}
@@ -41,7 +41,7 @@
                 </li>
 
                 <li>
-                    <a href="#">
+                    <a href="/perfil">
                         <span class="icon">
                             <ion-icon name="person-outline"></ion-icon>
                         </span>
@@ -50,7 +50,7 @@
                 </li>
 
                 <li>
-                    <a href="/seguridad">
+                    <a href="#">
                         <span class="icon">
                             <ion-icon name="shield-outline"></ion-icon>
                         </span>
@@ -87,44 +87,29 @@
                 </div>
                 <div class="name">
                     <h2>{{ subscriptor.party.rec_name }}</h2>
-                </div>
+                    </div>
                 <div class="user">
                     <ion-icon name="person-circle-outline"></ion-icon>
                 </div>
             </div>
 
-            <!-- -------------------- Perfil -------------------------------->
+            <!-- -------------------- Seguridad -------------------------------->
             
             <div class="perfil">
                 <div class="configuracion">
-                    <h2>Datos personales</h2>
-                    <form action="" method="POST">
-                        <p>Por favor, revisa la información proporcionada a continuación. Si encuentras algún error o discrepancia, te agradeceríamos que nos informaras para que podamos corregirlo.</p>
-                        <div class="username">
-                            <input name="nombre" type="text" value="{{ subscriptor.party.rec_name }}" readonly required>
-                            <label for="nombre">Nombre</label>
-                        </div>
-                        <div class="username">
-                            <input name="dni" type="text" value="{{ subscriptor.party.dni }}" readonly required>
-                            <label for="dni">DNI</label>
-                        </div>
-                        <div class="username">
-                            <input name="direccion" type="text" value="{{ subscriptor.address.rec_name}}" readonly required>
-                            <label for="direccion">Dirección</label>
-                        </div>
-                        <div class="username">
-                            <input telefono type="number" value="{{ subscriptor.cellphone }}" readonly required>
-                            <label for="telefono">Teléfono</label>
-                        </div>
-                        <div class="username">
-                            <input name="email" type="mail" value="{{ subscriptor.email }}" readonly required>
-                            <label for="email">Email</label>
-                        </div>
-                        
+                    <form id="f-psw" onsubmit="verificarPasswords(); return false" method="POST">
+                        <h2>Cambiar contraseña</h2>
+                        <label for="new_psw">Nueva contraseña</label>
+                        <input name="new_psw" id="new_psw" type="password"  required>
+                        <label for="repite_psw">Repetir Contraseña</label>
+                        <input name="repite_psw" id="repite_psw" type="password"  required>
+                        <input type="submit" value="Guardar">
                     </form>  
                 </div>
             </div>
+            
         </div>
+
     </div>
 
 
