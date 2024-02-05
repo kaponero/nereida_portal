@@ -94,20 +94,33 @@
             </div>
 
             <!-- -------------------- Seguridad -------------------------------->
-            
+
             <div class="perfil">
                 <div class="configuracion">
-                    <form id="f-psw" onsubmit="verificarPasswords(); return false" method="POST">
+<!--                     <form id="f-psw" onsubmit="verificarPasswords(); return false" method="POST"> -->
+                    <form id="f-psw" method="post" action="">
+                        {{ form.hidden_tag() }}
                         <h2>Cambiar contraseña</h2>
+                        {% with messages = get_flashed_messages() %}
+                        {% if messages %}
+                            <ul>
+                            {% for message in messages %}
+                            <li>{{ message }}</li>
+                            {% endfor %}
+                            </ul>
+                        {% endif %}
+                        {% endwith %}
                         <label for="new_psw">Nueva contraseña</label>
-                        <input name="new_psw" id="new_psw" type="password"  required>
+                        {{ form.password(placeholder="Contraseña", class="form-control") }}
+<!--                         <input name="new_psw" id="new_psw" type="password"  required> -->
                         <label for="repite_psw">Repetir Contraseña</label>
-                        <input name="repite_psw" id="repite_psw" type="password"  required>
+<!--                         <input name="repite_psw" id="repite_psw" type="password"  required> -->
+                        {{ form.password_confirmation(placeholder="Repetir contraseña", class="form-control") }}
                         <input type="submit" value="Guardar">
-                    </form>  
+                    </form>
                 </div>
             </div>
-            
+
         </div>
 
     </div>
