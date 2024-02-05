@@ -110,11 +110,11 @@
                             </ul>
                         {% endif %}
                         {% endwith %}
-                        <label for="new_psw">Nueva contraseña</label>
+                        <label for="new_psw">Contraseña actual</label>
                         {{ form.password(placeholder="Contraseña", class="form-control") }}
-<!--                         <input name="new_psw" id="new_psw" type="password"  required> -->
+                        <label for="new_psw">Nueva contraseña</label>
+                        {{ form.new_password(placeholder="Nueva contraseña", class="form-control") }}
                         <label for="repite_psw">Repetir Contraseña</label>
-<!--                         <input name="repite_psw" id="repite_psw" type="password"  required> -->
                         {{ form.password_confirmation(placeholder="Repetir contraseña", class="form-control") }}
                         <input type="submit" value="Guardar">
                     </form>

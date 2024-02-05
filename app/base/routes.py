@@ -81,14 +81,19 @@ def seguridad():
     change_password_form = ChangePasswordForm(request.form)
     user = Session.get_user(session['session_key'])
     web_user = WebUser(user)
+
     if Subscriptor.search([('web_user', '=', user)]):
         with Transaction().set_context(company=1):
             subscriptor, = Subscriptor.search([('web_user', '=', user)])
             if request.method == 'POST' \
-                and change_password_form.password.data == change_password_form.password_confirmation.data:
+                and WebUser.authenticate(
+                    web_user.email,
+                    change_password_form.password.data) \
+                and change_password_form.new_password.data == \
+                        change_password_form.password_confirmation.data:
                 # aquí el cambio de contraseña por tryton
                 flash('La contraseña ha sido exitosamente actualizada', 'success')
-                web_user.password = change_password_form.password.data
+                web_user.password = change_password_form.new_password.data
                 web_user.save()
             elif request.method == 'POST':
                 flash('Las contraseñas no coinciden', 'error')
