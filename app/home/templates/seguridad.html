@@ -98,9 +98,10 @@
             <div class="perfil">
                 <div class="configuracion">
 <!--                     <form id="f-psw" onsubmit="verificarPasswords(); return false" method="POST"> -->
-                    <form id="f-psw" method="post" action="">
+                    <form id="f-psw" method="post" onsubmit="verificarPasswords(); return false">
                         {{ form.hidden_tag() }}
                         <h2>Cambiar contraseña</h2>
+                        <!--
                         {% with messages = get_flashed_messages() %}
                         {% if messages %}
                             <ul>
@@ -110,20 +111,37 @@
                             </ul>
                         {% endif %}
                         {% endwith %}
-                        <label for="new_psw">Contraseña actual</label>
-                        {{ form.password(placeholder="Contraseña", class="form-control") }}
+                        -->
+                        <label for="psw">Contraseña actual</label>
+                        {{ form.password(class="form-control",id="psw", required=false) }}
                         <label for="new_psw">Nueva contraseña</label>
-                        {{ form.new_password(placeholder="Nueva contraseña", class="form-control") }}
+                        {{ form.new_password( class="form-control", id="new_psw", required=false) }}
                         <label for="repite_psw">Repetir Contraseña</label>
-                        {{ form.password_confirmation(placeholder="Repetir contraseña", class="form-control") }}
+                        {{ form.password_confirmation( class="form-control", id="repite_psw", required=false) }}
                         <input type="submit" value="Guardar">
                     </form>
                 </div>
             </div>
-
+            <div class="modal_wrapper">
+                <div class="shadow"></div>
+                <div class="success_wrap">
+                    <div class="alert">
+                        <span class="modal_icon">
+                            <ion-icon id="icon-error" name="alert-circle-outline"></ion-icon>
+                            <ion-icon id="icon-ok" name="checkmark-circle-outline" style="display: none;"></ion-icon>
+                        </span>
+                        <p id="mensaje"></p>
+                    </div>
+                    <div class="boton">
+                        <input id="btns" type="submit" value="Aceptar" onclick="cerrar()">
+                    </div>
+                </div>
+            </div>
         </div>
 
     </div>
+
+    
 
 
 
