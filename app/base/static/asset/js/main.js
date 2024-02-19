@@ -2,6 +2,38 @@
 // agrega la clase 'hovered' a la lista seleccionada
 let list = document.querySelectorAll(".navigation li");
 const boton_aceptar =  document.querySelector(".boton-wrap");
+const pass_actual = document.getElementById("psw");
+const icon_actual = document.getElementById("actual");
+const pass_nuevo = document.getElementById("new_psw");
+const icon_nuevo = document.getElementById("nueva");
+const pass_repite = document.getElementById("repite_psw");
+const icon_repite = document.getElementById("repite");
+
+
+//mostrar contraseña
+icon_actual.addEventListener("click",function(){
+  if (pass_actual.type === "password"){
+    pass_actual.type = "text";
+  } else {
+    pass_actual.type = "password";
+  }
+})
+
+icon_nuevo.addEventListener("click",function(){
+  if (pass_nuevo.type === "password"){
+    pass_nuevo.type = "text";
+  } else {
+    pass_nuevo.type = "password";
+  }
+})
+
+icon_repite.addEventListener("click",function(){
+  if (pass_repite.type === "password"){
+    pass_repite.type = "text";
+  } else {
+    pass_repite.type = "password";
+  }
+})
 
 function activeLink(){
     list.forEach((item) => {
@@ -87,14 +119,14 @@ function verificarPasswords() {
     return false;
   }
   else{
-    modal_wrapper.classList.add("active");
+    /*modal_wrapper.classList.add("active");
     boton.style.display="none";
     icon_error.style.display="none";
     icon_ok.style.display="block";
     error.innerHTML = "La contraseña ha sido cambiada con exito";
     setTimeout(() => {
       console.log("2 Segundo esperado")
-    }, 2000);
+    }, 2000);*/
     document.getElementById("f-psw").submit()
   }
  
@@ -103,3 +135,12 @@ function verificarPasswords() {
  function cerrar(){
 	modal_wrapper.classList.remove("active");
 }
+
+//mostrar contraseña
+icon_actual.addEventListener("click",function(){
+  if (pass_actual.type === "password"){
+    pass_actual.type = "text";
+  } else {
+    pass_actual.type = "password";
+  }
+})

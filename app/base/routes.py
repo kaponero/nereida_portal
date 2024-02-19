@@ -95,6 +95,7 @@ def seguridad():
                 flash('La contraseña ha sido exitosamente actualizada', 'success')
                 web_user.password = change_password_form.new_password.data
                 web_user.save()
+                return render_template('/contrasenia.html', subscriptor=subscriptor)
             elif request.method == 'POST':
                 flash('Las contraseñas no coinciden', 'error')
             return render_template('/seguridad.html', subscriptor=subscriptor,

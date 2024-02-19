@@ -50,7 +50,7 @@
                 </li>
 
                 <li>
-                    <a href="#">
+                    <a href="/seguridad">
                         <span class="icon">
                             <ion-icon name="shield-outline"></ion-icon>
                         </span>
@@ -59,7 +59,7 @@
                 </li>
 
                 <li>
-                    <a href="/notificaciones">
+                    <a href="#">
                         <span class="icon">
                             <ion-icon name="notifications-outline"></ion-icon>
                         </span>
@@ -87,64 +87,24 @@
                 </div>
                 <div class="name">
                     <h2>{{ subscriptor.party.rec_name }}</h2>
-                    </div>
+                </div>
                 <div class="user">
                     <ion-icon name="person-circle-outline"></ion-icon>
                 </div>
             </div>
 
-            <!-- -------------------- Seguridad -------------------------------->
-
+            <!-- -------------------- Perfil -------------------------------->
+            
             <div class="perfil">
                 <div class="configuracion">
-<!--                     <form id="f-psw" onsubmit="verificarPasswords(); return false" method="POST"> -->
-                    <form id="f-psw" method="post" onsubmit="verificarPasswords(); return false">
-                        {{ form.hidden_tag() }}
-                        <h2>Cambiar contraseña</h2>
-                        <!--
-                        {% with messages = get_flashed_messages() %}
-                        {% if messages %}
-                            <ul>
-                            {% for message in messages %}
-                            <li>{{ message }}</li>
-                            {% endfor %}
-                            </ul>
-                        {% endif %}
-                        {% endwith %}
-                        -->
-                        <!-- <label for="psw">Contraseña actual</label> -->
-                        {{ form.password(class="form-control",id="psw",placeholder="Contraseña actual", required=false) }}
-                        <ion-icon  class="ojo" id="actual" name="eye-outline"></ion-icon>
-                        <!-- <label for="new_psw">Nueva contraseña</label>-->
-                        {{ form.new_password( class="form-control", placeholder="Nueva contraseña",id="new_psw", required=false) }}
-                        <ion-icon  class="ojo" id="nueva" name="eye-outline"></ion-icon>
-                        <!-- <label for="repite_psw">Repetir Contraseña</label>-->
-                        {{ form.password_confirmation( class="form-control", placeholder="Repetir contraseña", id="repite_psw", required=false) }}
-                        <ion-icon  class="ojo" id="repite" name="eye-outline"></ion-icon>
-                        <input type="submit" value="Guardar">
-                    </form>
-                </div>
-            </div>
-            <div class="modal_wrapper">
-                <div class="shadow"></div>
-                <div class="success_wrap">
-                    <div class="alert">
-                        <span class="modal_icon">
-                            <ion-icon id="icon-error" name="alert-circle-outline"></ion-icon>
-                            <ion-icon id="icon-ok" name="checkmark-circle-outline" style="display: none;"></ion-icon>
-                        </span>
-                        <p id="mensaje"></p>
-                    </div>
-                    <div class="boton">
-                        <input id="btns" type="submit" value="Aceptar" onclick="cerrar()">
-                    </div>
+
+                        <h2>La contraseña ha sido exitosamente actualizada</h2>
+                        
                 </div>
             </div>
         </div>
 
     </div>
-
-    
 
 
 

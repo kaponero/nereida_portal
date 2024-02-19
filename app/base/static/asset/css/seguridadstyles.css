@@ -209,8 +209,8 @@ font-size: 1.75rem;
 	display: none;
 }
 
-.configuracion label{
-	font-size: 14px;
+.configuracion label, .configuracion input::placeholder{
+	font-size: 16px;
 	color: #adadad;
 	left: 5px;
 	margin-bottom: 10px;
@@ -221,10 +221,16 @@ font-size: 1.75rem;
 	padding: 14px 10px;
 	border: 2px solid var(--blue);
 	border-radius: 25px;
-	margin-bottom: 25px;
+	/*margin-bottom: 25px;*/
 	outline: none;
 	color: var(--orange);
-	font-size: 14px;
+	font-size: 16px;
+}
+
+.configuracion .ojo{
+	font-size: 30px;
+	transform: translate(280px, -40px);
+	cursor: pointer;
 }
 
 input[type="submit"]{
