@@ -98,10 +98,11 @@
             <div class="perfil">
                 <div class="configuracion">
 <!--                     <form id="f-psw" onsubmit="verificarPasswords(); return false" method="POST"> -->
-                    <form id="f-psw" method="post" onsubmit="verificarPasswords(); return false">
+                    <form id="f-psw" method="post" >
                         {{ form.hidden_tag() }}
                         <h2>Cambiar contraseña</h2>
-                        <!--
+
+                        
                         {% with messages = get_flashed_messages() %}
                         {% if messages %}
                             <ul>
@@ -109,18 +110,19 @@
                             <li>{{ message }}</li>
                             {% endfor %}
                             </ul>
+                            <br>
                         {% endif %}
                         {% endwith %}
-                        -->
-                        <!-- <label for="psw">Contraseña actual</label> -->
-                        {{ form.password(class="form-control",id="psw",placeholder="Contraseña actual", required=false) }}
+                        
+                        {{ form.password(class="form-control",id="psw",placeholder="Contraseña actual", required=true) }}
                         <ion-icon  class="ojo" id="actual" name="eye-outline"></ion-icon>
-                        <!-- <label for="new_psw">Nueva contraseña</label>-->
-                        {{ form.new_password( class="form-control", placeholder="Nueva contraseña",id="new_psw", required=false) }}
+                        
+                        {{ form.new_password( class="form-control", placeholder="Nueva contraseña",id="new_psw", required=true) }}
                         <ion-icon  class="ojo" id="nueva" name="eye-outline"></ion-icon>
-                        <!-- <label for="repite_psw">Repetir Contraseña</label>-->
-                        {{ form.password_confirmation( class="form-control", placeholder="Repetir contraseña", id="repite_psw", required=false) }}
+                        
+                        {{ form.password_confirmation( class="form-control", placeholder="Repetir contraseña", id="repite_psw", required=true) }}
                         <ion-icon  class="ojo" id="repite" name="eye-outline"></ion-icon>
+
                         <input type="submit" value="Guardar">
                     </form>
                 </div>

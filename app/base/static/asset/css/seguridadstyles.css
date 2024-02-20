@@ -233,6 +233,10 @@ font-size: 1.75rem;
 	cursor: pointer;
 }
 
+.configuracion #actual_cerrado, .configuracion  #nueva_cerrado, .configuracion  #repite_cerrado{
+	display: none;
+}
+
 input[type="submit"]{
 	background-color: var(--blue);
 	font-size: 14px;
