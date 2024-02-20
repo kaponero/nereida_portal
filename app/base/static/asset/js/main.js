@@ -1,45 +1,7 @@
 
 // agrega la clase 'hovered' a la lista seleccionada
 let list = document.querySelectorAll(".navigation li");
-const boton_aceptar =  document.querySelector(".boton-wrap");
-const pass_actual = document.getElementById("psw");
-const icon_actual = document.getElementById("actual");
-const pass_nuevo = document.getElementById("new_psw");
-const icon_nuevo = document.getElementById("nueva");
-const pass_repite = document.getElementById("repite_psw");
-const icon_repite = document.getElementById("repite");
 
-
-//mostrar contraseña
-icon_actual.addEventListener("click",function(){
-  if (pass_actual.type === "password"){
-    pass_actual.type = "text";
-    icon_actual.name = "eye-off-outline";
-  } else {
-    pass_actual.type = "password";
-    icon_actual.name = "eye-outline";
-  }
-})
-
-icon_nuevo.addEventListener("click",function(){
-  if (pass_nuevo.type === "password"){
-    pass_nuevo.type = "text";
-    icon_nuevo.name = "eye-off-outline";
-  } else {
-    pass_nuevo.type = "password";
-    icon_nuevo.name = "eye-outline";
-  }
-})
-
-icon_repite.addEventListener("click",function(){
-  if (pass_repite.type === "password"){
-    pass_repite.type = "text";
-    icon_repite.name = "eye-off-outline";
-  } else {
-    pass_repite.type = "password";
-    icon_repite.name = "eye-outline";
-  }
-})
 
 function activeLink(){
     list.forEach((item) => {
@@ -82,15 +44,3 @@ fileInput.addEventListener("change", function () {
     }
   });
 
-function verificarPasswords() {
- 
-  error = document.getElementById('error_tamanio');
-
-  if (pass_nuevo.value.length<8){
-    error.style.display = "block";
-    return false;
-  }
-  else
-    error.style.display = "none";
-    document.getElementById("f-psw").submit();
-}
