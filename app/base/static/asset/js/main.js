@@ -84,60 +84,13 @@ fileInput.addEventListener("change", function () {
 
 function verificarPasswords() {
  
-  pass = document.getElementById('psw');
-  pass1 = document.getElementById('new_psw');
-  pass2 = document.getElementById('repite_psw');
-  modal_wrapper = document.querySelector(".modal_wrapper");
-  var error = document.getElementById("mensaje");
-  const boton = document.getElementById("btns");
-  const icon_error = document.getElementById("icon-error");
-  const icon_ok = document.getElementById("icon-ok");
+  error = document.getElementById('error_tamanio');
 
-  if (pass.value.length==0){
-    modal_wrapper.classList.add("active");
-    error.innerHTML = "Ingrese la contraseña actual";
+  if (pass_nuevo.value.length<8){
+    error.style.display = "block";
     return false;
   }
-  else if (pass1.value.length==0){
-    modal_wrapper.classList.add("active");
-    error.innerHTML = "Ingrese la nueva contraseña";
-    return false;
-  }
-  if (pass2.value.length==0){
-    modal_wrapper.classList.add("active");
-    error.innerHTML = "Repita la nueva contraseña";
-    return false;
-  }
-  else if (pass1.value.length<8 || pass1.value.length<8){
-    modal_wrapper.classList.add("active");
-    error.innerHTML = "La contraseña debe ser mayor a 8 caracteres";
-    return false;
-  }
-  else if (pass1.value != pass2.value){
-    modal_wrapper.classList.add("active");
-    error.innerHTML = "Las contraseñas deben ser iguales";
-    return false;
-  }
-  else if (pass.value == pass1.value){
-    modal_wrapper.classList.add("active");
-    error.innerHTML = "La nueva contraseña debe ser distinta a su contraseña anterior";
-
-    return false;
-  }
-  else{
-    /*modal_wrapper.classList.add("active");
-    boton.style.display="none";
-    icon_error.style.display="none";
-    icon_ok.style.display="block";
-    error.innerHTML = "La contraseña ha sido cambiada con exito";
-    setTimeout(() => {
-      console.log("2 Segundo esperado")
-    }, 2000);*/
-    document.getElementById("f-psw").submit()
-  }
- 
-}
-
- function cerrar(){
-	modal_wrapper.classList.remove("active");
+  else
+    error.style.display = "none";
+    document.getElementById("f-psw").submit();
 }

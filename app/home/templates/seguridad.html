@@ -98,7 +98,7 @@
             <div class="perfil">
                 <div class="configuracion">
 <!--                     <form id="f-psw" onsubmit="verificarPasswords(); return false" method="POST"> -->
-                    <form id="f-psw" method="post" >
+                    <form id="f-psw" method="post" onsubmit="verificarPasswords(); return false">
                         {{ form.hidden_tag() }}
                         <h2>Cambiar contraseña</h2>
 
@@ -107,12 +107,20 @@
                         {% if messages %}
                             <ul>
                             {% for message in messages %}
-                            <li>{{ message }}</li>
+                            <li style="color: brown;">{{ message }}</li>
+                            
                             {% endfor %}
                             </ul>
                             <br>
                         {% endif %}
                         {% endwith %}
+
+                        <div id="error_tamanio" style=" display: none;">
+                            <ul>
+                                <li style="color: brown; ">La contraseña debe ser mayor a 8 caracteres</li>
+                            </ul>
+                            <br>
+                        </div>
                         
                         {{ form.password(class="form-control",id="psw",placeholder="Contraseña actual", required=true) }}
                         <ion-icon  class="ojo" id="actual" name="eye-outline"></ion-icon>
@@ -127,6 +135,7 @@
                     </form>
                 </div>
             </div>
+            <!--
             <div class="modal_wrapper">
                 <div class="shadow"></div>
                 <div class="success_wrap">
@@ -142,6 +151,7 @@
                     </div>
                 </div>
             </div>
+            -->
         </div>
 
     </div>
