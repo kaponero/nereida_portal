@@ -231,6 +231,7 @@ font-size: 1.75rem;
 	font-size: 30px;
 	transform: translate(280px, -40px);
 	cursor: pointer;
+	color: var(--blue);
 }
 
 .configuracion #actual_cerrado, .configuracion  #nueva_cerrado, .configuracion  #repite_cerrado{

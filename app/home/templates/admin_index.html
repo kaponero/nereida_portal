@@ -1,0 +1,160 @@
+{% extends "accounts/base.html" %}
+
+{% block title %} Portal {% endblock %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block links %}
+<link rel="stylesheet" href="{{ url_for("static", filename="asset/css/portalstyles.css") }}">
+{% endblock %}
+
+{% block content %}
+
+    <!-- -------------------------Menu de navegacion-------------------------------->
+    <div class="contenedor">
+        <div class="navigation">
+            <ul>
+                <li>
+                    <a id="brandname" href="#">
+                        <span class="icon">
+                            <ion-icon name="planet-outline"></ion-icon>
+                        </span>
+                        <span class="title">Nereida Autogestion</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="#">
+                        <span class="icon">
+                            <ion-icon name="home-outline"></ion-icon>
+                        </span>
+                        <span class="title">Resumen</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="/admin/abonados">
+                        <span class="icon">
+                            <ion-icon name="receipt-outline"></ion-icon>
+                        </span>
+                        <span class="title">Abonados</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="/perfil">
+                        <span class="icon">
+                            <ion-icon name="person-outline"></ion-icon>
+                        </span>
+                        <span class="title">Perfil</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="/seguridad">
+                        <span class="icon">
+                            <ion-icon name="shield-outline"></ion-icon>
+                        </span>
+                        <span class="title">Seguridad</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="/notificaciones">
+                        <span class="icon">
+                            <ion-icon name="notifications-outline"></ion-icon>
+                        </span>
+                        <span class="title">Notificaciones</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="/logout">
+                        <span class="icon">
+                            <ion-icon name="log-out-outline"></ion-icon>
+                        </span>
+                        <span class="title" href="/logout">Salir</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- -------------------------- Main ------------------------------->
+        <div class="main">
+            <div class="topbar">
+                <div class="toggle">
+                    <ion-icon name="menu-outline"></ion-icon>
+                </div>
+                <div class="name">
+                <h2>nombre administrador</h2>
+                </div>
+                <div class="user">
+                    <ion-icon name="person-circle-outline"></ion-icon>
+                </div>
+            </div>
+
+            <!-- -------------------- cards -------------------------------->
+           
+            <div class="cardBox">
+                <div class="card">
+                    <div>
+                        <div class="data">9999</div>
+                        <div class="cardName">Abonados</div>
+                    </div>
+                    <div class="iconBx">
+                        <ion-icon name="people-outline"></ion-icon>
+                    </div>
+
+                </div>
+
+                <div class="card">
+                    <div>
+                        <div class="data">99/99/99</div>
+                        <div class="cardName">Vencimiento</div>
+                    </div>
+                    <div class="iconBx">
+                        <ion-icon name="calendar-outline"></ion-icon>
+                    </div>
+
+                </div>
+
+                <div class="card">
+                    <div>
+                        <div class="data">
+                        999</div>
+                        <div class="cardName">Libre de deudas</div>
+                    </div>
+                    <div class="iconBx">
+                        <ion-icon name="checkmark-circle-outline"></ion-icon>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div>
+                        <div class="data">999</div>
+                        <div class="cardName">Deudores</div>
+                    </div>
+                    <div class="iconBx">
+                        <ion-icon name="close-circle-outline"></ion-icon>
+                    </div>
+
+                </div>
+            </div>
+            
+        </div>
+
+    </div>
+
+
+
+{% endblock content %}
+
+{% block javascripts %}
+
+<!-- --------------------- scripts ----------------------- -->
+<script type="text/javascript" src="{{ url_for('static',filename='asset/js/main.js') }}"></script>
+
+<!-- -------------------- ionicons ----------------------- -->
+<script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+
+{% endblock javascripts %}

@@ -14,6 +14,14 @@ from app.download_attachment.routes import download_report
 from trytond.transaction import Transaction
 
 
+@blueprint.route('/admin')
+def admin():
+    return render_template('/admin_index.html')
+
+@blueprint.route('/admin/abonados')
+def abonados():
+    return render_template('/admin_abonados.html')
+
 @blueprint.route('/index')
 @tryton.transaction()
 @login_required
