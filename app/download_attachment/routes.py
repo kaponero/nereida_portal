@@ -27,4 +27,5 @@ def download_report(report_name, filename, id):
     ext, content, _, name = Instruction.execute([id], {'vouchers': [id]})
     return send_file(
         BytesIO(content),
-        attachment_filename=filename + '.pdf')
+        attachment_filename='Voucher'+'_'+id+'.pdf',
+        as_attachment=True)
