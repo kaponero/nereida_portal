@@ -39,8 +39,13 @@ def formulario():
 @tryton.transaction()
 @login_required
 def download_ticket(id):
+    Voucher = tryton.pool.get('delco.subscriptor.voucher')
+    voucher = Voucher(id)
     with Transaction().set_context(company=1):
-        return download_report('delco.create_voucher.report', 'comprobante', id)
+        if voucher.state == 'paid':
+            return download_report('delco.create_voucher_ticket.report', 'comprobante', id)
+        else:
+            return download_report('delco.create_voucher.report', 'comprobante', id)
     return render_template('page-500.html'), 500
 
 @blueprint.route('/comprobantes')
