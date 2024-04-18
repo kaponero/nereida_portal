@@ -106,7 +106,7 @@
                         <thead>
                             <tr>
                                 <td>N° de cupón</td>
-                               <td>1° vencimiento</td>
+                                <td>1° vencimiento</td>
                                 <td>2° vencimiento</td>
                                 <td>Mes</td>
                                 <td>Año</td>
@@ -122,7 +122,7 @@
                             {% for line in subscriptor.vouchers %}
                             <tr>
                                 <td>{{ line.voucher_number }}</td>
-                               <td>{{ line.first_due_date|dateformat}}</td>
+                                <td>{{ line.first_due_date|dateformat}}</td>
                                 <td>{{ line.second_due_date|dateformat}}</td>
                                 <td>{{ line.month }}</td>
                                 <td>{{ line.year }}</td>
@@ -135,7 +135,7 @@
                                 {% elif line.state == 'posted' %}
                                 <td><span class="estado pendiente">Pendiente</span></td>
                                 {% else %}
-                                <td>{{ line.state_string }}</td>
+                                <td><span class="estado otro">{{ line.state_string }}</span></td>
                                 {% endif %}
                                 <td><a class="comprobante" href="/download_ticket/{{ line.id }}">Descargar</a></td>
                             </tr>
