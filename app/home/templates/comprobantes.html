@@ -113,7 +113,8 @@
                                 <td>Fecha de pago</td>
                                 <td>Monto</td>
                                 <td>Recargo</td>
-                                <td>Monto a pagar hoy</td>
+                                <td>Importe a pagar</td>
+                                <td>Método de pago</td>
                                 <td>Estado</td>
                                 <td>Comprobante</td>
                             </tr>
@@ -130,7 +131,24 @@
                                 <td>{{ line.amount_to_pay | currencyformat(line.currency) }}</td>
                                 <td>{{ (line.surcharge or 0) | currencyformat(line.currency)}}</td>
                                 <td>{{ line.amount_to_pay_today | currencyformat(line.currency) }}</td>
-                               {% if line.state == 'paid' %}
+                                {% if line.pay_method == 'cash' %}
+                                <td><span>Efectivo</span></td>
+                                {% elif line.pay_method  == 'debit' %}
+                                <td><span>Debito</span></td>
+                                {% elif line.pay_method  == 'credit' %}
+                                <td><span>Crédito</span></td>
+                                {% elif line.pay_method  == 'check' %}
+                                <td><span>Cheque</span></td>
+                                {% elif line.pay_method  == 'auto_debit' %}
+                                <td><span>Débito Automatico</span></td>
+                                {% elif line.pay_method  == 'transfer' %}
+                                <td><span>Transferencia</span></td>
+                                {% elif line.pay_method  == 'multipagos' %}
+                                <td><span>Multipagos</span></td>
+                                {% else %}
+                                <td><span>Importado</span></td>
+                                {% endif %}
+                                {% if line.state == 'paid' %}
                                 <td><span class="estado pagado">Pagado</span></td>
                                 {% elif line.state == 'posted' %}
                                 <td><span class="estado pendiente">Pendiente</span></td>
