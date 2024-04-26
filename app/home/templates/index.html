@@ -8,152 +8,57 @@
 {% endblock %}
 
 {% block content %}
-
-    <!-- -------------------------Menu de navegacion-------------------------------->
-    <div class="contenedor">
-        <div class="navigation">
-            <ul>
-                <li>
-                    <a id="brandname" href="#">
-                        <span class="icon">
-                            <ion-icon name="planet-outline"></ion-icon>
-                        </span>
-                        <span class="title">Nereida Autogestion</span>
-                    </a>
-                </li>
-
-                <li>
-                    <a href="#">
-                        <span class="icon">
-                            <ion-icon name="home-outline"></ion-icon>
-                        </span>
-                        <span class="title">Resumen</span>
-                    </a>
-                </li>
-
-                <li>
-                    <a href="/comprobantes">
-                        <span class="icon">
-                            <ion-icon name="receipt-outline"></ion-icon>
-                        </span>
-                        <span class="title">Comprobantes</span>
-                    </a>
-                </li>
-
-                <li>
-                    <a href="/perfil">
-                        <span class="icon">
-                            <ion-icon name="person-outline"></ion-icon>
-                        </span>
-                        <span class="title">Perfil</span>
-                    </a>
-                </li>
-
-                <li>
-                    <a href="/seguridad">
-                        <span class="icon">
-                            <ion-icon name="shield-outline"></ion-icon>
-                        </span>
-                        <span class="title">Seguridad</span>
-                    </a>
-                </li>
-
-                <li>
-                    <a href="/notificaciones">
-                        <span class="icon">
-                            <ion-icon name="notifications-outline"></ion-icon>
-                        </span>
-                        <span class="title">Notificaciones</span>
-                    </a>
-                </li>
-
-                <li>
-                    <a href="/logout">
-                        <span class="icon">
-                            <ion-icon name="log-out-outline"></ion-icon>
-                        </span>
-                        <span class="title" href="/logout">Salir</span>
-                    </a>
-                </li>
-            </ul>
-        </div>
-
-        <!-- -------------------------- Main ------------------------------->
-        <div class="main">
-            <div class="topbar">
-                <div class="toggle">
-                    <ion-icon name="menu-outline"></ion-icon>
-                </div>
-                <div class="name">
-                <h2>{{ subscriptor.party.rec_name }}</h2>
-                </div>
-                <div class="user">
-                    <ion-icon name="person-circle-outline"></ion-icon>
-                </div>
+    <!-- -------------------- cards -------------------------------->
+    {% if subscriptor.vouchers %}
+    <div class="cardBox">
+        <div class="card">
+            <div>
+                <div class="data">{{ subscriptor.vouchers[-1].first_due_date | dateformat}}</div>
+                <div class="cardName">Primer vencimiento</div>
             </div>
-
-            <!-- -------------------- cards -------------------------------->
-            {% if subscriptor.vouchers %}
-            <div class="cardBox">
-                <div class="card">
-                    <div>
-                        <div class="data">{{ subscriptor.vouchers[-1].first_due_date | dateformat}}</div>
-                        <div class="cardName">Primer vencimiento</div>
-                    </div>
-                    <div class="iconBx">
-                        <ion-icon name="calendar-outline"></ion-icon>
-                    </div>
-
-                </div>
-
-                <div class="card">
-                    <div>
-                        <div class="data">
-                        {{ subscriptor.vouchers[-1].second_due_date | dateformat }}</div>
-                        <div class="cardName">Segundo vencimiento</div>
-                    </div>
-                    <div class="iconBx">
-                        <ion-icon name="calendar-outline"></ion-icon>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <div>
-                        <div class="data">{{ subscriptor.vouchers[-1].amount_to_pay_today | currencyformat(subscriptor.vouchers[-1].currency)}}</div>
-                        <div class="cardName">Importe</div>
-                    </div>
-                    <div class="iconBx">
-                        <ion-icon name="logo-usd"></ion-icon>
-                    </div>
-
-                </div>
-
-                <div class="card">
-                    <div>
-                        {% if subscriptor.vouchers[-1].state == 'posted' %}
-                        <div class="data">Pendiente</div>
-                        {% elif subscriptor.vouchers[-1].state == 'paid' %}
-                        <div class="data">Pagado</div>
-                        {% endif %}
-                        <div class="cardName">Estado</div>
-                    </div>
-                    <div class="iconBx">
-                        {% if subscriptor.vouchers[-1].state == 'posted' %}
-                        <ion-icon name="alert-outline"></ion-icon>
-                        {% elif subscriptor.vouchers[-1].state == 'paid' %}
-                        <ion-icon name="checkmark-outline"></ion-icon>
-                        {% endif %}
-                    </div>
-
-                </div>
+            <div class="iconBx">
+                <ion-icon name="calendar-outline"></ion-icon>
             </div>
-            {% endif %}
         </div>
-
+        <div class="card">
+            <div>
+                <div class="data">
+                {{ subscriptor.vouchers[-1].second_due_date | dateformat }}</div>
+                <div class="cardName">Segundo vencimiento</div>
+            </div>
+            <div class="iconBx">
+                <ion-icon name="calendar-outline"></ion-icon>
+            </div>
+        </div>
+        <div class="card">
+            <div>
+                <div class="data">{{ subscriptor.vouchers[-1].amount_to_pay_today | currencyformat(subscriptor.vouchers[-1].currency)}}</div>
+                <div class="cardName">Importe</div>
+            </div>
+            <div class="iconBx">
+                <ion-icon name="logo-usd"></ion-icon>
+            </div>
+        </div>
+        <div class="card">
+            <div>
+                {% if subscriptor.vouchers[-1].state == 'posted' %}
+                <div class="data">Pendiente</div>
+                {% elif subscriptor.vouchers[-1].state == 'paid' %}
+                <div class="data">Pagado</div>
+                {% endif %}
+                <div class="cardName">Estado</div>
+            </div>
+            <div class="iconBx">
+                {% if subscriptor.vouchers[-1].state == 'posted' %}
+                <ion-icon name="alert-outline"></ion-icon>
+                {% elif subscriptor.vouchers[-1].state == 'paid' %}
+                <ion-icon name="checkmark-outline"></ion-icon>
+                {% endif %}
+            </div>
+        </div>
     </div>
-
-
-
+    {% endif %}
+</div>
 {% endblock content %}
 
 {% block javascripts %}

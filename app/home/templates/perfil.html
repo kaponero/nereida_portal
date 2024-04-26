@@ -8,129 +8,36 @@
 {% endblock %}
 
 {% block content %}
-
-    <!-- -------------------------Menu de navegacion-------------------------------->
-    <div class="contenedor">
-        <div class="navigation">
-            <ul>
-                <li>
-                    <a id="brandname" href="#">
-                        <span class="icon">
-                            <ion-icon name="planet-outline"></ion-icon>
-                        </span>
-                        <span class="title">Nereida Autogestion</span>
-                    </a>
-                </li>
-
-                <li>
-                    <a href="/index">
-                        <span class="icon">
-                            <ion-icon name="home-outline"></ion-icon>
-                        </span>
-                        <span class="title">Resumen</span>
-                    </a>
-                </li>
-
-                <li>
-                    <a href="/comprobantes">
-                        <span class="icon">
-                            <ion-icon name="receipt-outline"></ion-icon>
-                        </span>
-                        <span class="title">Comprobantes</span>
-                    </a>
-                </li>
-
-                <li>
-                    <a href="#">
-                        <span class="icon">
-                            <ion-icon name="person-outline"></ion-icon>
-                        </span>
-                        <span class="title">Perfil</span>
-                    </a>
-                </li>
-
-                <li>
-                    <a href="/seguridad">
-                        <span class="icon">
-                            <ion-icon name="shield-outline"></ion-icon>
-                        </span>
-                        <span class="title">Seguridad</span>
-                    </a>
-                </li>
-
-                <li>
-                    <a href="/notificaciones">
-                        <span class="icon">
-                            <ion-icon name="notifications-outline"></ion-icon>
-                        </span>
-                        <span class="title">Notificaciones</span>
-                    </a>
-                </li>
-
-                <li>
-                    <a href="/logout">
-                        <span class="icon">
-                            <ion-icon name="log-out-outline"></ion-icon>
-                        </span>
-                        <span class="title">Salir</span>
-                    </a>
-                </li>
-            </ul>
-            
-        </div>
-
-        <!-- -------------------------- Main ------------------------------->
-        <div class="main">
-            <div class="topbar">
-                <div class="toggle">
-                    <ion-icon name="menu-outline"></ion-icon>
+    <!-- -------------------- Perfil -------------------------------->       
+    <div class="perfil">
+        <div class="configuracion">
+            <h2>Datos personales</h2>
+            <form action="" method="POST">
+                <p>Por favor, revisa la información proporcionada a continuación. Si encuentras algún error o discrepancia, te agradeceríamos que nos informaras para que podamos corregirlo.</p>
+                <div class="username">
+                    <input name="nombre" type="text" value="{{ subscriptor.party.rec_name }}" readonly required>
+                    <label for="nombre">Nombre</label>
                 </div>
-                <div class="name">
-                    <h2>{{ subscriptor.party.rec_name }}</h2>
+                <div class="username">
+                    <input name="dni" type="text" value="{{ subscriptor.party.dni }}" readonly required>
+                    <label for="dni">DNI</label>
                 </div>
-                <div class="user">
-                    <ion-icon name="person-circle-outline"></ion-icon>
+                <div class="username">
+                    <input name="direccion" type="text" value="{{ subscriptor.address.rec_name}}" readonly required>
+                    <label for="direccion">Dirección</label>
                 </div>
-            </div>
-
-            <!-- -------------------- Perfil -------------------------------->
-            
-            <div class="perfil">
-                <div class="configuracion">
-                    <h2>Datos personales</h2>
-                    <form action="" method="POST">
-                        <p>Por favor, revisa la información proporcionada a continuación. Si encuentras algún error o discrepancia, te agradeceríamos que nos informaras para que podamos corregirlo.</p>
-                        <div class="username">
-                            <input name="nombre" type="text" value="{{ subscriptor.party.rec_name }}" readonly required>
-                            <label for="nombre">Nombre</label>
-                        </div>
-                        <div class="username">
-                            <input name="dni" type="text" value="{{ subscriptor.party.dni }}" readonly required>
-                            <label for="dni">DNI</label>
-                        </div>
-                        <div class="username">
-                            <input name="direccion" type="text" value="{{ subscriptor.address.rec_name}}" readonly required>
-                            <label for="direccion">Dirección</label>
-                        </div>
-                        <div class="username">
-                            <input telefono type="number" value="{{ subscriptor.cellphone }}" readonly required>
-                            <label for="telefono">Teléfono</label>
-                        </div>
-                        <div class="username">
-                            <input name="email" type="mail" value="{{ subscriptor.email }}" readonly required>
-                            <label for="email">Email</label>
-                        </div>
-                        
-                    </form>  
+                <div class="username">
+                    <input telefono type="number" value="{{ subscriptor.cellphone }}" readonly required>
+                    <label for="telefono">Teléfono</label>
                 </div>
-            </div>
+                <div class="username">
+                    <input name="email" type="mail" value="{{ subscriptor.email }}" readonly required>
+                    <label for="email">Email</label>
+                </div>
+            </form>  
         </div>
     </div>
-
-
-
 {% endblock content %}
-
 {% block javascripts %}
 
 <!-- --------------------- scripts ----------------------- -->
