@@ -4,18 +4,21 @@
 .cardBox {
 	position: relative;
 	width: 100%;
-	
-	display: grid;
+	/*display: grid;
 	grid-template-columns: repeat(2, 1fr);
-	grid-gap: 60px;
+	grid-gap: 60px;*/
 	font-family: 'Rubik', sans-serif;
-	justify-content: space-around;
+	justify-content: center;
   	padding: 20px;
-  	grid-gap: 30px;
+  	/*grid-gap: 30px;*/
+	  display: flex; /* Cambiamos el display a flex */
+	  flex-direction: column; /* Los elementos se colocarán en columna */
+	  align-items: center;
   }
 
   .cardBox .card {
-	margin: 0,50px;
+	/*margin: 0,50px;*/
+	margin: 20px 0;
 	position: relative;
 	background: var(--white);
 	padding: 30px;
@@ -24,6 +27,8 @@
 	justify-content: space-between;
 	cursor: pointer;
 	box-shadow: 0 7px 25px rgba(0, 0, 0, 0.08);
+	width: 500px;;
+
   }
 
   .cardBox .card .data{

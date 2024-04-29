@@ -11,6 +11,7 @@
     <!-- -------------------- cards -------------------------------->
     {% if subscriptor.vouchers %}
     <div class="cardBox">
+        <!--
         <div class="card">
             <div>
                 <div class="data">{{ subscriptor.vouchers[-1].first_due_date | dateformat}}</div>
@@ -20,6 +21,7 @@
                 <ion-icon name="calendar-outline"></ion-icon>
             </div>
         </div>
+        
         <div class="card">
             <div>
                 <div class="data">
@@ -30,29 +32,31 @@
                 <ion-icon name="calendar-outline"></ion-icon>
             </div>
         </div>
+        -->
         <div class="card">
             <div>
-                <div class="data">{{ subscriptor.vouchers[-1].amount_to_pay_today | currencyformat(subscriptor.vouchers[-1].currency)}}</div>
-                <div class="cardName">Importe</div>
+                <div class="data">{{ subscriptor.vouchers_total_to_pay | currencyformat(subscriptor.vouchers[-1].currency)}}</div>
+                <div class="cardName">Importe a pagar hoy</div>
             </div>
             <div class="iconBx">
-                <ion-icon name="logo-usd"></ion-icon>
+                <ion-icon style="color:green" name="logo-usd"></ion-icon>
             </div>
         </div>
+        
         <div class="card">
             <div>
-                {% if subscriptor.vouchers[-1].state == 'posted' %}
-                <div class="data">Pendiente</div>
-                {% elif subscriptor.vouchers[-1].state == 'paid' %}
-                <div class="data">Pagado</div>
+                {% if subscriptor.vouchers_total_to_pay > 0 %}
+                <div class="data">Pendiente de pago</div>
+                {% else %}
+                <div class="data">No registra deudas</div>
                 {% endif %}
                 <div class="cardName">Estado</div>
             </div>
             <div class="iconBx">
-                {% if subscriptor.vouchers[-1].state == 'posted' %}
-                <ion-icon name="alert-outline"></ion-icon>
-                {% elif subscriptor.vouchers[-1].state == 'paid' %}
-                <ion-icon name="checkmark-outline"></ion-icon>
+                {% if subscriptor.vouchers_total_to_pay > 0 %}
+                <ion-icon style="color:brown" name="alert-outline"></ion-icon>
+                {% else %}
+                <ion-icon style="color:green" name="checkmark-outline"></ion-icon>
                 {% endif %}
             </div>
         </div>

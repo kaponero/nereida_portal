@@ -21,14 +21,14 @@
                 <thead>
                     <tr>
                         <td>N° de cupón</td>
-                        <td>1° vencimiento</td>
-                        <td>2° vencimiento</td>
+                        <td>Vencimiento</td>
+                        <!--<td>2° vencimiento</td>-->
                         <td>Mes</td>
                         <td>Año</td>
                         <td>Fecha de pago</td>
                         <td>Monto</td>
                         <td>Recargo</td>
-                        <td>Importe a pagar</td>
+                        <td>Monto a pagar hoy</td>
                         <td>Método de pago</td>
                         <td>Estado</td>
                         <td>Comprobante</td>
@@ -42,30 +42,34 @@
                         <tr>
                             <td>{{ line.voucher_number }}</td>
                             <td>{{ line.first_due_date|dateformat}}</td>
-                            <td>{{ line.second_due_date|dateformat}}</td>
+                            <!--<td>{{ line.second_due_date|dateformat}}</td>-->
                             <td>{{ line.month }}</td>
                             <td>{{ line.year }}</td>
-                            <td>{{ line.paid_date and line.paid_date.date() | dateformat or ''}}</td>
+                            <td>{{ line.paid_date and line.paid_date.date() | dateformat or '-'}}</td>
                             <td>{{ line.amount_to_pay | currencyformat(line.currency) }}</td>
                             <td>{{ (line.surcharge or 0) | currencyformat(line.currency)}}</td>
                             <td>{{ line.amount_to_pay_today | currencyformat(line.currency) }}</td>
-                            {% if line.pay_method == 'cash' %}
-                            <td><span>Efectivo</span></td>
-                            {% elif line.pay_method  == 'debit' %}
-                            <td><span>Debito</span></td>
-                            {% elif line.pay_method  == 'credit' %}
-                            <td><span>Crédito</span></td>
-                            {% elif line.pay_method  == 'check' %}
-                            <td><span>Cheque</span></td>
-                            {% elif line.pay_method  == 'auto_debit' %}
-                            <td><span>Débito Automatico</span></td>
-                            {% elif line.pay_method  == 'transfer' %}
-                            <td><span>Transferencia</span></td>
-                            {% elif line.pay_method  == 'multipagos' %}
-                            <td><span>Multipagos</span></td>
+                            {% if line.state == 'paid' %}
+                                {% if line.pay_method == 'cash' %}
+                                <td><span>Efectivo</span></td>
+                                {% elif line.pay_method  == 'debit' %}
+                                <td><span>Debito</span></td>
+                                {% elif line.pay_method  == 'credit' %}
+                                <td><span>Crédito</span></td>
+                                {% elif line.pay_method  == 'check' %}
+                                <td><span>Cheque</span></td>
+                                {% elif line.pay_method  == 'auto_debit' %}
+                                <td><span>Débito Automatico</span></td>
+                                {% elif line.pay_method  == 'transfer' %}
+                                <td><span>Transferencia</span></td>
+                                {% elif line.pay_method  == 'multipagos' %}
+                                <td><span>Multipagos</span></td>
+                                {% else %}
+                                <td><span>Importado</span></td>
+                                {% endif %}
                             {% else %}
-                            <td><span>Importado</span></td>
-                            {% endif %}
+                                <td><span> - </span></td>
+                            {% endif %}   
                             {% if line.state == 'paid' %}
                             <td><span class="estado pagado">Pagado</span></td>
                             {% elif line.state == 'posted' %}
