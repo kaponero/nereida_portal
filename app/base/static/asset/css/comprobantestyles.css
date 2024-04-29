@@ -17,7 +17,7 @@
 	padding: 20px;
 	box-shadow: 0 7px 25px rgba(0, 0,0, 0.08);
 	border-radius: 20px;
-
+	overflow-x: auto;
 }
 .details .cardHeader{
 	display: flex;
@@ -107,9 +107,7 @@
 /*---------------------------Diseño responsivo -------------------------*/
 
 @media (max-width:991px) {
-	.comprobantes {
-		overflow-x: auto;
-	}
+	
 }
 	
 	
