@@ -11,6 +11,9 @@
 	--header-clr: #25273d;
 	--next-btn-hover: rgb(0, 84, 119);
 	--back-btn-hover: #8b8b8c;
+	--blue: rgb(0, 0, 51); 
+	--orange:  rgb(255, 165, 0);
+	--gray: rgb(77, 77, 77);
 }
 
 *{
@@ -46,3 +49,182 @@ header .container-fluid h2{
 	display: inline-block;
 	vertical-align: top;
   }
+
+  * {
+	
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+body{
+	min-height: 100vh;
+	overflow-x: hidden;
+}
+
+.contenedor{
+	position: relative;
+	width: 100%;
+	
+}
+
+/* -----------------Navigation------------------ */
+.navigation{
+	position: fixed;
+	width: 300px;
+	height: 100%;
+	background: var(--blue);
+	border-left: 10px solid var(--blue);
+	transition: 0.5s;
+	overflow: hidden;
+	font-family: 'Rubik', sans-serif;
+}
+
+.navigation.active{
+	width: 80px;
+}
+
+
+.navigation ul{
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+}
+
+ol, ul {
+    padding-left: 0;
+	padding-right: 0;
+}
+
+.navigation ul li{
+	position: relative;
+	width: 100%;
+	list-style: none;
+	border-top-left-radius: 30px;
+	border-bottom-left-radius: 30px;
+}
+
+.navigation ul li:hover,
+.navigation ul li.hovered {
+  background-color: var(--white);
+}
+
+.navigation ul li:nth-child(1) {
+	margin-bottom: 40px;
+	pointer-events: none;
+  }
+
+#brandname{
+	color: var(--orange);
+	font-family: 'Orbitron', sans-serif;
+}
+
+.navigation ul li a {
+	position: relative;
+	display: block;
+	width: 100%;
+	display: flex;
+	text-decoration: none;
+	color: var(--white);
+  }
+
+.navigation ul li:hover a,
+.navigation ul li.hovered a {
+color: var(--blue);
+}
+
+.navigation ul li a .icon {
+	position: relative;
+	display: block;
+	min-width: 60px;
+	height: 60px;
+	line-height: 75px;
+	text-align: center;
+}
+
+.navigation ul li a .icon ion-icon {
+font-size: 1.75rem;
+}
+
+.navigation ul li a .title {
+	position: relative;
+	display: block;
+	padding: 0 10px;
+	height: 60px;
+	line-height: 60px;
+	text-align: start;
+	white-space: nowrap;
+  }
+
+/*----------------------- Main ----------------------------- */
+.main {
+	position: absolute;
+	width: calc(100% - 300px);
+	left: 300px;
+	min-height: 100vh;
+	background: var(--white);
+	transition: 0.5s;
+}
+
+.main.active {
+	width: calc(100% - 80px);
+	left: 80px;
+}
+
+.topbar{
+	width: 100%;
+	height: 60px;
+	display: flex;
+	justify-content:space-between;
+	align-items: center;
+	padding: 0 10px;
+}
+
+.toggle{
+	position: relative;
+	width: 60px;
+	height: 60px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	font-size: 2.5rem;
+	cursor: pointer;
+	
+}
+
+.name{
+	font-family: 'Rubik', sans-serif;
+	color: var(--blue);
+}
+
+.user{
+	position: relative;
+	width: 60px;
+	height: 60px;
+	display:flex;
+	justify-content: center;
+	align-items: center;
+	font-size: 2.5rem;
+	cursor: pointer;
+
+}
+
+@media (max-width:991px) {
+	
+	.navigation{
+		width: 0px;
+	}
+	.navigation.active{
+		width: 300px;
+		left: 0;
+	}
+	.main {
+		width: calc(100% - 0px);
+		left: 0px;
+	}
+	.main.active{
+		left: 300px;
+	}
+	
+}
