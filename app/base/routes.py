@@ -41,10 +41,10 @@ def formulario():
 def download_ticket(id):
     Voucher = tryton.pool.get('delco.subscriptor.voucher')
     voucher = Voucher(id)
-    with Transaction().set_context(company=1):
-        if voucher.state == 'paid':
-            return download_report('delco.create_voucher_ticket.report', 'comprobante', id)
-        else:
+    if voucher.state == 'paid':
+        return download_report('delco.create_voucher_ticket.report', 'comprobante', id)
+    else:
+        with Transaction().set_context(company=1):
             return download_report('delco.create_voucher.report', 'comprobante', id)
     return render_template('page-500.html'), 500
 
