@@ -1,18 +1,17 @@
 from flask import (render_template, redirect, request, url_for,
-            flash, session, send_file, jsonify)
-
-from app import tryton
+            flash, session, send_file, jsonify, Response)
 
 from .forms import ChangePasswordForm
 
+from app import tryton
 from app.base import blueprint
-
 from app.auth.routes import login_required
-
 from app.download_attachment.routes import download_report
 
 from trytond.transaction import Transaction
 
+import qrcode
+import io
 
 @blueprint.route('/admin')
 def admin():
@@ -122,3 +121,29 @@ def seguridad():
             return render_template('/seguridad.html', subscriptor=subscriptor,
                     form=change_password_form)
     return render_template('page-500.html'), 500
+
+
+@blueprint.route('/get_multipago_qr/<subscriptor_id>')
+@tryton.transaction()
+@login_required
+def get_multipago_qr(subscriptor_id):
+    Subscriptor = tryton.pool.get('delco.subscriptor')
+    subscriptor, = Subscriptor.search([('id', '=', subscriptor_id)], limit=1)
+    if subscriptor.qr_multipago:
+        qr_multipago = subscriptor.qr_multipago
+        qr = qrcode.QRCode(
+            version=1,
+            error_correction=qrcode.constants.ERROR_CORRECT_L,
+            box_size=10,
+            border=4,
+        )
+        qr.add_data(qr_multipago)
+        qr.make(fit=True)
+        # Convertir a imagen
+        img = qr.make_image(fill_color="black", back_color="white")
+        # Guardar en un buffer para devolverlo como respuesta
+        buffer = io.BytesIO()
+        img.save(buffer, format="PNG")
+        buffer.seek(0)
+        return Response(buffer, mimetype='image/png')
+    return "QR no encontrado", 404

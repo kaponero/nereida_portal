@@ -8,7 +8,7 @@ from decouple import config
 
 
 def register_blueprints(app):
-    for module_name in ('base', 'home', 'auth', 'download_attachment'):
+    for module_name in ('base', 'home', 'auth', 'download_attachment', 'siro'):
         module = import_module('app.{}.routes'.format(module_name))
         app.register_blueprint(module.blueprint)
 

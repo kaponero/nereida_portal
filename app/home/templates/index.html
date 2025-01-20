@@ -5,61 +5,75 @@
 <!-- Specific Page CSS goes HERE  -->
 {% block links %}
 <link rel="stylesheet" href="{{ url_for("static", filename="asset/css/portalstyles.css") }}">
+<link rel="stylesheet" href="{{ url_for("static", filename="asset/css/pop-up-img.css") }}">
 {% endblock %}
 
 {% block content %}
     <!-- -------------------- cards -------------------------------->
     {% if subscriptor.vouchers %}
     <div class="cardBox">
-        <!--
-        <div class="card">
-            <div>
-                <div class="data">{{ subscriptor.vouchers[-1].first_due_date | dateformat}}</div>
-                <div class="cardName">Primer vencimiento</div>
-            </div>
-            <div class="iconBx">
-                <ion-icon name="calendar-outline"></ion-icon>
-            </div>
-        </div>
-        
-        <div class="card">
-            <div>
-                <div class="data">
-                {{ subscriptor.vouchers[-1].second_due_date | dateformat }}</div>
-                <div class="cardName">Segundo vencimiento</div>
-            </div>
-            <div class="iconBx">
-                <ion-icon name="calendar-outline"></ion-icon>
-            </div>
-        </div>
-        -->
-        <div class="card">
-            <div>
-                <div class="data">{{ subscriptor.vouchers_total_to_pay | currencyformat(subscriptor.vouchers[-1].currency)}}</div>
-                <div class="cardName">Importe a pagar hoy</div>
-            </div>
-            <div class="iconBx">
-                <ion-icon style="color:green" name="logo-usd"></ion-icon>
-            </div>
-        </div>
-        
-        <div class="card">
-            <div>
-                {% if subscriptor.vouchers_total_to_pay > 0 %}
-                <div class="data">Pendiente de pago</div>
-                {% else %}
-                <div class="data">No registra deudas</div>
-                {% endif %}
-                <div class="cardName">Estado</div>
-            </div>
-            <div class="iconBx">
-                {% if subscriptor.vouchers_total_to_pay > 0 %}
-                <ion-icon style="color:brown" name="alert-outline"></ion-icon>
-                {% else %}
-                <ion-icon style="color:green" name="checkmark-outline"></ion-icon>
-                {% endif %}
-            </div>
-        </div>
+        <table>
+            <tr>
+                <td colspan="2">
+                    <div class="card">
+                        <div>
+                            <div class="data">{{ subscriptor.vouchers_total_to_pay | currencyformat(subscriptor.vouchers[-1].currency)}}</div>
+                            <div class="cardName">Importe a pagar hoy</div>
+                        </div>
+                        <div class="iconBx">
+                            <ion-icon style="color:green" name="logo-usd"></ion-icon>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div>
+                            {% if subscriptor.vouchers_total_to_pay > 0 %}
+                            <div class="data">Pendiente de pago</div>
+                            {% else %}
+                            <div class="data">No registra deudas</div>
+                            {% endif %}
+                            <div class="cardName">Estado</div>
+                        </div>
+                        <div class="iconBx">
+                            {% if subscriptor.vouchers_total_to_pay > 0 %}
+                            <ion-icon style="color:brown" name="alert-outline"></ion-icon>
+                            {% else %}
+                            <ion-icon style="color:green" name="checkmark-outline"></ion-icon>
+                            {% endif %}
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div>
+                        <img src="/static/asset/img/flyer_siro.jpeg" width="50%" height="50%"
+                            onclick="openPopup('flyer_siro')"
+                            alt="Haga click para expandir" class="thumbnail"/>
+                        <!-- Contenedor del pop-up -->
+                        <div class="popup" id="flyer_siro">
+                            <span class="popup-close" onclick="closePopup('flyer_siro')">&times;</span>
+                            <img src="/static/asset/img/flyer_siro.jpeg" alt="Imagen ampliada">
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <div>
+                        {% if subscriptor.qr_multipago%}
+                            <div class="thumbnail">
+                                <img src="/get_multipago_qr/{{ subscriptor.id }}" alt="QR Code"
+                                onclick="openPopup('qr_multipago')"
+                                alt="Haga click para expandir">
+                                <div class="data">QR MULTIPAGO</div>
+                            </div>
+                            <div class="popup" id="qr_multipago">
+                                <span class="popup-close" onclick="closePopup('qr_multipago')">&times;</span>
+                                <img src="/get_multipago_qr/{{ subscriptor.id }}" alt="Imagen ampliada">
+                            </div>
+                        {% endif %}
+                    </div>
+                </td>
+            </tr>
+        </table>
     </div>
     {% endif %}
 </div>
@@ -73,5 +87,17 @@
 <!-- -------------------- ionicons ----------------------- -->
 <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
 <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+<script>
+    // Función para abrir el pop-up
+    function openPopup(popupId) {
+        document.getElementById(popupId).style.display = 'flex';
+    }
+
+    // Función para cerrar el pop-up
+    function closePopup(popupId) {
+        document.getElementById(popupId).style.display = 'none';
+    }
+</script>
+
 
 {% endblock javascripts %}
