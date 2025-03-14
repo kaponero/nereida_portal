@@ -24,8 +24,8 @@
 }
 
 .popup img {
-    max-width: 90%;
-    max-height: 90%;
+    max-width: 200%;
+    max-height: 200%;
     border: 2px solid white;
     box-shadow: 0 0 15px black;
 }

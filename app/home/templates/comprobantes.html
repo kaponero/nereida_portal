@@ -5,6 +5,7 @@
 <!-- Specific Page CSS goes HERE  -->
 {% block links %}
 <link rel="stylesheet" href="{{ url_for("static", filename="asset/css/comprobantestyles.css") }}">
+<link rel="stylesheet" href="{{ url_for("static", filename="asset/css/pop-up-img.css") }}">
 {% endblock %}
 
 {% block navigation %}
@@ -32,6 +33,7 @@
                         <td>Método de pago</td>
                         <td>Estado</td>
                         <td>Comprobante</td>
+                        <td>Generar QR de pago</td>
                     </tr>
                 </thead>
                 <tbody>
@@ -82,6 +84,24 @@
                             {% else %}
                             <td><a class="sincomprobante" href="#"></a></td>
                             {% endif %}
+                            <td>
+                                {% if line.state not in ['paid', 'cancel', 'draft'] and line.siro_qr_string is none%}
+                                <a id="generar_qr_{{ line.id }}" href="#" class="generate-qr-link" data-line-id="{{ line.id }}">Generar QR de pago</a>
+                                {% elif line.siro_qr_string is not none and line.state == 'posted' %}
+                                <div class="thumbnail">
+                                     <a href="#"></a>
+                                    <img src="/show_qr/{{ line.id }}/1" alt="QR de pago"
+                                        onclick="openPopup('qr_siro_popup{{ line.id }}')"
+                                        alt="Haga click para expandir">
+                                </div>
+                                <div class="popup" id="qr_siro_popup{{ line.id }}">
+                                    <span class="popup-close" onclick="closePopup('qr_siro_popup{{line.id }}')">&times;</span>
+                                    <img src="/show_qr/{{ line.id }}/4" alt="Imagen ampliada">
+                                </div>
+                                {% else %}
+                                {{ line.qr_siro_string }}
+                                {% endif %}
+                            </td>
                         </tr>
                         {% endif %}
                     {% endfor %}
@@ -89,8 +109,9 @@
             </table>
         </div>
     </div>
-    
+
 {% endblock content %}
+
 {% block javascripts %}
 
 <!-- --------------------- scripts ----------------------- -->
@@ -99,5 +120,55 @@
 <!-- -------------------- ionicons ----------------------- -->
 <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
 <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+<script>
+    // Función para abrir el pop-up
+    function openPopup(popupId) {
+        document.getElementById(popupId).style.display = 'flex';
+    }
+
+    // Función para cerrar el pop-up
+    function closePopup(popupId) {
+        document.getElementById(popupId).style.display = 'none';
+    }
+</script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- Script para manejar la generación del QR -->
+<script>
+    $(document).ready(function() {
+        // Evento para los enlaces de generación de QR
+        $('.generate-qr-link').click(function(e) {
+            e.preventDefault(); // Evita que el enlace recargue la página
+
+            var lineId = $(this).data('line-id'); // Obtiene el ID de la línea
+            var linkElement = $(this); // Guarda una referencia al enlace
+
+            // Realiza una solicitud AJAX para generar el QR
+            $.ajax({
+                url: '/generate_qr/' + lineId, // URL de la función que genera el QR
+                method: 'GET',
+                success: function(response) {
+                    // Oculta el enlace
+                    linkElement.hide();
+
+                    // Muestra el QR en el contenedor
+                    linkElement.closest('td').html(`
+                        <div class="thumbnail">
+                            <img src="/show_qr/${lineId}" alt="QR Code"
+                                onclick="openPopup('show')"
+                                alt="Haga click para expandir">
+                        </div>
+                        <div class="popup" id="show_qr">
+                            <span class="popup-close" onclick="closePopup('show_qr')">&times;</span>
+                            <img src="/show_qr/${lineId}" alt="Imagen ampliada">
+                        </div>
+                    `);
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error al generar el QR:', error);
+                }
+            });
+        });
+    });
+</script>
 
 {% endblock javascripts %}
