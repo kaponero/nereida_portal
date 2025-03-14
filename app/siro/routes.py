@@ -59,6 +59,7 @@ def generate_qr(voucher_id):
             voucher.save()  # Guardar los cambios en la base de datos
             print('despues del save')
             # Devolver una respuesta de éxito
+            
             return jsonify({
                 "status": "success",
                 "message": "QR generado y guardado correctamente",
@@ -87,7 +88,6 @@ def show_qr(voucher_id, scale):
     pool = tryton.pool
     Voucher = pool.get('delco.subscriptor.voucher')
     voucher = Voucher(voucher_id)
-
     qr_siro = voucher.siro_qr_string
     if qr_siro:
         qr = qrcode.QRCode(

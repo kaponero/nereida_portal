@@ -6,6 +6,7 @@
 {% block links %}
 <link rel="stylesheet" href="{{ url_for("static", filename="asset/css/comprobantestyles.css") }}">
 <link rel="stylesheet" href="{{ url_for("static", filename="asset/css/pop-up-img.css") }}">
+<link rel="stylesheet" href="{{ url_for("static", filename="asset/css/spinner.css") }}">
 {% endblock %}
 
 {% block navigation %}
@@ -87,6 +88,10 @@
                             <td>
                                 {% if line.state not in ['paid', 'cancel', 'draft'] and line.siro_qr_string is none%}
                                 <a id="generar_qr_{{ line.id }}" href="#" class="generate-qr-link" data-line-id="{{ line.id }}">Generar QR de pago</a>
+                                <div class="loading-container" id="loading_{{ line.id }}">
+                                    <div class="spinner"></div>
+                                    <p>Generando QR...</p>
+                                </div>
                                 {% elif line.siro_qr_string is not none and line.state == 'posted' %}
                                 <div class="thumbnail">
                                      <a href="#"></a>
@@ -141,27 +146,38 @@
 
             var lineId = $(this).data('line-id'); // Obtiene el ID de la línea
             var linkElement = $(this); // Guarda una referencia al enlace
+            var loadingContainer = $('#loading_' + lineId); // Contenedor del spinner
+
+            // Muestra el spinner
+            linkElement.hide();
+            loadingContainer.show();
 
             // Realiza una solicitud AJAX para generar el QR
             $.ajax({
                 url: '/generate_qr/' + lineId, // URL de la función que genera el QR
                 method: 'GET',
                 success: function(response) {
-                    // Oculta el enlace
-                    linkElement.hide();
+                    // Oculta el spinner
+                    loadingContainer.hide();
 
-                    // Muestra el QR en el contenedor
+                    // Muestra el QR en el contenedor.
+                    // Debe mostrar lo mismo que el contenedor mas arriba
                     linkElement.closest('td').html(`
                         <div class="thumbnail">
-                            <img src="/show_qr/${lineId}" alt="QR Code"
-                                onclick="openPopup('show')"
+                            <img src="/show_qr/${lineId}/1" alt="QR Code"
+                                onclick="openPopup('qr_siro_popup')"
                                 alt="Haga click para expandir">
                         </div>
-                        <div class="popup" id="show_qr">
-                            <span class="popup-close" onclick="closePopup('show_qr')">&times;</span>
-                            <img src="/show_qr/${lineId}" alt="Imagen ampliada">
+                        <div class="popup" id="qr_siro_popup">
+                            <span class="popup-close" onclick="closePopup('qr_siro_popup')">&times;</span>
+                            <img src="/show_qr/${lineId}/3" alt="Imagen ampliada">
                         </div>
                     `);
+
+                    // Aplica la transición después de un breve retraso
+                    setTimeout(function() {
+                            $('.thumbnail').addClass('show');
+                    }, 100);
                 },
                 error: function(xhr, status, error) {
                     console.error('Error al generar el QR:', error);

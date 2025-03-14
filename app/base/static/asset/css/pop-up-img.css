@@ -1,8 +1,7 @@
-/* Estilo para la imagen inicial */
 .thumbnail {
+    opacity: 1; /* Inicialmente visible*/
     width: 200px;
     cursor: pointer;
-    transition: transform 0.2s ease;
 }
 
 .thumbnail:hover {
