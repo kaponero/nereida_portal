@@ -1,13 +1,8 @@
-from app import app, tryton
-from app.home import blueprint
+from app import tryton
+from app.siro import blueprint
 from app.auth.routes import login_required
 
-from flask import (render_template, redirect, url_for, request, session,
-                Response, jsonify)
-from jinja2 import TemplateNotFound
-
-from functools import wraps
-from trytond.transaction import Transaction
+from flask import render_template, request, Response, jsonify
 
 from datetime import datetime
 
@@ -39,27 +34,31 @@ def pay(voucher_id):
 
 
 @blueprint.route('/generate_qr/<voucher_id>', methods=['GET', 'POST'])
-@tryton.transaction(readonly=False, user=1)
+@tryton.transaction(readonly=False, user=2)
 @login_required
 def generate_qr(voucher_id):
-    print(20*'*', 'Comienzo de generate_qr', 20*'*')
+    print(20*'*', 'Comienzo de endpoint generate_qr', 20*'*')
     try:
         pool = tryton.pool
         Voucher = pool.get('delco.subscriptor.voucher')
-        voucher = Voucher(voucher_id)  # Obtener el voucher por su ID
 
-        # Obtener los parámetros del QR
-        qr = Voucher.fetch_qr_parameters([voucher])
+        voucher_id = request.args.get('lineId', type=int)
+        amount_to_pay_today = request.args.get('amount_to_pay_today', type=float)
 
+        # Obtener el voucher por su ID
+        voucher, = Voucher.search([('id', '=', voucher_id)])
+
+        qr = Voucher.generate_qrs([{
+            'voucher': voucher,
+            'amount_to_pay_today': amount_to_pay_today
+            }])
+        print('luego del fetch')
         if qr:
             # Asignar los valores al voucher
             voucher.siro_qr_string = qr[0]['StringQR']
             voucher.siro_qr_hash = qr[0]['Hash']
-            print('antes del save')
             voucher.save()  # Guardar los cambios en la base de datos
-            print('despues del save')
             # Devolver una respuesta de éxito
-            
             return jsonify({
                 "status": "success",
                 "message": "QR generado y guardado correctamente",
@@ -73,7 +72,6 @@ def generate_qr(voucher_id):
                 "status": "error",
                 "message": "No se pudieron obtener los parámetros del QR"
             }), 400
-
     except Exception as e:
         # Manejar cualquier excepción y devolver un error
         return jsonify({
@@ -81,19 +79,23 @@ def generate_qr(voucher_id):
             "message": f"Error al generar el QR: {str(e)}"
         }), 500
 
-@blueprint.route('/show_qr/<voucher_id>/<scale>')
+@blueprint.route('/show_qr')
 @tryton.transaction()
 @login_required
-def show_qr(voucher_id, scale):
+def show_qr():
     pool = tryton.pool
     Voucher = pool.get('delco.subscriptor.voucher')
+
+    voucher_id = request.args.get('line_id')
+    size = request.args.get('size', default=1, type=int)
+
     voucher = Voucher(voucher_id)
     qr_siro = voucher.siro_qr_string
     if qr_siro:
         qr = qrcode.QRCode(
             version=1,
             error_correction=qrcode.constants.ERROR_CORRECT_L,
-            box_size=1*float(scale),
+            box_size=1*float(size),
             border=4,
         )
         qr.add_data(qr_siro)
@@ -106,3 +108,21 @@ def show_qr(voucher_id, scale):
         buffer.seek(0)
         return Response(buffer, mimetype='image/png')
     return "", 404
+
+@blueprint.route('/siro_no_success/<subscriptor_id>')
+@tryton.transaction()
+@login_required
+def siro_no_success(subscriptor_id) :
+    pool = tryton.pool
+    Subscriptor = pool.get('delco.subscriptor')
+    subscriptor = Subscriptor(subscriptor_id)
+    return render_template('/siro-pago-no-exitoso.html', subscriptor=subscriptor)
+
+@blueprint.route('/siro_success/<subscriptor_id>')
+@tryton.transaction()
+@login_required
+def siro_success(subscriptor_id) :
+    pool = tryton.pool
+    Subscriptor = pool.get('delco.subscriptor')
+    subscriptor = Subscriptor(subscriptor_id)
+    return render_template('/siro-pago-exitoso.html', subscriptor=subscriptor)

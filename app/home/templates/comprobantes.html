@@ -86,23 +86,29 @@
                             <td><a class="sincomprobante" href="#"></a></td>
                             {% endif %}
                             <td>
-                                {% if line.state not in ['paid', 'cancel', 'draft'] and line.siro_qr_string is none%}
-                                <a id="generar_qr_{{ line.id }}" href="#" class="generate-qr-link" data-line-id="{{ line.id }}">Generar QR de pago</a>
-                                <div class="loading-container" id="loading_{{ line.id }}">
-                                    <div class="spinner"></div>
-                                    <p>Generando QR...</p>
-                                </div>
+                               {% if line.state not in ['paid', 'cancel', 'draft'] and line.siro_qr_string is none %}
+                                    <a id="generar_qr_{{ line.id }}" href="#" class="generate-qr-link"
+                                    data-line-id="{{ line.id }}"
+                                    data-amount-to-pay="{{ line.amount_to_pay_today }}">
+                                    Generar QR de pago
+                                    </a>
+                                    <div class="loading-container" id="loading_{{ line.id }}">
+                                        <div class="spinner"></div>
+                                        <p>Generando QR...</p>
+                                    </div>
                                 {% elif line.siro_qr_string is not none and line.state == 'posted' %}
-                                <div class="thumbnail">
-                                     <a href="#"></a>
-                                    <img src="/show_qr/{{ line.id }}/1" alt="QR de pago"
-                                        onclick="openPopup('qr_siro_popup{{ line.id }}')"
-                                        alt="Haga click para expandir">
-                                </div>
-                                <div class="popup" id="qr_siro_popup{{ line.id }}">
-                                    <span class="popup-close" onclick="closePopup('qr_siro_popup{{line.id }}')">&times;</span>
-                                    <img src="/show_qr/{{ line.id }}/4" alt="Imagen ampliada">
-                                </div>
+                                    <div class="thumbnail">
+                                        <a href="#"></a>
+                                        <img src="{{ url_for('siro_blueprint.show_qr', line_id=line.id, size=1) }}"
+                                            alt="QR de pago"
+                                            onclick="openPopup('qr_siro_popup{{ line.id }}')"
+                                            title="Haga click para expandir">
+                                    </div>
+                                    <div class="popup" id="qr_siro_popup{{ line.id }}">
+                                        <span class="popup-close" onclick="closePopup('qr_siro_popup{{line.id }}')">&times;</span>
+                                        <img src="{{ url_for('siro_blueprint.show_qr', line_id=line.id, size=4) }}"
+                                            alt="Imagen ampliada">
+                                    </div>
                                 {% else %}
                                 {{ line.qr_siro_string }}
                                 {% endif %}
@@ -144,9 +150,11 @@
         $('.generate-qr-link').click(function(e) {
             e.preventDefault(); // Evita que el enlace recargue la página
 
-            var lineId = $(this).data('line-id'); // Obtiene el ID de la línea
-            var linkElement = $(this); // Guarda una referencia al enlace
-            var loadingContainer = $('#loading_' + lineId); // Contenedor del spinner
+            var lineId = $(this).data('line-id');
+            var amountToPay = $(this).data('amount-to-pay'); // Obtenemos el monto
+            var linkElement = $(this);
+            var loadingContainer = $('#loading_' + lineId);
+            var popupId = 'qr_siro_popup' + lineId; // ID único para el popup
 
             // Muestra el spinner
             linkElement.hide();
@@ -154,33 +162,43 @@
 
             // Realiza una solicitud AJAX para generar el QR
             $.ajax({
-                url: '/generate_qr/' + lineId, // URL de la función que genera el QR
+                url: '/generate_qr/' + lineId,
                 method: 'GET',
+                data: { amount_to_pay_today: amountToPay,
+                           lineId: lineId
+                           }, // Enviamos el monto e id como parámetro
                 success: function(response) {
                     // Oculta el spinner
                     loadingContainer.hide();
 
-                    // Muestra el QR en el contenedor.
-                    // Debe mostrar lo mismo que el contenedor mas arriba
+                    // Construye la URL con url_for equivalente en JavaScript
+                    var qrUrlSmall = `/show_qr?line_id=${lineId}&size=1&amount_to_pay_today=${amountToPay}`;
+                    var qrUrlLarge = `/show_qr?line_id=${lineId}&size=4&amount_to_pay_today=${amountToPay}`;
+
+                    // Actualiza el contenido con el QR generado
                     linkElement.closest('td').html(`
                         <div class="thumbnail">
-                            <img src="/show_qr/${lineId}/1" alt="QR Code"
-                                onclick="openPopup('qr_siro_popup')"
-                                alt="Haga click para expandir">
+                            <img src="${qrUrlSmall}" 
+                                 alt="QR de pago"
+                                 onclick="openPopup('${popupId}')"
+                                 title="Haga click para expandir">
                         </div>
-                        <div class="popup" id="qr_siro_popup">
-                            <span class="popup-close" onclick="closePopup('qr_siro_popup')">&times;</span>
-                            <img src="/show_qr/${lineId}/3" alt="Imagen ampliada">
+                        <div class="popup" id="${popupId}">
+                            <span class="popup-close" onclick="closePopup('${popupId}')">&times;</span>
+                            <img src="${qrUrlLarge}" alt="Imagen ampliada">
                         </div>
                     `);
 
                     // Aplica la transición después de un breve retraso
                     setTimeout(function() {
-                            $('.thumbnail').addClass('show');
+                        $('.thumbnail').addClass('show');
                     }, 100);
                 },
                 error: function(xhr, status, error) {
+                    loadingContainer.hide();
+                    linkElement.show();
                     console.error('Error al generar el QR:', error);
+                    alert('Error al generar el QR: ' + error);
                 }
             });
         });
