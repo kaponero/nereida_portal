@@ -7,6 +7,26 @@
 <link rel="stylesheet" href="{{ url_for("static", filename="asset/css/comprobantestyles.css") }}">
 <link rel="stylesheet" href="{{ url_for("static", filename="asset/css/pop-up-img.css") }}">
 <link rel="stylesheet" href="{{ url_for("static", filename="asset/css/spinner.css") }}">
+<style>
+    /* Estilos para el indicador de polling */
+    #polling-indicator {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        padding: 10px;
+        background: #f0f0f0;
+        border-radius: 5px;
+        z-index: 9999;
+        display: none;
+    }
+    #polling-status {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        display: inline-block;
+        margin-right: 8px;
+    }
+</style>
 {% endblock %}
 
 {% block navigation %}
@@ -121,6 +141,12 @@
         </div>
     </div>
 
+    <!-- Contenedor del indicador -->
+    <div id="polling-indicator">
+        <div id="polling-status"></div>
+        <span id="polling-message"></span>
+        <div id="polling-count" style="font-size:12px;margin-top:4px;"></div>
+    </div>
 {% endblock content %}
 
 {% block javascripts %}
@@ -129,80 +155,163 @@
 <script type="text/javascript" src="{{ url_for('static',filename='asset/js/main.js') }}"></script>
 
 <!-- -------------------- ionicons ----------------------- -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
 <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+
 <script>
-    // Función para abrir el pop-up
-    function openPopup(popupId) {
-        document.getElementById(popupId).style.display = 'flex';
+// Variables globales para control
+let intervaloVerificacion = null;
+let currentLineId = null;
+
+// 1. Funciones básicas para popup del QR
+function openPopup(popupId) {
+    document.getElementById(popupId).style.display = 'flex';
+    
+    // Extraer el line_id del QR clickeado
+    const qrImg = document.querySelector(`#${popupId} img`);
+    const src = qrImg.getAttribute('src');
+    const urlParams = new URLSearchParams(src.split('?')[1]);
+    const lineId = urlParams.get('line_id');
+    
+    if (lineId) {
+        currentLineId = lineId;
+        iniciarPolling(lineId);
     }
+}
 
-    // Función para cerrar el pop-up
-    function closePopup(popupId) {
-        document.getElementById(popupId).style.display = 'none';
+function closePopup(popupId) {
+    document.getElementById(popupId).style.display = 'none';
+    
+    // Detener el polling al cerrar el popup
+    if (intervaloVerificacion) {
+        clearInterval(intervaloVerificacion);
+        intervaloVerificacion = null;
     }
-</script>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<!-- Script para manejar la generación del QR -->
-<script>
-    $(document).ready(function() {
-        // Evento para los enlaces de generación de QR
-        $('.generate-qr-link').click(function(e) {
-            e.preventDefault(); // Evita que el enlace recargue la página
+    ocultarIndicador();
+}
 
-            var lineId = $(this).data('line-id');
-            var amountToPay = $(this).data('amount-to-pay'); // Obtenemos el monto
-            var linkElement = $(this);
-            var loadingContainer = $('#loading_' + lineId);
-            var popupId = 'qr_siro_popup' + lineId; // ID único para el popup
-
-            // Muestra el spinner
-            linkElement.hide();
-            loadingContainer.show();
-
-            // Realiza una solicitud AJAX para generar el QR
-            $.ajax({
-                url: '/generate_qr/' + lineId,
-                method: 'GET',
-                data: { amount_to_pay_today: amountToPay,
-                           lineId: lineId
-                           }, // Enviamos el monto e id como parámetro
-                success: function(response) {
-                    // Oculta el spinner
-                    loadingContainer.hide();
-
-                    // Construye la URL con url_for equivalente en JavaScript
-                    var qrUrlSmall = `/show_qr?line_id=${lineId}&size=1&amount_to_pay_today=${amountToPay}`;
-                    var qrUrlLarge = `/show_qr?line_id=${lineId}&size=4&amount_to_pay_today=${amountToPay}`;
-
-                    // Actualiza el contenido con el QR generado
-                    linkElement.closest('td').html(`
-                        <div class="thumbnail">
-                            <img src="${qrUrlSmall}" 
-                                 alt="QR de pago"
-                                 onclick="openPopup('${popupId}')"
-                                 title="Haga click para expandir">
-                        </div>
-                        <div class="popup" id="${popupId}">
-                            <span class="popup-close" onclick="closePopup('${popupId}')">&times;</span>
-                            <img src="${qrUrlLarge}" alt="Imagen ampliada">
-                        </div>
-                    `);
-
-                    // Aplica la transición después de un breve retraso
-                    setTimeout(function() {
-                        $('.thumbnail').addClass('show');
-                    }, 100);
-                },
-                error: function(xhr, status, error) {
-                    loadingContainer.hide();
-                    linkElement.show();
-                    console.error('Error al generar el QR:', error);
-                    alert('Error al generar el QR: ' + error);
+// 2. Sistema de polling mejorado
+function iniciarPolling(lineId) {
+    console.log(`Iniciando polling para línea ${lineId}`);
+    mostrarIndicador('Verificando estado del pago...', 'orange');
+    
+    // Limpiar intervalo previo si existe
+    if (intervaloVerificacion) {
+        clearInterval(intervaloVerificacion);
+    }
+    
+    let intentos = 0;
+    
+    // Verificar estado cada 5 segundos
+    intervaloVerificacion = setInterval(() => {
+        intentos++;
+        document.getElementById('polling-count').textContent = `Verificación #${intentos}`;
+        
+        fetch(`/verificar_pago?id=${lineId}`)
+            .then(response => {
+                if (!response.ok) throw new Error('Error en la red');
+                return response.json();
+            })
+            .then(data => {
+                console.log('Respuesta del servidor:', data);
+                
+                if (data.estado === "APROBADO") {
+                    pagoExitoso(lineId);
+                } else if (data.estado === "EN ESPERA") {
+                    // Continuar esperando
+                    mostrarIndicador('Verificando estado del pago...', 'orange');
+                } else if (data.estado === "RECHAZADO") {
+                    pagoFallido("Pago rechazado. Por favor intente nuevamente.");
                 }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('polling-message').textContent = 'Error de conexión, reintentando...';
             });
+    }, 5000);
+}
+
+// Funciones auxiliares
+function mostrarIndicador(mensaje, color) {
+    const indicador = document.getElementById('polling-indicator');
+    if (indicador) {
+        document.getElementById('polling-status').style.background = color;
+        document.getElementById('polling-message').textContent = mensaje;
+        indicador.style.display = 'block';
+    }
+}
+
+function ocultarIndicador() {
+    const indicador = document.getElementById('polling-indicator');
+    if (indicador) {
+        indicador.style.display = 'none';
+    }
+}
+
+function pagoExitoso(lineId) {
+    mostrarIndicador('Pago confirmado! Redirigiendo...', 'green');
+    clearInterval(intervaloVerificacion);
+    
+    setTimeout(() => {
+        window.location.href = `/siro_success/${lineId}`;
+    }, 1500);
+}
+
+function pagoFallido(mensaje) {
+    mostrarIndicador(mensaje, 'red');
+    clearInterval(intervaloVerificacion);
+    
+    setTimeout(() => {
+        ocultarIndicador();
+        alert(mensaje);
+    }, 500);
+}
+
+// 3. Generación de nuevos QR (solo para nuevos generados)
+$(document).ready(function() {
+    $('.generate-qr-link').click(function(e) {
+        e.preventDefault();
+
+        const lineId = $(this).data('line-id');
+        const amountToPay = $(this).data('amount-to-pay');
+        const $loading = $('#loading_' + lineId);
+
+        $(this).hide();
+        $loading.show();
+
+        $.ajax({
+            url: '/generate_qr/' + lineId,
+            method: 'GET',
+            data: { 
+                amount_to_pay_today: amountToPay,
+                lineId: lineId
+            },
+            success: function(response) {
+                $loading.hide();
+
+                // Insertar el QR en el DOM
+                $(`#generar_qr_${lineId}`).closest('td').html(`
+                    <div class="thumbnail">
+                        <img src="/show_qr?line_id=${lineId}&size=1" 
+                             alt="QR de pago"
+                             onclick="openPopup('qr_siro_popup${lineId}')"
+                             title="Haga click para expandir">
+                    </div>
+                    <div class="popup" id="qr_siro_popup${lineId}">
+                        <span class="popup-close" onclick="closePopup('qr_siro_popup${lineId}')">&times;</span>
+                        <img src="/show_qr?line_id=${lineId}&size=4" alt="Imagen ampliada">
+                    </div>
+                `);
+            },
+            error: function(xhr, status, error) {
+                $loading.hide();
+                $(this).show();
+                alert('Error al generar el QR: ' + error);
+            }
         });
     });
+});
 </script>
 
 {% endblock javascripts %}

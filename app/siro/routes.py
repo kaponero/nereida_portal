@@ -2,12 +2,24 @@ from app import tryton
 from app.siro import blueprint
 from app.auth.routes import login_required
 
-from flask import render_template, request, Response, jsonify
+from flask import render_template, request, Response, jsonify, abort
 
 from datetime import datetime
 
 import qrcode
 import io
+
+import hashlib
+import hmac
+import os
+
+
+SECRET_KEY = os.environ.get('SIRO_SECRET_KEY')
+
+
+def generar_hmac(id_referencia):
+    message = f"{id_referencia}{SECRET_KEY}".encode()
+    return hmac.new(SECRET_KEY.encode(), message, hashlib.sha256).hexdigest()
 
 
 @blueprint.route('/siro_button/<voucher_id>')
@@ -109,20 +121,80 @@ def show_qr():
         return Response(buffer, mimetype='image/png')
     return "", 404
 
-@blueprint.route('/siro_no_success/<subscriptor_id>')
-@tryton.transaction()
-@login_required
-def siro_no_success(subscriptor_id) :
+@blueprint.route('/siro_success/<voucher_id>', methods=['GET', 'POST'])
+@tryton.transaction(readonly=False, user=2)
+def handle_success(voucher_id) :
     pool = tryton.pool
-    Subscriptor = pool.get('delco.subscriptor')
-    subscriptor = Subscriptor(subscriptor_id)
-    return render_template('/siro-pago-no-exitoso.html', subscriptor=subscriptor)
+    Voucher = pool.get('delco.subscriptor.voucher')
 
-@blueprint.route('/siro_success/<subscriptor_id>')
+    data = request.json # El payload que viene de la API
+    data_requests = request.args
+    print("Pago exitoso recibido: ", data, data_requests)
+
+    voucher = Voucher(voucher_id)
+    subscriptor = voucher.subscriptor
+    print('Esperando pago')
+    # Validación del hmac (para POST, o sea, la billetera)
+    if request.method == 'POST':
+        '''
+        Chequear que el hmac sea correcto y no chamuyo
+        '''
+        hmac_recibido = request.args.get('hmac')
+        id_referencia = voucher.siro_IdReferenciaOperacion
+        print('SECRET_KEY: ', SECRET_KEY)
+        print('hmac: ', hmac_recibido)
+        print('generar_hmac: ', generar_hmac(id_referencia))
+        data = request.json
+        print('data: ', data)
+        id_resultado = data['id_resultado']
+        print('id_resultado: ', id_resultado)
+        if not hmac_recibido or not hmac.compare_digest(
+            generar_hmac(id_referencia),
+            hmac_recibido
+            ):
+            abort(403, "Firma inválida")
+
+            ''''
+            Cambiar el estado del cupón, la fecha de transacción,
+            y el metodo de pago
+            '''
+        paid_date = datetime.today().date
+        if voucher.state != 'paid':
+            voucher.state = 'processing_payment'
+            voucher.pay_method = 'qr_siro'
+            voucher.save()
+
+        return jsonify({"status": "OK"}), 200
+        '''
+        Redirección para GET (desde la página del QR)
+        '''
+    elif request.method == 'GET':
+        print('pago exitoso')
+        return render_template('/siro-pago-exitoso.html',
+            subscriptor=subscriptor, voucher=voucher)
+
+
+@blueprint.route('/siro_no_success/voucher_id', methods=['POST'])
 @tryton.transaction()
 @login_required
-def siro_success(subscriptor_id) :
+def siro_no_success(voucher_id) :
     pool = tryton.pool
-    Subscriptor = pool.get('delco.subscriptor')
-    subscriptor = Subscriptor(subscriptor_id)
-    return render_template('/siro-pago-exitoso.html', subscriptor=subscriptor)
+    Voucher = pool.get('delco.subscriptor.voucher')
+    voucher = Voucher(voucher_id)
+    subscriptor = voucher.subscriptor
+    return render_template('/siro-pago-no-exitoso.html',
+            subscriptor=subscriptor, voucher=voucher)
+
+
+@blueprint.route('/verificar_pago')
+@tryton.transaction()
+@login_required
+def verficar_pago():
+    pool = tryton.pool
+    Voucher = pool.get('delco.subscriptor.voucher')
+    voucher_id = request.args.get('id')
+    estado = 'EN ESPERA'
+    voucher = Voucher(voucher_id)
+    if voucher.state == 'processing_payment':
+        estado = "APROBADO"
+    return jsonify({"estado": estado}), 200
