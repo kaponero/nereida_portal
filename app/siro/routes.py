@@ -127,48 +127,50 @@ def handle_success(voucher_id) :
     pool = tryton.pool
     Voucher = pool.get('delco.subscriptor.voucher')
 
-    data = request.json # El payload que viene de la API
     data_requests = request.args
-    print("Pago exitoso recibido: ", data, data_requests)
+    print("Pago exitoso recibido: ", data_requests)
 
     voucher = Voucher(voucher_id)
     subscriptor = voucher.subscriptor
     print('Esperando pago')
+    hmac_recibido = request.args.get('hmac', None)
+    hmac_tryton = voucher.siro_hmac
+
+    id_referencia = request.args.get('IdReferenciaOperacion', None)
+    id_referencia_tryton = voucher.siro_IdReferenciaOperacion
+
+    id_resultado = request.args.get('IdResultado', None)
     # Validación del hmac (para POST, o sea, la billetera)
-    if request.method == 'POST':
+    if  hmac_recibido and id_resultado \
+        and hmac_recibido == hmac_tryton \
+        and id_referencia == id_referencia_tryton:
         '''
         Chequear que el hmac sea correcto y no chamuyo
         '''
-        hmac_recibido = request.args.get('hmac')
-        id_referencia = voucher.siro_IdReferenciaOperacion
-        print('SECRET_KEY: ', SECRET_KEY)
-        print('hmac: ', hmac_recibido)
-        print('generar_hmac: ', generar_hmac(id_referencia))
-        data = request.json
-        print('data: ', data)
-        id_resultado = data['id_resultado']
-        print('id_resultado: ', id_resultado)
+        print('request.args: ', request.args)
         if not hmac_recibido or not hmac.compare_digest(
             generar_hmac(id_referencia),
             hmac_recibido
             ):
             abort(403, "Firma inválida")
 
-            ''''
-            Cambiar el estado del cupón, la fecha de transacción,
-            y el metodo de pago
-            '''
+        ''''
+        Cambiar el estado del cupón, la fecha de transacción,
+        y el metodo de pago
+        '''
         paid_date = datetime.today().date
-        if voucher.state != 'paid':
+        if voucher.state not in ['paid', 'processing_payment']:
             voucher.state = 'processing_payment'
             voucher.pay_method = 'qr_siro'
+            voucher.siro_IdResultado = id_resultado
             voucher.save()
 
         return jsonify({"status": "OK"}), 200
+
+    else:
         '''
-        Redirección para GET (desde la página del QR)
+        Redirección desde la página del QR
         '''
-    elif request.method == 'GET':
         print('pago exitoso')
         return render_template('/siro-pago-exitoso.html',
             subscriptor=subscriptor, voucher=voucher)
