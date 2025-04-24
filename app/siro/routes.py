@@ -60,7 +60,7 @@ def generate_qr(voucher_id):
         # Obtener el voucher por su ID
         voucher, = Voucher.search([('id', '=', voucher_id)])
 
-        qr = Voucher.generate_qrs([{
+        qr = Voucher.generate_siro_qrs([{
             'voucher': voucher,
             'amount_to_pay_today': amount_to_pay_today
             }])
@@ -147,7 +147,6 @@ def handle_success(voucher_id) :
         '''
         Chequear que el hmac sea correcto y no chamuyo
         '''
-        print('request.args: ', request.args)
         if not hmac_recibido or not hmac.compare_digest(
             generar_hmac(id_referencia),
             hmac_recibido
@@ -164,6 +163,9 @@ def handle_success(voucher_id) :
             voucher.pay_method = 'qr_siro'
             voucher.siro_IdResultado = id_resultado
             voucher.save()
+
+        if voucher.state == 'processing_payment':
+            Voucher.check_siro_payments([voucher])
 
         return jsonify({"status": "OK"}), 200
 
