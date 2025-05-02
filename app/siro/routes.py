@@ -140,6 +140,13 @@ def handle_success(voucher_id) :
     id_referencia_tryton = voucher.siro_IdReferenciaOperacion
 
     id_resultado = request.args.get('IdResultado', None)
+    print(request.args)
+    print(
+        id_referencia, id_referencia_tryton,
+        id_referencia==id_referencia_tryton, 
+        hmac_recibido, hmac_tryton,
+        hmac_recibido==hmac_tryton,
+        )
     # Validación del hmac (para POST, o sea, la billetera)
     if  hmac_recibido and id_resultado \
         and hmac_recibido == hmac_tryton \
@@ -151,6 +158,7 @@ def handle_success(voucher_id) :
             generar_hmac(id_referencia),
             hmac_recibido
             ):
+            print('abortado')
             abort(403, "Firma inválida")
 
         ''''
@@ -158,7 +166,9 @@ def handle_success(voucher_id) :
         y el metodo de pago
         '''
         paid_date = datetime.today().date
-        if voucher.state not in ['paid', 'processing_payment']:
+        if voucher.state not in [
+            'paid', 'processing_payment', 'process_payment_ok']:
+            print('cambiando de estado al cupon')
             voucher.state = 'processing_payment'
             voucher.pay_method = 'qr_siro'
             voucher.siro_IdResultado = id_resultado
@@ -199,6 +209,6 @@ def verficar_pago():
     voucher_id = request.args.get('id')
     estado = 'EN ESPERA'
     voucher = Voucher(voucher_id)
-    if voucher.state == 'processing_payment':
+    if voucher.state in ['processing_payment', 'process_payment_ok']:
         estado = "APROBADO"
     return jsonify({"estado": estado}), 200
