@@ -1,0 +1,160 @@
+aenum==3.1.16
+alembic==1.5.8
+apiron==5.1.0
+attrs==25.3.0
+Babel==2.9.0
+barcode==1.0.1
+bcrypt==4.0.1
+beautifulsoup4==4.11.1
+beren==0.7.0
+cached-property==1.5.2
+certifi==2020.12.5
+cffi==1.14.5
+chardet==4.0.0
+charset-normalizer==2.0.12
+click==7.1.2
+config==0.5.0.post0
+contourpy==1.3.2
+crypto==1.4.1
+cryptography==3.4.7
+cycler==0.12.1
+dataclasses==0.6
+dbf==0.99.10
+defusedxml==0.7.1
+demjson3==3.0.6
+dnspython==2.1.0
+email-validator==1.1.2
+Flask==1.1.2
+Flask-Babel==2.0.0
+Flask-Cors==3.0.10
+Flask-Ext==0.1
+Flask-Login==0.5.0
+Flask-Migrate==2.7.0
+Flask-SQLAlchemy==2.4.4
+flask-tryton==0.10.0
+Flask-WTF==0.14.3
+fonttools==4.57.0
+forex-python==1.8
+fpdf==1.7.2
+future==0.18.2
+Genshi==0.7.9
+geomet==0.3.0
+greenlet==3.2.1
+gunicorn==20.0.4
+h11==0.16.0
+httplib2==0.19.0
+idna==2.10
+importlib-metadata==3.7.3
+itsdangerous==1.1.0
+Jinja2==2.11.3
+jtutils==0.0.8
+kiwisolver==1.4.8
+laiarturs-ros-api==1.1.0
+lxml==5.4.0
+Mako==1.1.4
+MarkupSafe==1.1.1
+matplotlib==3.10.1
+Naked==0.1.31
+nose==1.3.7
+numpy==2.2.5
+outcome==1.3.0.post0
+packaging==25.0
+pandas==2.2.3
+passlib==1.7.4
+pendulum==2.1.2
+pillow==11.2.1
+polib==1.1.0
+proteus==6.0.4
+psycopg2-binary==2.9.10
+PyAfipWs @ git+https://github.com/tryton-ar/pyafipws.git@9abc6196fa03162f7785ccd75ef4930d544bec2e
+pycairo==1.20.1
+pycountry==20.7.3
+pycparser==2.20
+pycrypto==2.6.1
+pyparsing==2.4.7
+PySimpleSOAP==1.8.22
+PySocks==1.7.1
+python-dateutil==2.8.1
+python-decouple==3.6
+python-dotenv==0.20.0
+python-editor==1.0.4
+python-Levenshtein==0.12.0
+python-magic==0.4.22
+python-sql==1.3.0
+python-stdnum==1.16
+pytz==2021.1
+pytzdata==2020.1
+PyYAML==6.0.2
+qrcode==6.1
+relatorio==0.10.0
+requests==2.25.1
+selenium==3.141.0
+shellescape==3.8.1
+simpleeval==1.0.3
+simplejson==3.17.2
+six==1.15.0
+sniffio==1.3.1
+sortedcontainers==2.4.0
+soupsieve==2.3.2.post1
+SQLAlchemy==1.3.23
+tabulate==0.9.0
+treepoem==3.13.0
+trio==0.30.0
+trio-websocket==0.12.2
+trytonar_account_ar @ file:///home/fran/delco/tryton_ar/account_ar
+trytonar_account_invoice_ar @ file:///home/fran/delco/tryton_ar/from_gitlab/account_invoice_ar
+trytonar_account_report_ar @ file:///home/fran/delco/tryton_ar/account_report_ar
+trytonar_bank_ar @ file:///home/fran/delco/tryton_ar/bank_ar
+trytonar_citi_afip @ file:///home/fran/delco/tryton_ar/citi_afip
+trytonar_party_ar @ file:///home/fran/delco/tryton_ar/from_gitlab/party_ar
+trytonar_recover_invoice_ar @ file:///home/fran/delco/tryton_ar/recover_invoice_ar
+trytonar_subdiario @ file:///home/fran/delco/tryton_ar/subdiario
+trytond==6.0.62
+trytond-bank==6.0.1
+trytond-country==6.0.3
+trytond-google-maps==6.0.0
+trytond-product==6.0.4
+trytond-web-user==6.0.1
+trytond_account==6.0.30
+trytond_account_invoice==6.0.21
+trytond_account_invoice_stock==6.0.4
+trytond_account_product==6.0.4
+trytond_aet_web @ file:///home/fran/delco/aet_web
+trytond_company==6.0.8
+trytond_currency==6.0.6
+trytond_delco_advertisement @ file:///home/fran/delco/delco_advertisement
+trytond_delco_cablemodem @ file:///home/fran/delco/delco_cablemodem
+trytond_delco_cash_logs @ file:///home/fran/delco/delco_cash_logs
+trytond_delco_change_log @ file:///home/fran/delco/delco_change_log
+trytond_delco_equipments @ file:///home/fran/delco/delco_equipments
+trytond_delco_external_apis @ file:///home/fran/delco/delco_external_apis
+trytond_delco_flexi @ file:///home/fran/delco/delco_flexi
+trytond_delco_import_payments @ file:///home/fran/delco/delco_import_payments
+trytond_delco_import_payments_debits @ file:///home/fran/delco/delco_import_payments_debits
+trytond_delco_import_payments_multipagos @ file:///home/fran/delco/delco_import_payments_multipagos
+trytond_delco_import_payments_siro @ file:///home/fran/delco/delco_import_payments_siro
+trytond_delco_main @ file:///home/fran/delco/delco_main
+trytond_delco_nereida_portal @ file:///home/fran/delco/delco_nereida_portal
+trytond_delco_onus @ file:///home/fran/delco/delco_onus
+trytond_delco_persat @ file:///home/fran/delco/delco_persat
+trytond_delco_replace_invoice @ file:///home/fran/delco/delco_replace_invoice
+trytond_delco_swap_invoice @ file:///home/fran/delco/delco_swap_invoice
+trytond_delco_work_order @ file:///home/fran/delco/delco_work_order
+trytond_party==6.0.8
+trytond_purchase==6.0.22
+trytond_sale==6.0.22
+trytond_sale_point @ file:///home/fran/delco/sale_point
+trytond_sale_subscription==6.0.7
+trytond_stock==6.0.33
+typing-extensions==3.7.4.3
+tzdata==2025.2
+Unidecode==1.3.4
+urllib3==1.26.4
+websocket-client==1.8.0
+Werkzeug==1.0.1
+wrapt==1.17.2
+wsproto==1.2.0
+WTForms==2.3.3
+xlrd==2.0.1
+xmltodict==0.13.0
+zipp==3.4.1

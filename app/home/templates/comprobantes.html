@@ -7,26 +7,7 @@
 <link rel="stylesheet" href="{{ url_for("static", filename="asset/css/comprobantestyles.css") }}">
 <link rel="stylesheet" href="{{ url_for("static", filename="asset/css/pop-up-img.css") }}">
 <link rel="stylesheet" href="{{ url_for("static", filename="asset/css/spinner.css") }}">
-<style>
-    /* Estilos para el indicador de polling */
-    #polling-indicator {
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        padding: 10px;
-        background: #f0f0f0;
-        border-radius: 5px;
-        z-index: 9999;
-        display: none;
-    }
-    #polling-status {
-        width: 12px;
-        height: 12px;
-        border-radius: 50%;
-        display: inline-block;
-        margin-right: 8px;
-    }
-</style>
+<link rel="stylesheet" href="{{ url_for("static", filename="asset/css/polling.css") }}">
 {% endblock %}
 
 {% block navigation %}
@@ -182,7 +163,7 @@ function openPopup(popupId) {
 
 function closePopup(popupId) {
     document.getElementById(popupId).style.display = 'none';
-    
+
     // Detener el polling al cerrar el popup
     if (intervaloVerificacion) {
         clearInterval(intervaloVerificacion);
@@ -207,8 +188,7 @@ function iniciarPolling(lineId) {
     intervaloVerificacion = setInterval(() => {
         intentos++;
         document.getElementById('polling-count').textContent = `Verificación #${intentos}`;
-        
-        fetch(`/verificar_pago?id=${lineId}`)
+        fetch(`/verificar_pago?id=${lineId}&intentos=${intentos}`)
             .then(response => {
                 if (!response.ok) throw new Error('Error en la red');
                 return response.json();
@@ -222,7 +202,10 @@ function iniciarPolling(lineId) {
                     // Continuar esperando
                     mostrarIndicador('Verificando estado del pago...', 'orange');
                 } else if (data.estado === "RECHAZADO") {
-                    pagoFallido("Pago rechazado. Por favor intente nuevamente.");
+                    pagoFallido("Pago rechazado. Por favor intente nuevamente.",
+                    lineId);
+                } else if (data.estado === "TIMEOUT") {
+                    pagoFallido("Tiempo de espera superado. Por favor intente nuevamente.", lineId);
                 }
             })
             .catch(error => {
@@ -246,26 +229,29 @@ function ocultarIndicador() {
     const indicador = document.getElementById('polling-indicator');
     if (indicador) {
         indicador.style.display = 'none';
+        document.getElementById('polling-count').textContent =  '';
     }
 }
 
 function pagoExitoso(lineId) {
     mostrarIndicador('Pago confirmado! Redirigiendo...', 'green');
     clearInterval(intervaloVerificacion);
-    
+
     setTimeout(() => {
         window.location.href = `/siro_success/${lineId}`;
     }, 1500);
 }
 
-function pagoFallido(mensaje) {
+function pagoFallido(mensaje, lineId) {
     mostrarIndicador(mensaje, 'red');
     clearInterval(intervaloVerificacion);
-    
+
     setTimeout(() => {
         ocultarIndicador();
         alert(mensaje);
-    }, 500);
+        window.location.href = `/siro_no_success/${lineId}`;
+    }, 1500);
+
 }
 
 // 3. Generación de nuevos QR (solo para nuevos generados)

@@ -12,7 +12,6 @@ chardet==4.0.0
 charset-normalizer==2.0.12
 click==7.1.2
 config==0.5.0.post0
-cPython==0.0.6
 crypto==1.4.1
 cryptography==3.4.7
 cycler
@@ -31,7 +30,6 @@ flask-tryton==0.10.0
 Flask-WTF==0.14.3
 forex-python==1.8
 future==0.18.2
-Genshi==0.7.6
 geomet==0.3.0
 greenlet
 gunicorn==20.0.4
@@ -41,15 +39,11 @@ importlib-metadata==3.7.3
 itsdangerous==1.1.0
 Jinja2==2.11.3
 jtutils==0.0.8
-kiwisolver==1.3.1
-lxml==4.6.2
 Mako==1.1.4
 MarkupSafe==1.1.1
-matplotlib==3.3.4
 Naked==0.1.31
 nose==1.3.7
 numpy
-pandas==1.1.5
 passlib==1.7.4
 pendulum==2.1.2
 Pillow
@@ -81,7 +75,6 @@ six==1.15.0
 soupsieve==2.3.2.post1
 SQLAlchemy==1.3.23
 treepoem
-tryton==6.0.13
 typing-extensions==3.7.4.3
 Unidecode==1.3.4
 urllib3==1.26.4

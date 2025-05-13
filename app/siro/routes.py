@@ -188,27 +188,65 @@ def handle_success(voucher_id) :
             subscriptor=subscriptor, voucher=voucher)
 
 
-@blueprint.route('/siro_no_success/voucher_id', methods=['POST'])
-@tryton.transaction()
-@login_required
+@blueprint.route('/siro_no_success/<voucher_id>')
+@tryton.transaction(readonly=False, user=2)
 def siro_no_success(voucher_id) :
     pool = tryton.pool
     Voucher = pool.get('delco.subscriptor.voucher')
     voucher = Voucher(voucher_id)
-    subscriptor = voucher.subscriptor
-    return render_template('/siro-pago-no-exitoso.html',
+
+    hmac_recibido = request.args.get('hmac', None)
+    id_referencia = voucher.siro_IdReferenciaOperacion
+
+    if hmac_recibido:
+        """
+        Redirección ok al pago fallido
+        """
+        """
+        Chequear que el hmac sea correcto y no chamuyo
+        """
+        if not hmac_recibido or not hmac.compare_digest(
+            generar_hmac(id_referencia),
+            hmac_recibido
+            ):
+            print('abortado')
+            abort(403, "Firma inválida")
+
+        voucher.state = 'process_payment_fail'
+        voucher.save()
+        return jsonify({"status": "OK"}), 200
+    else:
+        """
+        Redirección desde la página del QR
+        """
+        subscriptor = voucher.subscriptor
+        return render_template('/siro-pago-no-exitoso.html',
             subscriptor=subscriptor, voucher=voucher)
 
 
 @blueprint.route('/verificar_pago')
-@tryton.transaction()
+@tryton.transaction(readonly=False, user=2)
 @login_required
 def verficar_pago():
     pool = tryton.pool
     Voucher = pool.get('delco.subscriptor.voucher')
     voucher_id = request.args.get('id')
-    estado = 'EN ESPERA'
     voucher = Voucher(voucher_id)
+
+    intentos = int(request.args.get('intentos'))
+
+    if intentos > 300:
+        estado = 'TIMEOUT'
+        voucher.state = 'posted'
+        voucher.siro_qr_string = None
+        voucher.save()
+    elif voucher.state == 'process_payment_fail':
+        estado = "RECHAZADO"
+        voucher.state = 'posted'
+        voucher.save()
+    else:
+        estado = 'EN ESPERA'
+
     if voucher.state in ['processing_payment', 'process_payment_ok']:
         estado = "APROBADO"
     return jsonify({"estado": estado}), 200

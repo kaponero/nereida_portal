@@ -1,0 +1,18 @@
+  /* Estilos para el indicador de polling */
+    #polling-indicator {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        padding: 10px;
+        background: #f0f0f0;
+        border-radius: 5px;
+        z-index: 9999;
+        display: none;
+    }
+    #polling-status {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        display: inline-block;
+        margin-right: 8px;
+    } 
