@@ -4,7 +4,7 @@
 
 <!-- Specific Page CSS goes HERE  -->
 {% block links %}
-<link rel="stylesheet" href="{{ url_for("static", filename="asset/css/spinner.css") }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='asset/css/spinner.css') }}">
 {% endblock %}
 
 {% block content %}
@@ -64,5 +64,8 @@
 <!-- -------------------- ionicons ----------------------- -->
 <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
 <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+<script>
+    console.log('pagina de pago exitoso ok')
+</script>
 
 {% endblock javascripts %}

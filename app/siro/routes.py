@@ -235,9 +235,10 @@ def handle_success(voucher_id) :
         '''
         Redirección desde la página del QR
         '''
-        print('pago exitoso')
-        log.status = "Redirecting OK"
+        print("Pago exitoso")
+        log.status = "redirecting_ok"
         log.save()
+        print("Grabado en log ok")
         return render_template('/siro-pago-exitoso.html',
             subscriptor=subscriptor, voucher=voucher)
 
