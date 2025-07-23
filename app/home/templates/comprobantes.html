@@ -87,7 +87,7 @@
                             <td><a class="sincomprobante" href="#"></a></td>
                             {% endif %}
                             <td>
-                               {% if line.state not in ['paid', 'cancel', 'draft'] and line.siro_qr_string is none %}
+                               {% if line.state not in ['paid', 'cancelled', 'draft'] and line.siro_qr_string is none %}
                                     <a id="generar_qr_{{ line.id }}" href="#" class="generate-qr-link"
                                     data-line-id="{{ line.id }}"
                                     data-amount-to-pay="{{ line.amount_to_pay_today }}">
@@ -232,7 +232,7 @@ function ocultarIndicador() {
         document.getElementById('polling-count').textContent =  '';
     }
 }
-
+/*
 function pagoExitoso(lineId) {
     mostrarIndicador('Pago confirmado! Redirigiendo...', 'green');
     clearInterval(intervaloVerificacion);
@@ -252,7 +252,7 @@ function pagoFallido(mensaje, lineId) {
         window.location.href = `/siro_no_success/${lineId}`;
     }, 1500);
 
-}
+}*/
 
 // 3. Generación de nuevos QR (solo para nuevos generados)
 $(document).ready(function() {
@@ -297,6 +297,47 @@ $(document).ready(function() {
             }
         });
     });
+
+    // 4. Advertencia al cerrar la ventana cuando hay un polling activo
+    window.addEventListener('beforeunload', function(e) {
+        // Solo mostrar advertencia si hay un polling activo
+        if (intervaloVerificacion) {
+            const mensajeAdvertencia = 'Tienes un pago en proceso. ¿Estás seguro de que quieres salir?';
+            // Para navegadores más antiguos
+            e.returnValue = mensajeAdvertencia;
+            // Para navegadores modernos
+            return mensajeAdvertencia;
+        }
+    });
+
+    // Limpia el intervalo cuando el pago se completa con éxito o falla
+    function limpiarPolling() {
+        if (intervaloVerificacion) {
+            clearInterval(intervaloVerificacion);
+            intervaloVerificacion = null;
+        }
+}
+
+    // Modifica las funciones existentes para usar limpiarPolling
+    function pagoExitoso(lineId) {
+        mostrarIndicador('Pago confirmado! Redirigiendo...', 'green');
+        limpiarPolling();
+
+        setTimeout(() => {
+            window.location.href = `/siro_success/${lineId}`;
+        }, 1500);
+    }
+
+    function pagoFallido(mensaje, lineId) {
+        mostrarIndicador(mensaje, 'red');
+        limpiarPolling();
+
+        setTimeout(() => {
+            ocultarIndicador();
+            alert(mensaje);
+            window.location.href = `/siro_no_success/${lineId}`;
+        }, 1500);
+}
 });
 </script>
 
