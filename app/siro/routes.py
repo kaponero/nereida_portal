@@ -322,3 +322,11 @@ def verficar_pago():
     if voucher.state in ['processing_payment', 'process_payment_ok', 'paid']:
         estado = "APROBADO"
     return jsonify({"estado": estado}), 200
+
+
+@blueprint.route('/boton_pago/<voucher_id>')
+@tryton.transaction()
+@login_required
+def boton_pago(voucher_id):
+    print('Boton de pago presionado')
+    pass

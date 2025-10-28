@@ -1,0 +1,31 @@
+/*-- Estilos para el qr  --*/
+.qr-container {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.regenerate-qr-container {
+    text-align: center;
+}
+
+.regenerate-qr-link {
+    color: #0066cc;
+    text-decoration: none;
+    font-size: 0.9em;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 8px;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+}
+
+.regenerate-qr-link:hover {
+    background-color: #f0f0f0;
+    text-decoration: underline;
+}
+
+.regenerate-qr-link ion-icon {
+    font-size: 1.1em;
+}

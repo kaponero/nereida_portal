@@ -8,37 +8,10 @@
 <link rel="stylesheet" href="{{ url_for("static", filename="asset/css/pop-up-img.css") }}">
 <link rel="stylesheet" href="{{ url_for("static", filename="asset/css/spinner.css") }}">
 <link rel="stylesheet" href="{{ url_for("static", filename="asset/css/polling.css") }}">
+<link rel="stylesheet" href="{{ url_for("static", filename="asset/css/qr_style.css" )}}">
+<link rel="stylesheet" href="{{ url_for("static", filename="asset/css/boton_pago.css")}}">
 <style>
-    .qr-container {
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-    }
 
-    .regenerate-qr-container {
-        text-align: center;
-    }
-
-    .regenerate-qr-link {
-        color: #0066cc;
-        text-decoration: none;
-        font-size: 0.9em;
-        display: inline-flex;
-        align-items: center;
-        gap: 4px;
-        padding: 4px 8px;
-        border-radius: 4px;
-        transition: background-color 0.2s;
-    }
-
-    .regenerate-qr-link:hover {
-        background-color: #f0f0f0;
-        text-decoration: underline;
-    }
-
-    .regenerate-qr-link ion-icon {
-        font-size: 1.1em;
-    }
 </style>
 {% endblock %}
 
@@ -48,12 +21,12 @@
 {% block content %}
     <!-- -------------------- Comprobante list -------------------------------->
     <div class="details">
-        <div class="comprobantes">
+        <div class="comprobantes div-table">
             <div class="cardHeader">
                 <h2>Historial</h2>
             </div>
             <table>
-                <thead>
+                <thead class="table-header">
                     <tr>
                         <td>N° de cupón</td>
                         <td>Vencimiento</td>
@@ -67,7 +40,7 @@
                         <td>Método de pago</td>
                         <td>Estado</td>
                         <td>Comprobante</td>
-                        <td>Generar QR de pago</td>
+                        <td>Medios de pago</td>
                     </tr>
                 </thead>
                 <tbody>
@@ -75,7 +48,7 @@
                         <!-- convierto la fecha a entero yyyymm y la comparo con abril 2023 (202304)-->
                         {% set date_filter = line.first_due_date.strftime("%Y%m")| int %} 
                         {% if date_filter > 202304 %}
-                        <tr>
+                        <tr class="{% if loop.index0 is even %}fila-par{% else %}fila-impar{% endif %}">
                             <td>{{ line.voucher_number }}</td>
                             <td>{{ line.first_due_date|dateformat}}</td>
                             <!--<td>{{ line.second_due_date|dateformat}}</td>-->
@@ -105,19 +78,23 @@
                                 {% endif %}
                             {% else %}
                                 <td><span> - </span></td>
-                            {% endif %}   
+                            {% endif %}
+                            <td>
                             {% if line.state == 'paid' %}
-                            <td><span class="estado pagado">Pagado</span></td>
+                            <span class="estado pagado">Pagado</span>
                             {% elif line.state == 'posted' %}
-                            <td><span class="estado pendiente">Pendiente</span></td>
+                            <span class="estado pendiente">Pendiente</span>
                             {% else %}
-                            <td><span class="estado otro">{{ line.state_string }}</span></td>
+                            <span class="estado otro">{{ line.state_string }}</span>
                             {% endif %}
+                            </td>
+                            <td>
                             {% if line.state == 'paid' or line.state == 'posted' %}
-                            <td><a class="comprobante" href="/download_ticket/{{ line.id }}">Descargar</a></td>
+                            <a class="comprobante" href="/download_ticket/{{ line.id }}">Descargar</a>
                             {% else %}
-                            <td><a class="sincomprobante" href="#"></a></td>
+                            <a class="sincomprobante" href="#"></a>
                             {% endif %}
+                            </td>
                             <td>
                                {% if line.state not in ['paid', 'cancelled', 'draft'] and line.siro_qr_string is none %}
                                     <a id="generar_qr_{{ line.id }}" href="#" class="generate-qr-link"
@@ -156,6 +133,13 @@
                                     </div>
                                 {% else %}
                                 {{ line.qr_siro_string }}
+                                {% endif %}
+                                {% if line.state == 'posted' %}
+                                <div class="pay_button">
+                                <a class="button-71" role="button" href="/boton_pago/{{ line.id }}">
+                                    Botón de pago
+                                </a>
+                                </div>
                                 {% endif %}
                             </td>
                         </tr>
@@ -375,7 +359,7 @@ $(document).ready(function() {
                             <img src="/show_qr?line_id=${lineId}&size=4" alt="Imagen ampliada">
                         </div>
                     `);
-                    
+
                     // Asignar el evento al nuevo botón de regenerar
                     $(`.regenerate-qr-link[data-line-id="${lineId}"]`).click(function(e) {
                         e.preventDefault();

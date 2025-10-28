@@ -104,6 +104,25 @@
 	
 }
 
+.div-table {
+	overflow-x: auto;
+	/*max-height: 400px;*/
+}
+
+.table-header{
+	background-color: #343a3b;
+	position: sticky;
+	top: 0;
+}
+
+.fila-par {
+	background-color: #DBDEAF;
+}
+
+.fila-impar {
+	background-color: #a8e0e6;
+}
+
 /*---------------------------Diseño responsivo -------------------------*/
 
 @media (max-width:991px) {
