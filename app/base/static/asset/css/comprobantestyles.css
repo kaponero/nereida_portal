@@ -104,6 +104,32 @@
 	
 }
 
+ /*   estilos de botones siguiente y anterior   */
+.dataTables_wrapper .dataTables_paginate .paginate_button.next:hover {
+    background: none !important;                
+    background-color: var(--blue) !important;        
+    color: white !important;                     
+    border: 1px solid var(--blue)!important;       
+    box-shadow: none !important;                 
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button.previous:hover {
+    background: none !important;                
+    background-color: var(--blue) !important;        
+    color: white !important;                     
+    border: 1px solid var(--blue)!important;        
+    box-shadow: none !important;                 
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+    background: none !important;               
+    background-color: var(--blue) !important;      
+    color: white !important;
+    border: 1px solid var(--blue) !important;
+    box-shadow: none !important;
+}
+
+
 /*---------------------------Diseño responsivo -------------------------*/
 
 @media (max-width:991px) {
