@@ -8,6 +8,11 @@
 <link rel="stylesheet" href="{{ url_for("static", filename="asset/css/pop-up-img.css") }}">
 <link rel="stylesheet" href="{{ url_for("static", filename="asset/css/spinner.css") }}">
 <link rel="stylesheet" href="{{ url_for("static", filename="asset/css/polling.css") }}">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+
+
 <style>
     .qr-container {
         display: flex;
@@ -52,7 +57,7 @@
             <div class="cardHeader">
                 <h2>Historial</h2>
             </div>
-            <table>
+            <table id="tabla_comprobantes">
                 <thead>
                     <tr>
                         <td>N° de cupón</td>
@@ -72,93 +77,95 @@
                 </thead>
                 <tbody>
                     {% for line in subscriptor.vouchers %}
-                        <!-- convierto la fecha a entero yyyymm y la comparo con abril 2023 (202304)-->
-                        {% set date_filter = line.first_due_date.strftime("%Y%m")| int %} 
-                        {% if date_filter > 202304 %}
-                        <tr>
-                            <td>{{ line.voucher_number }}</td>
-                            <td>{{ line.first_due_date|dateformat}}</td>
-                            <!--<td>{{ line.second_due_date|dateformat}}</td>-->
-                            <td>{{ line.month }}</td>
-                            <td>{{ line.year }}</td>
-                            <td>{{ line.paid_date and line.paid_date.date() | dateformat or '-'}}</td>
-                            <td>{{ line.amount_to_pay | currencyformat(line.currency) }}</td>
-                            <td>{{ (line.surcharge or 0) | currencyformat(line.currency)}}</td>
-                            <td>{{ line.amount_to_pay_today | currencyformat(line.currency) }}</td>
-                            {% if line.state == 'paid' %}
-                                {% if line.pay_method == 'cash' %}
-                                <td><span>Efectivo</span></td>
-                                {% elif line.pay_method  == 'debit' %}
-                                <td><span>Debito</span></td>
-                                {% elif line.pay_method  == 'credit' %}
-                                <td><span>Crédito</span></td>
-                                {% elif line.pay_method  == 'check' %}
-                                <td><span>Cheque</span></td>
-                                {% elif line.pay_method  == 'auto_debit' %}
-                                <td><span>Débito Automatico</span></td>
-                                {% elif line.pay_method  == 'transfer' %}
-                                <td><span>Transferencia</span></td>
-                                {% elif line.pay_method  == 'multipagos' %}
-                                <td><span>Multipagos</span></td>
+                        {% if line.state != 'cancelled' %} 
+                            <!-- convierto la fecha a entero yyyymm y la comparo con abril 2023 (202304)-->
+                            {% set date_filter = line.first_due_date.strftime("%Y%m")| int %} 
+                            {% if date_filter > 202304 %}
+                            <tr>
+                                <td>{{ line.voucher_number }}</td>
+                                <td>{{ line.first_due_date|dateformat}}</td>
+                                <!--<td>{{ line.second_due_date|dateformat}}</td>-->
+                                <td>{{ line.month }}</td>
+                                <td>{{ line.year }}</td>
+                                <td>{{ line.paid_date and line.paid_date.date() | dateformat or '-'}}</td>
+                                <td>{{ line.amount_to_pay | currencyformat(line.currency) }}</td>
+                                <td>{{ (line.surcharge or 0) | currencyformat(line.currency)}}</td>
+                                <td>{{ line.amount_to_pay_today | currencyformat(line.currency) }}</td>
+                                {% if line.state == 'paid' %}
+                                    {% if line.pay_method == 'cash' %}
+                                    <td><span>Efectivo</span></td>
+                                    {% elif line.pay_method  == 'debit' %}
+                                    <td><span>Debito</span></td>
+                                    {% elif line.pay_method  == 'credit' %}
+                                    <td><span>Crédito</span></td>
+                                    {% elif line.pay_method  == 'check' %}
+                                    <td><span>Cheque</span></td>
+                                    {% elif line.pay_method  == 'auto_debit' %}
+                                    <td><span>Débito Automatico</span></td>
+                                    {% elif line.pay_method  == 'transfer' %}
+                                    <td><span>Transferencia</span></td>
+                                    {% elif line.pay_method  == 'multipagos' %}
+                                    <td><span>Multipagos</span></td>
+                                    {% else %}
+                                    <td><span>Importado</span></td>
+                                    {% endif %}
                                 {% else %}
-                                <td><span>Importado</span></td>
+                                    <td><span> - </span></td>
                                 {% endif %}
-                            {% else %}
-                                <td><span> - </span></td>
-                            {% endif %}   
-                            {% if line.state == 'paid' %}
-                            <td><span class="estado pagado">Pagado</span></td>
-                            {% elif line.state == 'posted' %}
-                            <td><span class="estado pendiente">Pendiente</span></td>
-                            {% else %}
-                            <td><span class="estado otro">{{ line.state_string }}</span></td>
-                            {% endif %}
-                            {% if line.state == 'paid' or line.state == 'posted' %}
-                            <td><a class="comprobante" href="/download_ticket/{{ line.id }}">Descargar</a></td>
-                            {% else %}
-                            <td><a class="sincomprobante" href="#"></a></td>
-                            {% endif %}
-                            <td>
-                               {% if line.state not in ['paid', 'cancelled', 'draft'] and line.siro_qr_string is none %}
-                                    <a id="generar_qr_{{ line.id }}" href="#" class="generate-qr-link"
-                                    data-line-id="{{ line.id }}"
-                                    data-amount-to-pay="{{ line.amount_to_pay_today }}">
-                                    Generar QR de pago
-                                    </a>
-                                    <div class="loading-container" id="loading_{{ line.id }}">
-                                        <div class="spinner"></div>
-                                        <p>Generando QR...</p>
-                                    </div>
-                                {% elif line.siro_qr_string is not none and line.state == 'posted' %}
-                                    <div class="qr-container">
-                                        <div class="thumbnail">
-                                            <img src="{{ url_for('siro_blueprint.show_qr', line_id=line.id, size=1) }}"
-                                                alt="QR de pago"
-                                                onclick="openPopup('qr_siro_popup{{ line.id }}')"
-                                                title="Haga click para expandir">
+                                    {% if line.state == 'paid' %}
+                                    <td><span class="estado pagado">Pagado</span></td>
+                                    {% elif line.state == 'posted' %}
+                                    <td><span class="estado pendiente">Pendiente</span></td>
+                                    {% else %}
+                                    <td><span class="estado otro">{{ line.state_string }}</span></td>
+                                    {% endif %}
+                                    {% if line.state == 'paid' or line.state == 'posted' %}
+                                    <td><a class="comprobante" href="/download_ticket/{{ line.id }}">Descargar</a></td>
+                                    {% else %}
+                                    <td><a class="sincomprobante" href="#"></a></td>
+                                    {% endif %}
+                                <td>
+                                {% if line.state not in ['paid', 'cancelled', 'draft'] and line.siro_qr_string is none %}
+                                        <a id="generar_qr_{{ line.id }}" href="#" class="generate-qr-link"
+                                        data-line-id="{{ line.id }}"
+                                        data-amount-to-pay="{{ line.amount_to_pay_today }}">
+                                        Generar QR de pago
+                                        </a>
+                                        <div class="loading-container" id="loading_{{ line.id }}">
+                                            <div class="spinner"></div>
+                                            <p>Generando QR...</p>
                                         </div>
-                                        <div class="regenerate-qr-container">
-                                            <a href="#" class="regenerate-qr-link" 
-                                            data-line-id="{{ line.id }}" 
-                                            data-amount-to-pay="{{ line.amount_to_pay_today }}">
-                                                Regenerar QR <ion-icon name="reload-outline"></ion-icon>
-                                            </a>
-                                            <div class="loading-container" id="loading_regenerate_{{ line.id }}" style="display:none;">
-                                                <div class="spinner"></div>
-                                                <p>Regenerando QR...</p>
+                                    {% elif line.siro_qr_string is not none and line.state == 'posted' %}
+                                        <div class="qr-container">
+                                            <div class="thumbnail">
+                                                <img src="{{ url_for('siro_blueprint.show_qr', line_id=line.id, size=1) }}"
+                                                    alt="QR de pago"
+                                                    onclick="openPopup('qr_siro_popup{{ line.id }}')"
+                                                    title="Haga click para expandir">
+                                            </div>
+                                            <div class="regenerate-qr-container">
+                                                <a href="#" class="regenerate-qr-link" 
+                                                data-line-id="{{ line.id }}" 
+                                                data-amount-to-pay="{{ line.amount_to_pay_today }}">
+                                                    Regenerar QR <ion-icon name="reload-outline"></ion-icon>
+                                                </a>
+                                                <div class="loading-container" id="loading_regenerate_{{ line.id }}" style="display:none;">
+                                                    <div class="spinner"></div>
+                                                    <p>Regenerando QR...</p>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="popup" id="qr_siro_popup{{ line.id }}">
-                                        <span class="popup-close" onclick="closePopup('qr_siro_popup{{line.id }}')">&times;</span>
-                                        <img src="{{ url_for('siro_blueprint.show_qr', line_id=line.id, size=4) }}"
-                                            alt="Imagen ampliada">
-                                    </div>
-                                {% else %}
-                                {{ line.qr_siro_string }}
-                                {% endif %}
-                            </td>
-                        </tr>
+                                        <div class="popup" id="qr_siro_popup{{ line.id }}">
+                                            <span class="popup-close" onclick="closePopup('qr_siro_popup{{line.id }}')">&times;</span>
+                                            <img src="{{ url_for('siro_blueprint.show_qr', line_id=line.id, size=4) }}"
+                                                alt="Imagen ampliada">
+                                        </div>
+                                    {% else %}
+                                    {{ line.qr_siro_string }}
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endif %}
                         {% endif %}
                     {% endfor %}
                 </tbody>
@@ -189,11 +196,6 @@
 
 <!-- --------------------- scripts ----------------------- -->
 <script type="text/javascript" src="{{ url_for('static',filename='asset/js/main.js') }}"></script>
-
-<!-- -------------------- ionicons ----------------------- -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
-<script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
 
 <script>
 // Variables globales para control
@@ -404,5 +406,12 @@ $(document).ready(function() {
     });
 });
 </script>
+
+<script type="text/javascript" src="{{ url_for('static',filename='asset/js/comprobantes.js') }}"></script>
+    
+
+<!-- -------------------- ionicons ----------------------- -->
+<script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
 
 {% endblock javascripts %}
