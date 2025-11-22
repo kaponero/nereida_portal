@@ -2,7 +2,9 @@ from app import tryton
 from app.siro import blueprint
 from app.auth.routes import login_required
 
-from flask import render_template, request, Response, jsonify, abort, make_response
+from flask import (render_template, request, redirect,
+        Response, jsonify, abort, make_response, url_for)
+
 
 from trytond.transaction import Transaction
 from datetime import datetime
@@ -81,16 +83,26 @@ def generate_qr(voucher_id):
         log.voucher = voucher
         log.subscriptor = log.on_change_with_subscriptor()
         log.save()
-
+        print('antes de generate_qr en nereida')
         qr = Voucher.generate_siro_qrs([{
             'voucher': voucher,
             'amount_to_pay_today': amount_to_pay_today
             }])
+        print(qr)
         if qr:
             # Asignar los valores al voucher
             voucher.siro_qr_string = qr[0]['StringQR']
             voucher.siro_qr_hash = qr[0]['Hash']
             voucher.save()  # Guardar los cambios en la base de datos
+
+            try:
+                response = Voucher.generate_siro_payments_button([voucher])
+                print(response, response.text)
+                voucher.siro_button_url = response[0]['Url']
+                voucher.siro_button_hash = response[0]['Hash']
+                voucher.save()
+            except:
+                pass
 
             log.siro_qr_hash = voucher.siro_qr_hash
             log.siro_IdReferenciaOperacion = voucher.siro_IdReferenciaOperacion
@@ -155,9 +167,9 @@ def show_qr():
         return Response(buffer, mimetype='image/png')
     return "", 404
 
-@blueprint.route('/siro_success/<voucher_id>', methods=['GET', 'POST'])
-@tryton.transaction(readonly=False, user=2)
-def handle_success(voucher_id) :
+
+
+def process_siro_success(voucher_id, is_button_call = False):
     pool = tryton.pool
     Voucher = pool.get('delco.subscriptor.voucher')
     Log = pool.get('delco.siro.log')
@@ -187,8 +199,10 @@ def handle_success(voucher_id) :
     log.siro_qr_hash = hmac_recibido
     log.siro_IdReferenciaOperacion = id_referencia
     log.siro_IdResultado = id_resultado
-    log.save()
 
+    log.save()
+    voucher.save()
+    print("Log inicial ok")
     # Validación del hmac (para POST, o sea, la billetera)
     if  hmac_recibido and id_resultado \
         and hmac_recibido == hmac_tryton \
@@ -206,6 +220,7 @@ def handle_success(voucher_id) :
             print('abortado')
             abort(403, "Firma inválida")
 
+        print("hmac_recibido ok")
         ''''
         Cambiar el estado del cupón, la fecha de transacción,
         y el metodo de pago
@@ -218,9 +233,10 @@ def handle_success(voucher_id) :
             voucher.pay_method = 'qr_siro'
             voucher.siro_IdResultado = id_resultado
             voucher.save()
-
+        print("cambio de estado del cupón ok")
         if voucher.state == 'processing_payment':
-            Voucher.check_siro_payments([voucher])
+            Voucher.check_siro_payments([voucher], is_button_call)
+        print("check_siro_payments ok")
         if voucher.state == 'process_payment_ok':
             log.status = 'paid'
             log.save()
@@ -228,9 +244,7 @@ def handle_success(voucher_id) :
             log.status = 'error'
             log.error_message = "No se pudo concretar la corroboración del pago"
             log.save()
-
         return jsonify({"status": "OK"}), 200
-
     else:
         '''
         Redirección desde la página del QR
@@ -239,10 +253,43 @@ def handle_success(voucher_id) :
         log.status = "redirecting_ok"
         log.save()
         print("Grabado en log ok")
+        #  Si es llamado desde el botón. No debería llegar aquí nunca
+        if is_button_call:
+            return {"status": "success", "message": "Pago procesado correctamente"}
         return render_template('/siro-pago-exitoso.html',
             subscriptor=subscriptor, voucher=voucher)
 
+#  Success para la respuesta y redireccionamiento de página para el QR
+@blueprint.route('/siro_success/<voucher_id>', methods=['GET', 'POST'])
+@tryton.transaction(readonly=False, user=2)
+def handle_success(voucher_id) :
+    return process_siro_success(voucher_id)
 
+# Success para el botón
+@blueprint.route('/siro_success_button/<voucher_id>', methods=['GET', 'POST'])
+@tryton.transaction(readonly=False, user=2)
+def handle_button_success(voucher_id):
+    pool = tryton.pool
+    Voucher = pool.get('delco.subscriptor.voucher')
+    Subscriptor = pool.get('delco.subscriptor')
+    Log = pool.get('delco.siro.log')
+
+    voucher = Voucher(voucher_id)
+    subscriptor = voucher.subscriptor
+
+    print("Esperamos siro_process_success")
+    response = process_siro_success(voucher_id, is_button_call=True)
+    print("Ya nos devolvio el response: ", response)
+    if voucher.state == 'process_payment_ok':
+        return render_template('/siro-pago-exitoso.html',
+                    subscriptor=subscriptor, voucher=voucher)
+    Voucher.clean_siro_parameters([voucher])
+    voucher.state = 'posted'
+    vocher.save()
+    return url_for('base_blueprint.comprobantes')
+
+
+@blueprint.route('/siro_no_success_button/<voucher_id>')
 @blueprint.route('/siro_no_success/<voucher_id>')
 @tryton.transaction(readonly=False, user=2)
 def siro_no_success(voucher_id) :
@@ -324,9 +371,14 @@ def verficar_pago():
     return jsonify({"estado": estado}), 200
 
 
+#  Ponemos la url del botón de pago en Otros medios de pago
 @blueprint.route('/boton_pago/<voucher_id>')
 @tryton.transaction()
 @login_required
 def boton_pago(voucher_id):
-    print('Boton de pago presionado')
-    pass
+    pool = tryton.pool
+    Voucher = pool.get('delco.subscriptor.voucher')
+    voucher_id = voucher_id
+    voucher = Voucher(voucher_id)
+    url = voucher.siro_button_url
+    return redirect(url)

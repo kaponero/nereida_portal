@@ -100,7 +100,7 @@
                                     <a id="generar_qr_{{ line.id }}" href="#" class="generate-qr-link"
                                     data-line-id="{{ line.id }}"
                                     data-amount-to-pay="{{ line.amount_to_pay_today }}">
-                                    Generar QR de pago
+                                    Generar opciones de pago
                                     </a>
                                     <div class="loading-container" id="loading_{{ line.id }}">
                                         <div class="spinner"></div>
@@ -124,6 +124,13 @@
                                                 <div class="spinner"></div>
                                                 <p>Regenerando QR...</p>
                                             </div>
+                                            {% if line.siro_button_url%}
+                                            <div class="pay_button">
+                                                <a class="button-71" role="button" href="/boton_pago/{{line.id}}">
+                                                Otras opciones de pago
+                                                </a>
+                                            </div>
+                                            {% endif %}
                                         </div>
                                     </div>
                                     <div class="popup" id="qr_siro_popup{{ line.id }}">
@@ -133,13 +140,6 @@
                                     </div>
                                 {% else %}
                                 {{ line.qr_siro_string }}
-                                {% endif %}
-                                {% if line.state == 'posted' %}
-                                <div class="pay_button">
-                                <a class="button-71" role="button" href="/boton_pago/{{ line.id }}">
-                                    Botón de pago
-                                </a>
-                                </div>
                                 {% endif %}
                             </td>
                         </tr>
@@ -352,6 +352,11 @@ $(document).ready(function() {
                                     <div class="spinner"></div>
                                     <p>Regenerando QR...</p>
                                 </div>
+                            </div>
+                            <div class="pay_button">
+                                <a class="button-71" role="button" href="/boton_pago/${lineId}">
+                                    Otras opciones de pago
+                                </a>
                             </div>
                         </div>
                         <div class="popup" id="qr_siro_popup${lineId}">
