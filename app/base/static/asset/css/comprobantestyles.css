@@ -35,7 +35,7 @@
 
 .details table{
 	font-size: 14px;
-	width: 100%;
+	width: 80%;
 	border-collapse: collapse;
 	font-family: 'Rubik', sans-serif;
 }
@@ -121,6 +121,31 @@
 
 .fila-impar {
 	background-color: #a8e0e6;
+}
+
+ /*   estilos de botones siguiente y anterior   */
+.dataTables_wrapper .dataTables_paginate .paginate_button.next:hover {
+    background: none !important;                
+    background-color: var(--blue) !important;        
+    color: white !important;                     
+    border: 1px solid var(--blue)!important;       
+    box-shadow: none !important;                 
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button.previous:hover {
+    background: none !important;                
+    background-color: var(--blue) !important;        
+    color: white !important;                     
+    border: 1px solid var(--blue)!important;        
+    box-shadow: none !important;                 
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+    background: none !important;               
+    background-color: var(--blue) !important;      
+    color: white !important;
+    border: 1px solid var(--blue) !important;
+    box-shadow: none !important;
 }
 
 /*---------------------------Diseño responsivo -------------------------*/
