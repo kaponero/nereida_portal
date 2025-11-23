@@ -41,7 +41,7 @@
                         <th>Fecha de pago</th>
                         <th>Monto</th>
                         <th>Recargo</th>
-                        <th>Monto a pagar hoy</th>
+                        <th>Total</th>
                         <th>Método de pago</th>
                         <th>Estado</th>
                         <th>Comprobante</th>
@@ -100,7 +100,7 @@
 
                                     {# Comprobante (descarga) #}
                                     {% if line.state == 'paid' or line.state == 'posted' %}
-                                        <td><a class="comprobante" href="/download_ticket/{{ line.id }}">Descargar</a></td>
+                                        <td><a class="comprobante" href="/download_ticket/{{ line.id }}" target="_blank">Descargar</a></td>
                                     {% else %}
                                         <td><a class="sincomprobante" href="#"></a></td>
                                     {% endif %}
