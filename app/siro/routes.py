@@ -96,11 +96,15 @@ def generate_qr(voucher_id):
             voucher.save()  # Guardar los cambios en la base de datos
 
             try:
-                response = Voucher.generate_siro_payments_button([voucher])
-                print(response, response.text)
-                voucher.siro_button_url = response[0]['Url']
-                voucher.siro_button_hash = response[0]['Hash']
+                responses = Voucher.generate_siro_payments_button([voucher])
+                print('\n RESPONSE del generate_siro_payments_button OK')
+                # print('\nRESPONSE del botón: ', responses, [r.text for r in responses])
+                voucher.siro_button_url = responses[0]['Url']
+                voucher.siro_button_hash = responses[0]['Hash']
+                print(voucher.siro_button_url)
+                print(voucher.siro_button_hash)
                 voucher.save()
+                print("Voucher siro button ok\n")
             except:
                 pass
 
@@ -234,6 +238,8 @@ def process_siro_success(voucher_id, is_button_call = False):
             voucher.siro_IdResultado = id_resultado
             voucher.save()
         print("cambio de estado del cupón ok")
+        # ACA PROCESAMOS EL PAGO REALMENTE, SI SE PAGO O SE CANCELO
+        # TODO CANCELAR UN PAGO EN BILLETERA A VER QUE PASA
         if voucher.state == 'processing_payment':
             Voucher.check_siro_payments([voucher], is_button_call)
         print("check_siro_payments ok")
@@ -285,8 +291,10 @@ def handle_button_success(voucher_id):
                     subscriptor=subscriptor, voucher=voucher)
     Voucher.clean_siro_parameters([voucher])
     voucher.state = 'posted'
-    vocher.save()
-    return url_for('base_blueprint.comprobantes')
+    voucher.save()
+    # redireccionamos hacia comprobantes, limpiando los parametros del qr y
+    # el botón (la url de siro del botón ya no es valida)
+    return redirect(url_for('base_blueprint.comprobantes'))
 
 
 @blueprint.route('/siro_no_success_button/<voucher_id>')
