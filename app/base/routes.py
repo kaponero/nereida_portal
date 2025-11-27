@@ -13,6 +13,12 @@ from trytond.transaction import Transaction
 import qrcode
 import io
 
+
+@tryton.default_context
+def default_context():
+    User = tryton.pool.get('res.user')
+    return User.get_preferences(context_only=True)
+
 @blueprint.route('/admin')
 def admin():
     return render_template('/admin_index.html')

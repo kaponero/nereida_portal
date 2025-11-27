@@ -239,10 +239,9 @@ def process_siro_success(voucher_id, is_button_call = False):
             voucher.save()
         print("cambio de estado del cupón ok")
         # ACA PROCESAMOS EL PAGO REALMENTE, SI SE PAGO O SE CANCELO
-        # TODO CANCELAR UN PAGO EN BILLETERA A VER QUE PASA
         if voucher.state == 'processing_payment':
             Voucher.check_siro_payments([voucher], is_button_call)
-        print("check_siro_payments ok")
+        print("check_siro_payments ok", voucher.state)
         if voucher.state == 'process_payment_ok':
             log.status = 'paid'
             log.save()
@@ -286,7 +285,7 @@ def handle_button_success(voucher_id):
     print("Esperamos siro_process_success")
     response = process_siro_success(voucher_id, is_button_call=True)
     print("Ya nos devolvio el response: ", response)
-    if voucher.state == 'process_payment_ok':
+    if voucher.state in ['process_payment_ok', 'processing_payment']:
         return render_template('/siro-pago-exitoso.html',
                     subscriptor=subscriptor, voucher=voucher)
     Voucher.clean_siro_parameters([voucher])
