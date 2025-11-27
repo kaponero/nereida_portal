@@ -81,6 +81,7 @@ body{
 	transition: 0.5s;
 	overflow: hidden;
 	font-family: 'Rubik', sans-serif;
+	z-index: 100;
 }
 
 .navigation.active{
@@ -193,7 +194,7 @@ font-size: 1.75rem;
 	align-items: center;
 	font-size: 2.5rem;
 	cursor: pointer;
-	
+	z-index: 100;
 }
 
 .name{
