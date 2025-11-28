@@ -1,0 +1,101 @@
+ 
+ /* ========== Estilos del SPINNER ORIGINAL ========== */
+ .spinner {
+    border: 4px solid rgba(0, 0, 0, 0.1);
+    border-top: 4px solid #3498db;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+    margin: 0 auto;
+}
+@keyframes spin {
+    0%   { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* ============================================= */
+        /* ANIMACIÓN MERCADO PAGO SOLO SOBRE EL MAIN     */
+        /* ============================================= */
+        .animacion {
+            width: 500px;
+            background: var(--white);
+            padding: 20px;
+            box-shadow: 0 7px 25px rgba(0,0,0,0.08);
+            border-radius: 20px;
+            position: relative; /* IMPORTANTE: todos los absolute hijos se refieren a este contenedor */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 10;
+        }
+        
+        .full-green {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;  /* ahora ocupa solo el ancho del contenedor */
+            height: 100%; /* altura del contenedor */
+            background: #D75A4A;
+            z-index: 0;
+            animation: showGreen 2s forwards;
+        }
+
+        @keyframes showGreen {
+            0%   { opacity: 1; }
+            100% { opacity: 1; }
+        }
+
+        .white-circle {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 30px;
+            height: 30px;
+            background: white;
+            border-radius: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            z-index: 51;
+            animation: expandCircle 2.4s ease-out forwards;
+            animation-delay: 1.2s;
+        }
+
+        @keyframes expandCircle {
+            0%   { transform: translate(-50%, -50%) scale(0); }
+            30%  { transform: translate(-50%, -50%) scale(10); }
+            100% { transform: translate(-50%, -50%) scale(500); }
+        }
+
+        
+        .final-view {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            opacity: 0;
+            text-align: center;
+            z-index: 60;
+            animation: fadeIn 1.5s ease forwards;
+            animation-delay: 3.3s;
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+
+        .final-icon {
+            width: 120px;
+            height: 120px;
+        }
+        .final-title {
+            font-size: 30px;
+            font-weight: bold;
+            margin-top: 10px;
+            color: #333;
+        }
+        .final-amount {
+            font-size: 28px;
+            color: #D75A4A;
+            margin-top: 5px;
+            font-weight: 600;
+        }

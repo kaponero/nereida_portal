@@ -4,20 +4,37 @@
 
 <!-- Specific Page CSS goes HERE  -->
 {% block links %}
-<link rel="stylesheet" href="{{ url_for("static", filename="asset/css/spinner.css") }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='asset/css/pago_no_exitoso.css') }}">
 {% endblock %}
 
 {% block content %}
-<div id="spinner" class="spinner" style="display: flex; justify-content: center; align-items: center; height: 70vh;">
-    <img id="spinner-image" 
-         src="{{ url_for('static', filename='asset/img/error-svgrepo-com.svg') }}" 
-         height="200" width="200">
-</div>
-<div id="fade-in" class="fade-in" style="display: flex; justify-content: center; align-items: center; height: 10vh;">
-    <p id="success-message" style="opacity: 0; transition: opacity 2s ease; margin-top: 20px; font-size: 24px; color: green;">
-        PAGO NO EXITOSO
-    </p>
-</div>
+
+        <!-- 🔊 SONIDO AGREGADO -->
+        <audio id="pay-sound" src="{{ url_for('static', filename='asset/media/wrong.mp3') }}"></audio>
+
+        <div style="display:flex; justify-content:center; align-items:center; height:75vh; flex-direction:column;">
+            <div class="spinner"></div>
+            <p style="margin-top:15px; color:#555;">Procesando pago...</p>
+        </div>
+
+        <!-- ANIMACIÓN -->
+        <div id="animacion" style="display:none;">
+            <div class="full-green"></div>
+            <div class="white-circle"></div>
+
+            <div class="final-view">
+                <svg class="final-icon" viewBox="0 0 50 50">
+                    <circle cx="25" cy="25" r="25" fill="#D75A4A"/>
+                    <line x1="16" y1="16" x2="34" y2="34"
+                          stroke="white" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+                    <line x1="34" y1="16" x2="16" y2="34"
+                          stroke="white" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>                
+                <div class="final-title">Ocurrio algo inesperado</div>
+                <div class="final-amount">Pago no procesado</div>
+            </div>
+        </div>
+
 {% endblock content %}
 {% block javascripts %}
 
@@ -25,44 +42,22 @@
 <!-- Metemos un spinner, zoom in, zoom out, aparecer el mensaje de pago exitoso -->
 <script>
     setTimeout(() => {
-        const spinner = document.getElementById("spinner");
-        const img = document.getElementById("spinner-image");
-        const text = document.getElementById("success-message");
+        document.querySelector(".spinner").style.display = "none";
+        document.getElementById("animacion").style.display = "block";
 
-        // 1. Detener el spinner (elimina la clase de rotación)
-        spinner.classList.remove("spinner");
-
-        // 2. Asegurar que la imagen no tenga transformaciones previas (como rotate)
-        img.style.transform = "scale(1)"; // Resetear transformaciones
-
-        // 3. Aplicar transición para animaciones suaves
-        img.style.transition = "transform 0.5s ease-in-out";
-        text.style.transition = "transform 2s ease-in-out";
-        // 4. Animación: Zoom In (1 → 1.2)
+        // 🔊 SONIDO EXACTAMENTE CUANDO EXPLOTA EL CÍRCULO
         setTimeout(() => {
-            img.style.transform = "scale(1.2)";
-        }, 50); // Pequeño delay para asegurar que se aplica el transition
+            document.getElementById("pay-sound").play();
+        }, 1200);
 
-        // 5. Animación: Zoom Out (1.2 → 0.8)
-        setTimeout(() => {
-            img.style.transform = "scale(0.8)";
-        }, 600); // 600ms después del Zoom In
-
-        // 6. Volver al tamaño original (0.8 → 1)
-        setTimeout(() => {
-            img.style.transform = "scale(1)";
-        }, 1200); // 1200ms después del Zoom In
-
-        // 7. Fade In del texto (usando requestAnimationFrame para garantizar la transición)
-        setTimeout(() => {
-            requestAnimationFrame(() => {
-                text.style.opacity = "1"; //
-            });
-        }, 1300); // 1300ms después del inicio
-    }, 2000); // Inicia todo después de 3 segundos (ajustable)
+    }, 2000);
 </script>
 <!-- -------------------- ionicons ----------------------- -->
 <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
 <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+<script type="text/javascript" src="{{ url_for('static',filename='asset/js/main.js') }}"></script>
+<script>
+    console.log('pagina de pago exitoso ok')
+</script>
 
 {% endblock javascripts %}

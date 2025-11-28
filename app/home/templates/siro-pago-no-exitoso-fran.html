@@ -1,0 +1,68 @@
+{% extends "accounts/base.html" %}
+
+{% block title %} Portal {% endblock %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block links %}
+<link rel="stylesheet" href="{{ url_for("static", filename="asset/css/spinner.css") }}">
+{% endblock %}
+
+{% block content %}
+<div id="spinner" class="spinner" style="display: flex; justify-content: center; align-items: center; height: 70vh;">
+    <img id="spinner-image" 
+         src="{{ url_for('static', filename='asset/img/error-svgrepo-com.svg') }}" 
+         height="200" width="200">
+</div>
+<div id="fade-in" class="fade-in" style="display: flex; justify-content: center; align-items: center; height: 10vh;">
+    <p id="success-message" style="opacity: 0; transition: opacity 2s ease; margin-top: 20px; font-size: 24px; color: green;">
+        PAGO NO EXITOSO
+    </p>
+</div>
+{% endblock content %}
+{% block javascripts %}
+
+<!-- --------------------- scripts ----------------------- -->
+<!-- Metemos un spinner, zoom in, zoom out, aparecer el mensaje de pago exitoso -->
+<script>
+    setTimeout(() => {
+        const spinner = document.getElementById("spinner");
+        const img = document.getElementById("spinner-image");
+        const text = document.getElementById("success-message");
+
+        // 1. Detener el spinner (elimina la clase de rotación)
+        spinner.classList.remove("spinner");
+
+        // 2. Asegurar que la imagen no tenga transformaciones previas (como rotate)
+        img.style.transform = "scale(1)"; // Resetear transformaciones
+
+        // 3. Aplicar transición para animaciones suaves
+        img.style.transition = "transform 0.5s ease-in-out";
+        text.style.transition = "transform 2s ease-in-out";
+        // 4. Animación: Zoom In (1 → 1.2)
+        setTimeout(() => {
+            img.style.transform = "scale(1.2)";
+        }, 50); // Pequeño delay para asegurar que se aplica el transition
+
+        // 5. Animación: Zoom Out (1.2 → 0.8)
+        setTimeout(() => {
+            img.style.transform = "scale(0.8)";
+        }, 600); // 600ms después del Zoom In
+
+        // 6. Volver al tamaño original (0.8 → 1)
+        setTimeout(() => {
+            img.style.transform = "scale(1)";
+        }, 1200); // 1200ms después del Zoom In
+
+        // 7. Fade In del texto (usando requestAnimationFrame para garantizar la transición)
+        setTimeout(() => {
+            requestAnimationFrame(() => {
+                text.style.opacity = "1"; //
+            });
+        }, 1300); // 1300ms después del inicio
+    }, 2000); // Inicia todo después de 3 segundos (ajustable)
+</script>
+<!-- -------------------- ionicons ----------------------- -->
+<script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+
+{% endblock javascripts %}

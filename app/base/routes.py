@@ -164,6 +164,6 @@ def prueba():
     if Subscriptor.search([('web_user', '=', user)]):
         with Transaction().set_context(company=1):
             subscriptor, = Subscriptor.search([('web_user', '=', user)])
-            return render_template('/siro-pago-exitoso.html', subscriptor=subscriptor)
+            return render_template('/siro-pago-no-exitoso.html', subscriptor=subscriptor)
     return render_template('page-500.html'), 500
     
