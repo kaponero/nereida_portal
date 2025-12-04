@@ -171,8 +171,6 @@ def show_qr():
         return Response(buffer, mimetype='image/png')
     return "", 404
 
-
-
 def process_siro_success(voucher_id, is_button_call = False):
     pool = tryton.pool
     Voucher = pool.get('delco.subscriptor.voucher')
