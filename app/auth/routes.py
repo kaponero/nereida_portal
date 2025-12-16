@@ -13,6 +13,14 @@ from app import tryton
 from app.auth import blueprint
 from .forms import LoginForm
 
+from urllib.parse import urlparse, urljoin
+
+def is_safe_url(target):
+    ref_url = urlparse(request.host_url)
+    test_url = urlparse(urljoin(request.host_url, target))
+    return test_url.scheme in ('http', 'https') and ref_url.netloc == test_url.netloc
+
+
 WebUser = tryton.pool.get('web.user')
 Session = tryton.pool.get('web.user.session')
 
@@ -39,17 +47,17 @@ def login_required(func):
 
 # ==========================
 # Login
-# ==========================
 @blueprint.route('/login', methods=['GET', 'POST'])
 @tryton.transaction()
 def login():
-    form = LoginForm(request.form)
+    login_form = LoginForm(request.form)
+    next_page = request.args.get('next')
 
-    if request.method == 'POST' and 'login' in request.form:
+    if 'login' in request.form:
         try:
             webuser = WebUser.authenticate(
-                form.email.data,
-                form.password.data
+                login_form.email.data,
+                login_form.password.data
             )
 
             session['identified'] = False
@@ -58,23 +66,22 @@ def login():
                 session['session_key'] = WebUser.new_session(webuser)
                 session['identified'] = True
 
-                # Redirección segura
-                next_url = request.args.get('next')
-                if next_url:
-                    return redirect(next_url)
+                # 🔐 Redirección correcta
+                if next_page and is_safe_url(next_page):
+                    return redirect(next_page)
 
                 return redirect(url_for('home_blueprint.index'))
 
-            flash('Correo electrónico o contraseña incorrecta', 'error')
+            flash('Verifique sus credenciales', 'error')
 
         except Exception:
             flash(
-                'Demasiados intentos de ingreso o error interno. '
-                'Espere un momento y vuelva a intentar.',
+                'Demasiados intentos de ingreso o error interno',
                 'error'
             )
 
-    return render_template('login.html', form=form)
+    return render_template('login.html', form=login_form)
+
 
 
 # ==========================
