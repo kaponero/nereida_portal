@@ -97,37 +97,57 @@ def notificaciones():
     return render_template('page-500.html'), 500
 
 
-@blueprint.route('/seguridad', methods = ['GET','POST'])
+@blueprint.route('/seguridad', methods=['GET', 'POST'])
 @tryton.transaction()
 @login_required
 def seguridad():
     WebUser = tryton.pool.get('web.user')
     Session = tryton.pool.get('web.user.session')
     Subscriptor = tryton.pool.get('delco.subscriptor')
-    change_password_form = ChangePasswordForm(request.form)
-    user = Session.get_user(session['session_key'])
+
+    form = ChangePasswordForm(request.form)
+
+    user_id = session.get('session_key')
+    user = Session.get_user(user_id)
     web_user = WebUser(user)
 
-    if Subscriptor.search([('web_user', '=', user)]):
-        with Transaction().set_context(company=1):
-            subscriptor, = Subscriptor.search([('web_user', '=', user)])
-            if request.method == 'POST' \
-                and WebUser.authenticate(
-                    web_user.email,
-                    change_password_form.password.data) \
-                and change_password_form.new_password.data == \
-                        change_password_form.password_confirmation.data:
-                # aquí el cambio de contraseña por tryton
-                flash('La contraseña ha sido exitosamente actualizada', 'success')
-                web_user.password = change_password_form.new_password.data
-                web_user.save()
-                return render_template('/contrasenia.html', subscriptor=subscriptor)
-            elif request.method == 'POST':
-                flash('Las contraseñas no coinciden', 'error')
-            return render_template('/seguridad.html', subscriptor=subscriptor,
-                    form=change_password_form)
-    return render_template('page-500.html'), 500
+    # Verificamos que exista subscriptor
+    subscriptors = Subscriptor.search([('web_user', '=', user)])
+    if not subscriptors:
+        return render_template('page-500.html'), 500
 
+    with Transaction().set_context(company=1):
+        subscriptor, = subscriptors
+
+        if request.method == 'POST':
+
+            if not form.validate():
+                flash('Formulario inválido', 'error')
+                return redirect(url_for('base_blueprint.seguridad'))
+
+            if not WebUser.authenticate(
+                    web_user.email,
+                    form.password.data):
+                flash('La contraseña actual es incorrecta', 'error')
+                return redirect(url_for('base_blueprint.seguridad'))
+
+            if form.new_password.data != form.password_confirmation.data:
+                flash('Las contraseñas no coinciden', 'error')
+                return redirect(url_for('base_blueprint.seguridad'))
+
+            # Cambio de contraseña
+            web_user.password = form.new_password.data
+            web_user.save()
+
+            flash('La contraseña ha sido exitosamente actualizada', 'success')
+            return redirect(url_for('base_blueprint.seguridad'))
+
+        # GET
+        return render_template(
+            'contrasenia.html',
+            subscriptor=subscriptor,
+            form=form
+        )
 
 @blueprint.route('/get_multipago_qr/<subscriptor_id>')
 @tryton.transaction()

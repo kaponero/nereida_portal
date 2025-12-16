@@ -83,14 +83,23 @@ fileInput.addEventListener("change", function () {
   });
 
 function verificarPasswords() {
- 
-  error = document.getElementById('error_tamanio');
 
-  if (pass_nuevo.value.length<8){
+  const error = document.getElementById('error_tamanio');
+
+  // Largo mínimo
+  if (pass_nuevo.value.length < 8) {
     error.style.display = "block";
     return false;
   }
-  else
-    error.style.display = "none";
-    document.getElementById("f-psw").submit();
+
+  error.style.display = "none";
+
+  // Coincidencia (extra, aunque backend ya valida)
+  if (pass_nuevo.value !== pass_repite.value) {
+    alert("Las contraseñas no coinciden");
+    return false;
+  }
+
+  // ✅ Todo OK → dejar que el navegador haga el POST
+  return true;
 }

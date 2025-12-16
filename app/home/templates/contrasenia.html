@@ -1,122 +1,103 @@
 {% extends "accounts/base.html" %}
 
-{% block title %} Portal {% endblock %} 
+{% block title %}Cambiar contraseña{% endblock %}
 
-<!-- Specific Page CSS goes HERE  -->
 {% block links %}
-<link rel="stylesheet" href="{{ url_for("static", filename="asset/css/seguridadstyles.css") }}">
+<link rel="stylesheet"
+      href="{{ url_for('static', filename='asset/css/seguridadstyles.css') }}">
 {% endblock %}
 
 {% block content %}
 
-    <!-- -------------------------Menu de navegacion-------------------------------->
-    <div class="contenedor">
-        <div class="navigation">
-            <ul>
-                <li>
-                    <a id="brandname" href="#">
-                        <span class="icon">
-                            <ion-icon name="planet-outline"></ion-icon>
-                        </span>
-                        <span class="title">Nereida Autogestion</span>
-                    </a>
-                </li>
+<div class="seguridad">
+    <div class="configuracion">
 
-                <li>
-                    <a href="/index">
-                        <span class="icon">
-                            <ion-icon name="home-outline"></ion-icon>
-                        </span>
-                        <span class="title">Resumen</span>
-                    </a>
-                </li>
+        <form id="f-psw"
+              method="post"
+              onsubmit="return verificarPasswords();">
 
-                <li>
-                    <a href="/comprobantes">
-                        <span class="icon">
-                            <ion-icon name="receipt-outline"></ion-icon>
-                        </span>
-                        <span class="title">Comprobantes</span>
-                    </a>
-                </li>
+            {{ form.hidden_tag() }}
 
-                <li>
-                    <a href="/perfil">
-                        <span class="icon">
-                            <ion-icon name="person-outline"></ion-icon>
-                        </span>
-                        <span class="title">Perfil</span>
-                    </a>
-                </li>
+            <h2>Cambiar contraseña</h2>
 
-                <li>
-                    <a href="/seguridad">
-                        <span class="icon">
-                            <ion-icon name="shield-outline"></ion-icon>
-                        </span>
-                        <span class="title">Seguridad</span>
-                    </a>
-                </li>
+            {# Mensajes flash #}
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <ul>
+                {% for category, message in messages %}
+                    <li style="color: {{ 'green' if category == 'success' else 'brown' }};">
+                        {{ message }}
+                    </li>
+                {% endfor %}
+                </ul>
+                <br>
+            {% endif %}
+            {% endwith %}
 
-                <li>
-                    <a href="#">
-                        <span class="icon">
-                            <ion-icon name="notifications-outline"></ion-icon>
-                        </span>
-                        <span class="title">Notificaciones</span>
-                    </a>
-                </li>
-
-                <li>
-                    <a href="/logout">
-                        <span class="icon">
-                            <ion-icon name="log-out-outline"></ion-icon>
-                        </span>
-                        <span class="title">Salir</span>
-                    </a>
-                </li>
-            </ul>
-            
-        </div>
-
-        <!-- -------------------------- Main ------------------------------->
-        <div class="main">
-            <div class="topbar">
-                <div class="toggle">
-                    <ion-icon name="menu-outline"></ion-icon>
-                </div>
-                <div class="name">
-                    <h2>{{ subscriptor.party.rec_name }}</h2>
-                </div>
-                <div class="user">
-                    <ion-icon name="person-circle-outline"></ion-icon>
-                </div>
+            <div id="error_tamanio" style="display:none;">
+                <ul>
+                    <li style="color:brown;">
+                        La contraseña debe tener al menos 8 caracteres
+                    </li>
+                </ul>
+                <br>
             </div>
 
-            <!-- -------------------- Perfil -------------------------------->
-            
-            <div class="perfil">
-                <div class="configuracion">
+            {{ form.password(
+                class="form-control",
+                id="psw",
+                placeholder="Contraseña actual",
+                autocomplete="current-password",
+                required=true
+            ) }}
+            <ion-icon class="ojo"
+                      id="actual"
+                      name="eye-outline"
+                      aria-label="Mostrar contraseña actual"></ion-icon>
 
-                        <h2>La contraseña ha sido exitosamente actualizada</h2>
-                        
-                </div>
-            </div>
-        </div>
+            {{ form.new_password(
+                class="form-control",
+                id="new_psw",
+                placeholder="Nueva contraseña",
+                autocomplete="new-password",
+                required=true
+            ) }}
+            <ion-icon class="ojo"
+                      id="nueva"
+                      name="eye-outline"
+                      aria-label="Mostrar nueva contraseña"></ion-icon>
+
+            {{ form.password_confirmation(
+                class="form-control",
+                id="repite_psw",
+                placeholder="Repetir contraseña",
+                autocomplete="new-password",
+                required=true
+            ) }}
+            <ion-icon class="ojo"
+                      id="repite"
+                      name="eye-outline"
+                      aria-label="Mostrar confirmación de contraseña"></ion-icon>
+
+            <input type="submit" value="Guardar">
+        </form>
 
     </div>
-
-
+</div>
 
 {% endblock content %}
 
 {% block javascripts %}
 
-<!-- --------------------- scripts ----------------------- -->
-<script type="text/javascript" src="{{ url_for('static',filename='asset/js/main.js') }}"></script>
+<script type="text/javascript"
+        src="{{ url_for('static', filename='asset/js/seguridad.js') }}">
+</script>
 
-<!-- -------------------- ionicons ----------------------- -->
-<script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
-<script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+<script type="module"
+        src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js">
+</script>
+<script nomodule
+        src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js">
+</script>
 
 {% endblock javascripts %}

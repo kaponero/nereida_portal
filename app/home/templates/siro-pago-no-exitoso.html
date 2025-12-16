@@ -1,63 +1,86 @@
 {% extends "accounts/base.html" %}
 
-{% block title %} Portal {% endblock %} 
+{% block title %}Pago no exitoso{% endblock %}
 
-<!-- Specific Page CSS goes HERE  -->
 {% block links %}
 <link rel="stylesheet" href="{{ url_for('static', filename='asset/css/pago_no_exitoso.css') }}">
 {% endblock %}
 
 {% block content %}
 
-        <!-- 🔊 SONIDO AGREGADO -->
-        <audio id="pay-sound" src="{{ url_for('static', filename='asset/media/wrong.mp3') }}"></audio>
+<!-- 🔊 SONIDO -->
+<audio id="pay-sound" preload="auto"
+       src="{{ url_for('static', filename='asset/media/wrong.mp3') }}">
+</audio>
 
-        <div style="display:flex; justify-content:center; align-items:center; height:75vh; flex-direction:column;">
-            <div class="spinner"></div>
-            <p style="margin-top:15px; color:#555;">Procesando pago...</p>
+<!-- Estado inicial -->
+<div id="loading-view"
+     style="display:flex; justify-content:center; align-items:center; height:75vh; flex-direction:column;">
+    <div class="spinner"></div>
+    <p style="margin-top:15px; color:#555;">
+        Procesando pago...
+    </p>
+</div>
+
+<!-- Vista final -->
+<div id="animacion" style="display:none;">
+    <div class="full-green"></div>
+    <div class="white-circle"></div>
+
+    <div class="final-view">
+        <svg class="final-icon" viewBox="0 0 50 50" aria-hidden="true">
+            <circle cx="25" cy="25" r="25" fill="#D75A4A"/>
+            <line x1="16" y1="16" x2="34" y2="34"
+                  stroke="white" stroke-width="4"
+                  stroke-linecap="round" stroke-linejoin="round"/>
+            <line x1="34" y1="16" x2="16" y2="34"
+                  stroke="white" stroke-width="4"
+                  stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+
+        <div class="final-title">Ocurrió un problema</div>
+        <div class="final-amount">El pago no pudo procesarse</div>
+
+        <div class="mt-4">
+            <a href="{{ url_for('home_blueprint.index') }}"
+               class="btn btn-light mr-2">
+                Volver al inicio
+            </a>
+            <a href="{{ url_for('home_blueprint.comprobantes') }}"
+               class="btn btn-outline-light">
+                Reintentar
+            </a>
         </div>
-
-        <!-- ANIMACIÓN -->
-        <div id="animacion" style="display:none;">
-            <div class="full-green"></div>
-            <div class="white-circle"></div>
-
-            <div class="final-view">
-                <svg class="final-icon" viewBox="0 0 50 50">
-                    <circle cx="25" cy="25" r="25" fill="#D75A4A"/>
-                    <line x1="16" y1="16" x2="34" y2="34"
-                          stroke="white" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-                    <line x1="34" y1="16" x2="16" y2="34"
-                          stroke="white" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>                
-                <div class="final-title">Ocurrio algo inesperado</div>
-                <div class="final-amount">Pago no procesado</div>
-            </div>
-        </div>
+    </div>
+</div>
 
 {% endblock content %}
-{% block javascripts %}
 
-<!-- --------------------- scripts ----------------------- -->
-<!-- Metemos un spinner, zoom in, zoom out, aparecer el mensaje de pago exitoso -->
+{% block javascripts %}
 <script>
     setTimeout(() => {
-        document.querySelector(".spinner").style.display = "none";
-        document.getElementById("animacion").style.display = "block";
+        const spinner = document.querySelector(".spinner");
+        const loadingView = document.getElementById("loading-view");
+        const animacion = document.getElementById("animacion");
 
-        // 🔊 SONIDO EXACTAMENTE CUANDO EXPLOTA EL CÍRCULO
+        if (spinner) spinner.style.display = "none";
+        if (loadingView) loadingView.style.display = "none";
+        animacion.style.display = "block";
+
         setTimeout(() => {
-            document.getElementById("pay-sound").play();
+            const audio = document.getElementById("pay-sound");
+            if (audio) {
+                audio.play().catch(() => {
+                    console.warn('Autoplay bloqueado por el navegador');
+                });
+            }
         }, 1200);
 
     }, 2000);
 </script>
-<!-- -------------------- ionicons ----------------------- -->
-<script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
-<script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
-<script type="text/javascript" src="{{ url_for('static',filename='asset/js/main.js') }}"></script>
-<script>
-    console.log('pagina de pago exitoso ok')
+
+<script type="text/javascript"
+        src="{{ url_for('static', filename='asset/js/main.js') }}">
 </script>
 
 {% endblock javascripts %}

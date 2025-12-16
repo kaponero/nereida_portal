@@ -1,79 +1,110 @@
 {% extends "layouts/base.html" %}
 
-{% block title %} Login {% endblock %}
+{% block title %}Login{% endblock %}
 
-<!-- Specific Page CSS goes HERE  -->
+{# ===============================
+   CSS específico (si hiciera falta)
+   =============================== #}
 {% block stylesheets %}
-
 {% endblock stylesheets %}
 
+{# ===============================
+   Contenido
+   =============================== #}
 {% block content %}
+
 <div class="page-inner">
-    <div class="container" >
+    <div class="container">
         <div class="row pt-5 justify-content-center">
             <div class="col-md-5">
-                {%if 'identified' not in session or session['identified'] == False %}
+
+                {% if 'identified' not in session or not session['identified'] %}
+
                 <div class="card">
                     <div class="card-header">
                         <div class="card-title">
                             {% if msg %}
-                                    <span class="text-danger">{{ msg | safe }}</span>
+                                <span class="text-danger">{{ msg | safe }}</span>
                             {% else %}
-                            <span>
-                                Ingreso
-                            </span>
+                                <span>Ingreso</span>
                             {% endif %}
                         </div>
                     </div>
+
                     {% with messages = get_flashed_messages() %}
-                    {% if messages %}
-                    <div class="px-3 pt-3">
-                        <ul>
-                            {% for message in messages %}
-                                <li>{{ message }}</li>
-                            {% endfor %}
+                        {% if messages %}
+                        <div class="px-3 pt-3">
+                            <ul class="mb-0">
+                                {% for message in messages %}
+                                    <li>{{ message }}</li>
+                                {% endfor %}
                             </ul>
-                    </div>
-                    {% endif %}
+                        </div>
+                        {% endif %}
                     {% endwith %}
-                    <form method="post" action="">
+
+                    <form method="post">
                         {{ form.hidden_tag() }}
-                        <div class="card-body" >
+
+                        <div class="card-body">
                             <div class="row justify-content-center">
                                 <div class="col-md-9 col-lg-9">
+
                                     <div class="form-group">
                                         <div class="input-group mb-3">
-                                            <div class="input-group-prepend">
-                                                <span class="input-group-text">
-                                                    <img src="/static/asset/img/user.svg" alt="" width="25px" height="25px">
-                                                </span>
-                                            </div>
-                                            {{ form.email(placeholder="Número de socio", class="form-control") }}
+                                            <span class="input-group-text">
+                                                <img
+                                                    src="{{ url_for('base_blueprint.static',
+                                                                     filename='asset/img/user.svg') }}"
+                                                    alt="Usuario"
+                                                    width="25"
+                                                    height="25">
+                                            </span>
+                                            {{ form.email(
+                                                placeholder="Número de socio",
+                                                class="form-control"
+                                            ) }}
                                         </div>
                                     </div>
+
                                     <div class="form-group">
                                         <div class="input-group mb-3">
-                                            <div class="input-group-prepend">
-                                                <span class="input-group-text">
-                                                    <img src="/static/asset/img/lock.svg" alt="" width="25px" height="25px">
-                                                </span>
-                                            </div>
-                                            {{ form.password(placeholder="Password", class="form-control", type="password") }}
+                                            <span class="input-group-text">
+                                                <img
+                                                    src="{{ url_for('base_blueprint.static',
+                                                                     filename='asset/img/lock.svg') }}"
+                                                    alt="Contraseña"
+                                                    width="25"
+                                                    height="25">
+                                            </span>
+                                            {{ form.password(
+                                                placeholder="Password",
+                                                class="form-control",
+                                                type="password"
+                                            ) }}
                                         </div>
                                     </div>
+
                                 </div>
                             </div>
+
                             <div class="row justify-content-end">
                                 <div class="col-md-5">
-                                    <div class="card-action">
-                                        <button type="submit" name="login" class="btn btn-dark"
-                                                id="login">Ingresar</button>
+                                    <div class="card-action text-end">
+                                        <button type="submit"
+                                                name="login"
+                                                class="btn btn-dark"
+                                                id="login">
+                                            Ingresar
+                                        </button>
                                     </div>
                                 </div>
                             </div>
+
                         </div>
                     </form>
                 </div>
+
                 {% endif %}
             </div>
         </div>
@@ -82,7 +113,8 @@
 
 {% endblock content %}
 
-<!-- Specific Page JS goes HERE  -->
+{# ===============================
+   JS específico (si hiciera falta)
+   =============================== #}
 {% block javascripts %}
-
 {% endblock javascripts %}

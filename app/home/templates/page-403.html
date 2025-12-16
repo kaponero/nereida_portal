@@ -1,46 +1,48 @@
 {% extends "layouts/base.html" %}
 
-{% block title %} 403 Error {% endblock %} 
+{% block title %}Error 403{% endblock %}
 
-<!-- Specific Page CSS goes HERE  -->
 {% block links %}
 <link rel="stylesheet" href="{{ url_for('static', filename='asset/css/errors.css') }}">
 {% endblock %}
 
 {% block content %}
+<div class="content">
+    <div class="page-inner">
+        <div class="row page-category p-5">
+            <div class="col text-center">
+                <h1 class="mb-4">Error 403</h1>
 
-    <div class="content">
-        <div class="page-inner">
-            <!--<div class="page-header">
-                <h4 class="page-title">Home</h4>
-                <ul class="breadcrumbs">
-                    <li class="nav-home">
-                        <a href="/">
-                            <i class="flaticon-home"></i>
-                        </a>
-                    </li>
-                    <li class="separator">
-                        <i class="flaticon-right-arrow"></i>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#">Error 403</a>
-                    </li>
-                </ul>
-            </div>-->
-            <div class="row page-category p-5">
-                <div class="col text-center">
-                    <h1 class="mb-4">Error 403</h1>
-                <img class="mb-4" src="/static/asset/img/bajo-construccion.png" width="150" height="150" alt="..." class="img-thumbnail">
-                <h2 class="mb-2 class="font-weight-light">
-                    Acceso denegado - Por favor <a href="{{ url_for('auth_blueprint.login') }}">autenticarse</a>.
+                <img
+                    class="mb-4"
+                    src="{{ url_for('static', filename='asset/img/bajo-construccion.png') }}"
+                    width="150"
+                    height="150"
+                    alt="Acceso denegado">
+
+                <h2 class="mb-2 font-weight-light">
+                    Acceso denegado
                 </h2>
-                <a href="https://www.flaticon.es/iconos-gratis/en-construccion" title="en construcción iconos">En construcción iconos creados por Freepik - Flaticon</a>
+
+                <p class="text-muted mt-3">
+                    No tenés permisos para acceder a este recurso.
+                </p>
+
+                <div class="mt-4">
+                    <a href="{{ url_for('auth_blueprint.login') }}"
+                       class="btn btn-outline-primary me-2">
+                        Iniciar sesión
+                    </a>
+
+                    <a href="{{ url_for('home_blueprint.index') }}"
+                       class="btn btn-outline-secondary">
+                        Volver al inicio
+                    </a>
                 </div>
             </div>
         </div>
     </div>
-
+</div>
 {% endblock content %}
 
-<!-- Specific Page JS goes HERE  -->
 {% block javascripts %}{% endblock javascripts %}

@@ -12,7 +12,7 @@
     <!-- -------------------- Seguridad -------------------------------->
     <div class="seguridad">
         <div class="configuracion">
-            <form id="f-psw" method="post" onsubmit="verificarPasswords(); return false">
+            <form id="f-psw" method="post" onsubmit="return verificarPasswords();">
                 {{ form.hidden_tag() }}
                 <h2>Cambiar contraseña</h2>
                 {% with messages = get_flashed_messages() %}
