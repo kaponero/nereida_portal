@@ -50,6 +50,7 @@ def login_required(func):
 @blueprint.route('/login', methods=['GET', 'POST'])
 @tryton.transaction()
 def login():
+    print("LOGIN VIEW EJECUTADA", request.method)
     login_form = LoginForm(request.form)
     next_page = request.args.get('next')
 
@@ -68,8 +69,9 @@ def login():
 
                 # 🔐 Redirección correcta
                 if next_page and is_safe_url(next_page):
+                    print("LOGIN OK PARA:", webuser)
                     return redirect(next_page)
-
+                print("2 LOGIN OK PARA:", webuser)
                 return redirect(url_for('home_blueprint.index'))
 
             flash('Verifique sus credenciales', 'error')
