@@ -18,7 +18,8 @@ from urllib.parse import urlparse, urljoin
 def is_safe_url(target):
     ref_url = urlparse(request.host_url)
     test_url = urlparse(urljoin(request.host_url, target))
-    return test_url.scheme in ('http', 'https') and ref_url.netloc == test_url.netloc
+    return test_url.scheme in ('http', 'https') and \
+           ref_url.netloc == test_url.netloc
 
 
 WebUser = tryton.pool.get('web.user')
@@ -50,39 +51,43 @@ def login_required(func):
 @blueprint.route('/login', methods=['GET', 'POST'])
 @tryton.transaction()
 def login():
-    print("LOGIN VIEW EJECUTADA", request.method)
     login_form = LoginForm(request.form)
-    next_page = request.args.get('next')
 
-    if 'login' in request.form:
+    # 🔁 next puede venir por GET o POST
+    next_page = request.args.get('next') or request.form.get('next')
+
+    if request.method == 'POST' and 'login' in request.form:
         try:
             webuser = WebUser.authenticate(
                 login_form.email.data,
                 login_form.password.data
             )
 
-            session['identified'] = False
-
             if webuser:
                 session['session_key'] = WebUser.new_session(webuser)
                 session['identified'] = True
 
-                # 🔐 Redirección correcta
-                if next_page and is_safe_url(next_page):
-                    print("LOGIN OK PARA:", webuser)
-                    return redirect(next_page)
-                print("2 LOGIN OK PARA:", webuser)
-                return redirect(url_for('home_blueprint.index'))
+                # 🔐 Redirección segura
+                if not next_page or not is_safe_url(next_page):
+                    next_page = url_for('home')
 
+                return redirect(next_page)
+
+            # ❌ Login incorrecto
             flash('Verifique sus credenciales', 'error')
 
-        except Exception:
+        except Exception as e:
             flash(
                 'Demasiados intentos de ingreso o error interno',
                 'error'
             )
 
-    return render_template('login.html', form=login_form)
+    return render_template(
+        'login.html',
+        form=login_form,
+        next=next_page
+    )
+
 
 
 
