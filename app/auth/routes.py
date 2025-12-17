@@ -71,7 +71,7 @@ def login():
                 if not next_page or not is_safe_url(next_page):
                     next_page = url_for('home')
 
-                return redirect(url_for('base_blueprint.formulario'))
+                return redirect(next_page)
 
             # ❌ Login incorrecto
             flash('Verifique sus credenciales', 'error')
