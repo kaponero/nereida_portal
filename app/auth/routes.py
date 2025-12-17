@@ -69,7 +69,7 @@ def login():
 
                 # 🔐 Redirección segura
                 if not next_page or not is_safe_url(next_page):
-                    next_page = url_for('home')
+                    next_page = url_for('home_blueprint.formulario')
 
                 return redirect(next_page)
 
