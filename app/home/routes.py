@@ -11,8 +11,8 @@ from jinja2 import TemplateNotFound
 from functools import wraps
 from trytond.transaction import Transaction
 
-
 @blueprint.route('/')
+@blueprint.route('/index')
 @tryton.transaction()
 @login_required
 def index():
