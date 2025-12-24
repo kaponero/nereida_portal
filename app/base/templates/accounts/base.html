@@ -58,6 +58,16 @@
             </li>
 
             <li>
+                <a href="{{ url_for('base_blueprint.equipos') }}"
+                   class="{% if request.endpoint == 'base_blueprint.equipos' %}active{% endif %}">
+                    <span class="icon">
+                        <ion-icon name="laptop-outline"></ion-icon>
+                    </span>
+                    <span class="title">Equipos</span>
+                </a>
+            </li>
+
+            <li>
                 <a href="{{ url_for('base_blueprint.perfil') }}"
                    class="{% if request.endpoint == 'base_blueprint.perfil' %}active{% endif %}">
                     <span class="icon">

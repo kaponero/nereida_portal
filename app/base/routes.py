@@ -174,16 +174,16 @@ def get_multipago_qr(subscriptor_id):
         return Response(buffer, mimetype='image/png')
     return "QR no encontrado", 404
 
-@blueprint.route('/prueba')
+@blueprint.route('/equipos')
 @tryton.transaction(user=1)
 @login_required
-def prueba():
+def equipos():
     Subscriptor = tryton.pool.get('delco.subscriptor')
     Session = tryton.pool.get('web.user.session')
     user = Session.get_user(session['session_key'])
     if Subscriptor.search([('web_user', '=', user)]):
         with Transaction().set_context(company=1):
             subscriptor, = Subscriptor.search([('web_user', '=', user)])
-            return render_template('/siro-pago-no-exitoso.html', subscriptor=subscriptor)
+            return render_template('/equipos.html', subscriptor=subscriptor)
     return render_template('page-500.html'), 500
     
