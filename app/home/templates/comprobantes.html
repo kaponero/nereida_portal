@@ -100,7 +100,7 @@
 
                                     {# Comprobante (descarga) #}
                                     {% if line.state == 'paid' or line.state == 'posted' %}
-                                        <td><a class="comprobante" href="/download_ticket/{{ line.id }}" target="_blank">Descargar</a></td>
+                                        <td><a class="comprobante" href="{{url_for('base_blueprint.download_ticket', id=line.id )}}" target="_blank">Descargar</a></td>
                                     {% else %}
                                         <td><a class="sincomprobante" href="#"></a></td>
                                     {% endif %}
