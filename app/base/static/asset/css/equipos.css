@@ -1,0 +1,152 @@
+/*----------------------- List ----------------------------- */
+
+.details{
+    position: relative;
+    width: 100%;
+    padding: 20px;
+    display: grid;
+}
+
+.details .equipos{
+    position: relative;
+    display: grid;
+    min-height: 200px;
+    background: var(--white);
+    padding: 20px;
+    box-shadow: 0 7px 25px rgba(0, 0,0, 0.08);
+    border-radius: 20px;
+    overflow-x: auto;
+}
+
+.details .cardHeader{
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.cardHeader h2{
+    font-weight: 600;
+    color: var(--blue);
+    font-family: 'Rubik', sans-serif;
+    margin-bottom: 10px;
+}
+
+.details table{
+    font-size: 14px;
+    width: 80%;
+    border-collapse: collapse;
+    font-family: 'Rubik', sans-serif;
+}
+
+/* Header de tabla */
+.details table thead th{
+    font-weight: 600;
+    color: var(--white);
+    background: #343a3b;
+	position: sticky;
+	text-align: center;
+	top: 0;
+}
+
+.details .equipos table tr{
+    color: var(--blue);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.details .equipos table tr:last-child{
+    border-bottom: none;
+}
+
+/* Celdas */
+.details .equipos table tr td{
+    padding: 10px;
+    text-align: center;
+}
+
+/* ------- Estados -------- */
+
+.estado.otro{
+    padding: 2px 4px;
+    background: #f00;
+    color: var(--white);
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.estado.activo{
+    padding: 2px 4px;
+    background: rgb(80, 168, 63);
+    color: var(--white);
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+/* Contenedor con scroll */
+.div-table {
+    overflow-x: auto;
+}
+
+/*------------------- Paginación DataTables ---------------------*/
+
+.dataTables_wrapper .dataTables_paginate .paginate_button:hover,
+.dataTables_wrapper .dataTables_paginate .paginate_button.next:hover,
+.dataTables_wrapper .dataTables_paginate .paginate_button.previous:hover {
+    background: none !important;
+    background-color: var(--blue) !important;
+    color: white !important;
+    border: 1px solid var(--blue) !important;
+    box-shadow: none !important;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button.disabled,
+.dataTables_wrapper .dataTables_paginate .paginate_button.disabled:hover,
+.dataTables_wrapper .dataTables_paginate .paginate_button.current,
+.dataTables_wrapper .dataTables_paginate .paginate_button.current:hover {
+    background: none !important;
+    background-color: white !important;
+    color: #9ca3af !important;              /* gris texto */
+    border: 1px solid #d1d5db !important;   /* borde gris */
+    cursor: default !important;
+    box-shadow: none !important;
+}
+.dataTables_wrapper .dataTables_paginate .paginate_button.disabled,
+.dataTables_wrapper .dataTables_paginate .paginate_button.disabled:hover{
+    border: none !important;  
+}
+
+.dataTables_wrapper .dataTables_length,
+.dataTables_wrapper .dataTables_filter {
+    margin-bottom: 15px !important;
+}
+
+.dataTables_wrapper .dataTables_paginate,
+.dataTables_info {
+    margin-top: 15px !important;
+}
+
+
+/*---------------- Filas par/impar personalizadas ----------------*/
+
+table.dataTable tbody tr.even {
+    /*background-color: #66ffcc !important;*/
+    background-color: var(--verde_gris) !important;
+}
+
+table.dataTable tbody tr.odd {
+    /*background-color: #9999ff !important;*/
+    background-color: var(--rojo_claro) !important;
+}
+
+/*------------- Hover azul (DataTables restaurado) ---------------*/
+
+table.dataTable tbody tr:hover {
+    background-color: var(--blue) !important;
+    color: white !important;
+}
+
+/*--------------------------- Diseño responsivo -------------------------*/
+@media (max-width: 991px) {
+
+}
