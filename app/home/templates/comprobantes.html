@@ -1,424 +1,183 @@
 {% extends "accounts/base.html" %}
 
-{% block title %} Portal {% endblock %} 
+{% block title %} Portal {% endblock %}
 
-<!-- Specific Page CSS goes HERE  -->
 {% block links %}
-<link rel="stylesheet" href="{{ url_for("static", filename="asset/css/comprobantestyles.css") }}">
-<link rel="stylesheet" href="{{ url_for("static", filename="asset/css/pop-up-img.css") }}">
-<link rel="stylesheet" href="{{ url_for("static", filename="asset/css/spinner.css") }}">
-<link rel="stylesheet" href="{{ url_for("static", filename="asset/css/polling.css") }}">
-<link rel="stylesheet" href="{{ url_for("static", filename="asset/css/qr_style.css" )}}">
-<link rel="stylesheet" href="{{ url_for("static", filename="asset/css/boton_pago.css")}}">
+<link rel="stylesheet" href="{{ url_for('static', filename='asset/css/comprobantestyles.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='asset/css/pop-up-img.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='asset/css/spinner.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='asset/css/polling.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='asset/css/qr_style.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='asset/css/boton_pago.css') }}">
+
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/plug-ins/1.13.6/sorting/date-eu.js"></script>
-
-<style>
-
-</style>
 {% endblock %}
 
-{% block navigation %}
-{% endblock %}
+{% block navigation %}{% endblock %}
 
 {% block content %}
-    <!-- -------------------- Comprobante list -------------------------------->
-    <div class="details">
-        <div class="comprobantes div-table">
-            <div class="cardHeader">
-                <h2>Historial</h2>
-            </div>
-            <table id="tabla_comprobantes">
-                <thead>
-                    <tr>
-                        <th>N° de cupón</th>
-                        <th>Vencimiento</th>
-                        <!--<td>2° vencimiento</td>-->
-                        <th>Mes</th>
-                        <th>Año</th>
-                        <th>Fecha de pago</th>
-                        <th>Monto</th>
-                        <th>Recargo</th>
-                        <th>Total</th>
-                        <th>Método de pago</th>
-                        <th>Estado</th>
-                        <th>Comprobante</th>
-                        <th>Medios de pago</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for line in subscriptor.vouchers %}
-                        {% if line.state != 'cancelled' %}
-                            <!-- convierto la fecha a entero yyyymm y la comparo con abril 2023 (202304)-->
-                            {% set date_filter = line.first_due_date.strftime("%Y%m")| int %}
-                            {% if date_filter > 202304 %}
-<!--                                <tr class="{% if loop.index0 is even %}fila-par{% else %}fila-impar{% endif %}">-->
-                                <tr>
-                                    <td>{{ line.voucher_number }}</td>
-                                    <td>{{ line.first_due_date|dateformat}}</td>
-                                    <!--<td>{{ line.second_due_date|dateformat}}</td>-->
-                                    <td>{{ line.month }}</td>
-                                    <td>{{ line.year }}</td>
-                                    <td>{{ line.paid_date and line.paid_date.date() | dateformat or '-'}}</td>
-                                    <td>{{ line.amount_to_pay | currencyformat(line.currency) }}</td>
-                                    <td>{{ (line.surcharge or 0) | currencyformat(line.currency)}}</td>
-                                    <td>{{ line.amount_to_pay_today | currencyformat(line.currency) }}</td>
+<div class="details">
+    <div class="comprobantes div-table">
+        <div class="cardHeader">
+            <h2>Historial</h2>
+        </div>
 
-                                    {# Método de pago (solo si está pagado) #}
-                                    {% if line.state == 'paid' %}
-                                        {% if line.pay_method == 'cash' %}
-                                            <td><span>Efectivo</span></td>
-                                        {% elif line.pay_method == 'debit' %}
-                                            <td><span>Debito</span></td>
-                                        {% elif line.pay_method == 'credit' %}
-                                            <td><span>Crédito</span></td>
-                                        {% elif line.pay_method == 'check' %}
-                                            <td><span>Cheque</span></td>
-                                        {% elif line.pay_method == 'auto_debit' %}
-                                            <td><span>Débito Automatico</span></td>
-                                        {% elif line.pay_method == 'transfer' %}
-                                            <td><span>Transferencia</span></td>
-                                        {% elif line.pay_method == 'multipagos' %}
-                                            <td><span>Multipagos</span></td>
-                                        {% else %}
-                                            <td><span>Importado</span></td>
-                                        {% endif %}
-                                    {% else %}
-                                        <td><span> - </span></td>
-                                    {% endif %}
+        <table id="tabla_comprobantes">
+            <thead>
+                <tr>
+                    <th>N° de cupón</th>
+                    <th>Vencimiento</th>
+                    <th>Mes</th>
+                    <th>Año</th>
+                    <th>Fecha de pago</th>
+                    <th>Monto</th>
+                    <th>Recargo</th>
+                    <th>Total</th>
+                    <th>Método de pago</th>
+                    <th>Estado</th>
+                    <th>Comprobante</th>
+                    <th>Medios de pago</th>
+                </tr>
+            </thead>
 
-                                    {# Estado #}
-                                    {% if line.state == 'paid' %}
-                                        <td><span class="estado pagado">Pagado</span></td>
-                                    {% elif line.state == 'posted' %}
-                                        <td><span class="estado pendiente">Pendiente</span></td>
-                                    {% else %}
-                                        <td><span class="estado otro">{{ line.state_string }}</span></td>
-                                    {% endif %}
+            <tbody>
+            {% for line in subscriptor.vouchers %}
+            {% if line.state != 'cancelled' %}
+            {% set date_filter = line.first_due_date.strftime("%Y%m") | int %}
+            {% if date_filter > 202304 %}
+            <tr>
+                <td>{{ line.voucher_number }}</td>
+                <td>{{ line.first_due_date|dateformat }}</td>
+                <td>{{ line.month }}</td>
+                <td>{{ line.year }}</td>
+                <td>{{ line.paid_date and line.paid_date.date() | dateformat or '-' }}</td>
+                <td>{{ line.amount_to_pay | currencyformat(line.currency) }}</td>
+                <td>{{ (line.surcharge or 0) | currencyformat(line.currency) }}</td>
+                <td>{{ line.amount_to_pay_today | currencyformat(line.currency) }}</td>
 
-                                    {# Comprobante (descarga) #}
-                                    {% if line.state == 'paid' or line.state == 'posted' %}
-                                        <td><a class="comprobante" href="{{url_for('base_blueprint.download_ticket', id=line.id )}}" target="_blank">Descargar</a></td>
-                                    {% else %}
-                                        <td><a class="sincomprobante" href="#"></a></td>
-                                    {% endif %}
+                <td>
+                {% if line.state == 'paid' %}
+                    {{ line.pay_method_string }}
+                {% else %}
+                    -
+                {% endif %}
+                </td>
 
-                                    {# Medios de pago / QR logic:
-                                       Caso 1: aún no tiene QR -> link "Generar opciones de pago" + loader
-                                       Caso 2: tiene QR y estado posted -> thumbnail + popup + regenerar + boton pagos
-                                       Caso 3: por defecto -> mostrar line.qr_siro_string
-                                    #}
-                                    <td>
-                                        {% if line.state not in ['paid', 'cancelled', 'draft'] and line.siro_qr_string is none %}
-                                            <a id="generar_qr_{{ line.id }}" href="#" class="generate-qr-link"
-                                               data-line-id="{{ line.id }}" role="button"
-                                               data-amount-to-pay="{{ line.amount_to_pay_today }}">
-                                                Generar opciones de pago
-                                            </a>
-                                            <div class="loading-container" id="loading_{{ line.id }}" style="display:none;">
-                                                <div class="spinner"></div>
-                                                <p>Generando QR...</p>
-                                            </div>
+                <td>
+                {% if line.state == 'paid' %}
+                    <span class="estado pagado">Pagado</span>
+                {% elif line.state == 'posted' %}
+                    <span class="estado pendiente">Pendiente</span>
+                {% else %}
+                    <span class="estado otro">{{ line.state_string }}</span>
+                {% endif %}
+                </td>
 
-                                        {% elif line.siro_qr_string is not none and line.state == 'posted' %}
-                                            <div class="qr-container">
-                                                <div class="thumbnail">
-                                                    <img src="{{ url_for('siro_blueprint.show_qr', line_id=line.id, size=1) }}"
-                                                         alt="QR de pago"
-                                                         onclick="openPopup('qr_siro_popup{{ line.id }}')"
-                                                         title="Haga click para expandir">
-                                                </div>
-                                                <div class="regenerate-qr-container">
-                                                    <a href="#" class="regenerate-qr-link"
-                                                       data-line-id="{{ line.id }}"
-                                                       data-amount-to-pay="{{ line.amount_to_pay_today }}">
-                                                        Regenerar QR <ion-icon name="reload-outline"></ion-icon>
-                                                    </a>
-                                                    <div class="loading-container" id="loading_regenerate_{{ line.id }}" style="display:none;">
-                                                        <div class="spinner"></div>
-                                                        <p>Regenerando QR...</p>
-                                                    </div>
-                                                </div>
-                                                {% if line.siro_button_url %}
-                                                    <div class="pay_button">
-                                                        <a class="button-71" role="button" href="/boton_pago/{{line.id}}">
-                                                            Otras opciones de pago
-                                                        </a>
-                                                    </div>
-                                                {% endif %}
-                                            </div>
+                <td>
+                {% if line.state in ['paid', 'posted'] %}
+                    <a class="comprobante"
+                       href="{{ url_for('base_blueprint.download_ticket', id=line.id) }}"
+                       target="_blank">Descargar</a>
+                {% endif %}
+                </td>
 
-                                            <div class="popup" id="qr_siro_popup{{ line.id }}">
-                                                <span class="popup-close" onclick="closePopup('qr_siro_popup{{line.id }}')">&times;</span>
-                                                <img src="{{ url_for('siro_blueprint.show_qr', line_id=line.id, size=4) }}" alt="Imagen ampliada">
-                                            </div>
+                <td>
+                {% if line.state not in ['paid','cancelled','draft'] and not line.siro_qr_string %}
+                    <a href="#" class="generate-qr-link"
+                       data-line-id="{{ line.id }}"
+                       data-amount-to-pay="{{ line.amount_to_pay_today }}">
+                       Generar opciones de pago
+                    </a>
+                    <div class="loading-container" id="loading_{{ line.id }}" style="display:none;">
+                        <div class="spinner"></div>
+                        <p>Generando QR...</p>
+                    </div>
 
-                                        {% else %}
-                                            {{ line.qr_siro_string }}
-                                        {% endif %}
-                                    </td>
-                                </tr>
-                            {% endif %}
+                {% elif line.siro_qr_string and line.state == 'posted' %}
+                    <div class="qr-container">
+                        <div class="thumbnail">
+                            <img src="{{ url_for('siro_blueprint.show_qr', line_id=line.id, size=1) }}"
+                                 onclick="openPopup('qr_siro_popup{{ line.id }}')">
+                        </div>
+
+                        <div class="regenerate-qr-container">
+                            <a href="#" class="regenerate-qr-link"
+                               data-line-id="{{ line.id }}"
+                               data-amount-to-pay="{{ line.amount_to_pay_today }}">
+                               Regenerar QR
+                            </a>
+                            <div class="loading-container" id="loading_regenerate_{{ line.id }}" style="display:none;">
+                                <div class="spinner"></div>
+                            </div>
+                        </div>
+
+                        {% if line.siro_button_url %}
+                        <div class="pay_button">
+                            <a class="button-71"
+                               href="{{ url_for('siro_blueprint.boton_pago', voucher_id=line.id) }}">
+                               Otras opciones de pago
+                            </a>
+                        </div>
                         {% endif %}
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    </div>
+                    </div>
 
-    <!-- Contenedor del indicador -->
-    <div id="polling-indicator">
-        <div id="polling-status"></div>
-        <span id="polling-message"></span>
-        <div id="polling-count" style="font-size:12px;margin-top:4px;"></div>
+                    <div class="popup" id="qr_siro_popup{{ line.id }}">
+                        <span class="popup-close"
+                              onclick="closePopup('qr_siro_popup{{ line.id }}')">&times;</span>
+                        <img src="{{ url_for('siro_blueprint.show_qr', line_id=line.id, size=4) }}">
+                    </div>
+                {% endif %}
+                </td>
+            </tr>
+            {% endif %}
+            {% endif %}
+            {% endfor %}
+            </tbody>
+        </table>
     </div>
-    <!--  Confirmación de cerrar el popup del qr    -->
-    <div id="customConfirmModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1000; justify-content:center; align-items:center;">
-        <div style="background:white; padding:20px; border-radius:8px; max-width:400px;">
-            <h3>⚠️ Pago en proceso</h3>
-            <p>¿Estás seguro de que quieres cerrar el QR? Si lo haces, no se redigira automáticamente cuando se acepte el pago.</p>
-            <div style="display:flex; gap:10px; justify-content:flex-end;">
-                <button id="confirmCloseCancel" style="padding:8px 16px;">Cancelar</button>
-                <button id="confirmCloseOK" style="padding:8px 16px; background:#ff4444; color:white;">Cerrar igualmente</button>
-            </div>
-        </div>
-    </div>
-{% endblock content %}
+</div>
+
+<div id="polling-indicator">
+    <div id="polling-status"></div>
+    <span id="polling-message"></span>
+    <div id="polling-count"></div>
+</div>
+{% endblock %}
 
 {% block javascripts %}
 
-<!-- --------------------- scripts ----------------------- -->
-<script type="text/javascript" src="{{ url_for('static',filename='asset/js/main.js') }}"></script>
 <script>
-// Variables globales para control
-let intervaloVerificacion = null;
-let currentLineId = null;
-
-// 1. Funciones básicas para popup del QR
-function openPopup(popupId) {
-    document.getElementById(popupId).style.display = 'flex';
-
-    // Extraer el line_id del QR clickeado
-    const qrImg = document.querySelector(`#${popupId} img`);
-    const src = qrImg.getAttribute('src');
-    const urlParams = new URLSearchParams(src.split('?')[1]);
-    const lineId = urlParams.get('line_id');
-
-    if (lineId) {
-        currentLineId = lineId;
-        iniciarPolling(lineId);
-    }
-}
-
-function closePopup(popupId) {
-    if (intervaloVerificacion) {
-        const modal = document.getElementById('customConfirmModal');
-        modal.style.display = 'flex';
-
-        document.getElementById('confirmCloseCancel').onclick = function() {
-            modal.style.display = 'none';
-        };
-
-        document.getElementById('confirmCloseOK').onclick = function() {
-            modal.style.display = 'none';
-            document.getElementById(popupId).style.display = 'none';
-            clearInterval(intervaloVerificacion);
-            intervaloVerificacion = null;
-            ocultarIndicador();
-        };
-    } else {
-        document.getElementById(popupId).style.display = 'none';
-    }
-}
-
-// 2. Sistema de polling mejorado
-function iniciarPolling(lineId) {
-    console.log(`Iniciando polling para línea ${lineId}`);
-    mostrarIndicador('Verificando estado del pago...', 'orange');
-
-    // Limpiar intervalo previo si existe
-    if (intervaloVerificacion) {
-        clearInterval(intervaloVerificacion);
-    }
-
-    let intentos = 0;
-
-    // Verificar estado cada 5 segundos
-    intervaloVerificacion = setInterval(() => {
-        intentos++;
-        document.getElementById('polling-count').textContent = `Verificación #${intentos}`;
-        fetch(`/verificar_pago?id=${lineId}&intentos=${intentos}`)
-            .then(response => {
-                if (!response.ok) throw new Error('Error en la red');
-                return response.json();
-            })
-            .then(data => {
-                console.log('Respuesta del servidor:', data);
-
-                if (data.estado === "APROBADO") {
-                    pagoExitoso(lineId);
-                } else if (data.estado === "EN ESPERA") {
-                    // Continuar esperando
-                    mostrarIndicador('Verificando estado del pago...', 'orange');
-                } else if (data.estado === "RECHAZADO") {
-                    pagoFallido("Pago rechazado. Por favor intente nuevamente.",
-                    lineId);
-                } else if (data.estado === "TIMEOUT") {
-                    pagoFallido("Tiempo de espera superado. Por favor intente nuevamente.", lineId);
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                document.getElementById('polling-message').textContent = 'Error de conexión, reintentando...';
-            });
-    }, 5000);
-}
-
-// Funciones auxiliares
-function mostrarIndicador(mensaje, color) {
-    const indicador = document.getElementById('polling-indicator');
-    if (indicador) {
-        document.getElementById('polling-status').style.background = color;
-        document.getElementById('polling-message').textContent = mensaje;
-        indicador.style.display = 'block';
-    }
-}
-
-function ocultarIndicador() {
-    const indicador = document.getElementById('polling-indicator');
-    if (indicador) {
-        indicador.style.display = 'none';
-        document.getElementById('polling-count').textContent =  '';
-    }
-}
-
-function pagoExitoso(lineId) {
-    mostrarIndicador('Pago confirmado! Redirigiendo...', 'green');
-    clearInterval(intervaloVerificacion);
-
-    setTimeout(() => {
-        window.location.href = `/siro_success/${lineId}`;
-    }, 1500);
-}
-
-function pagoFallido(mensaje, lineId) {
-    mostrarIndicador(mensaje, 'red');
-    clearInterval(intervaloVerificacion);
-
-    setTimeout(() => {
-        ocultarIndicador();
-        alert(mensaje);
-        window.location.href = `/siro_no_success/${lineId}`;
-    }, 1500);
-
-}
-
-// 3. Generación y regeneración de QR
-$(document).ready(function() {
-    // Función compartida para generar/regenerar QR
-    function generateQR(linkElement, isRegeneration = false) {
-        const lineId = linkElement.data('line-id');
-        const amountToPay = linkElement.data('amount-to-pay');
-        const $loading = $(isRegeneration ? '#loading_regenerate_' + lineId : '#loading_' + lineId);
-
-        linkElement.hide();
-        $loading.show();
-
-        $.ajax({
-            url: '/generate_qr/' + lineId,
-            method: 'GET',
-            data: { 
-                amount_to_pay_today: amountToPay,
-                lineId: lineId
-            },
-            success: function(response) {
-                $loading.hide();
-                linkElement.show();
-
-                if (isRegeneration) {
-                    // Actualizar ambas imágenes del QR (miniatura y popup)
-                    $(`.thumbnail img[src*="line_id=${lineId}"]`).attr('src', `/show_qr?line_id=${lineId}&size=1&t=${new Date().getTime()}`);
-                    $(`#qr_siro_popup${lineId} img`).attr('src', `/show_qr?line_id=${lineId}&size=4&t=${new Date().getTime()}`);
-
-                    // Mostrar notificación de éxito
-                    alert('QR regenerado correctamente');
-                } else {
-                    // Insertar el QR en el DOM (para generación inicial)
-                    $(`#generar_qr_${lineId}`).closest('td').html(`
-                        <div class="qr-container">
-                            <div class="thumbnail">
-                                <img src="/show_qr?line_id=${lineId}&size=1" 
-                                     alt="QR de pago"
-                                     onclick="openPopup('qr_siro_popup${lineId}')"
-                                     title="Haga click para expandir">
-                            </div>
-                            <div class="regenerate-qr-container">
-                                <a href="#" class="regenerate-qr-link" 
-                                   data-line-id="${lineId}" 
-                                   data-amount-to-pay="${amountToPay}">
-                                    Regenerar QR <ion-icon name="reload-outline"></ion-icon>
-                                </a>
-                                <div class="loading-container" id="loading_regenerate_${lineId}" style="display:none;">
-                                    <div class="spinner"></div>
-                                    <p>Regenerando QR...</p>
-                                </div>
-                            </div>
-                            <div class="pay_button">
-                                <a class="button-71" role="button"
-                                href="{{ url_for('siro_blueprint.boton_pago', voucher_id=0) }}"
-                                data-line-id="${lineId}">
-                                    Otras opciones de pago
-                                </a>
-                            </div>
-                        </div>
-                        <div class="popup" id="qr_siro_popup${lineId}">
-                            <span class="popup-close" onclick="closePopup('qr_siro_popup${lineId}')">&times;</span>
-                            <img src="/show_qr?line_id=${lineId}&size=4" alt="Imagen ampliada">
-                        </div>
-                    `);
-
-                    // Ajustar el link del botón de pago con el lineId real
-                    const $btnPago = $(`.button-71[data-line-id="${lineId}"]`);
-                    const baseUrl = $btnPago.attr('href');   // /boton_pago/0
-                    $btnPago.attr('href', baseUrl.replace('/0', '/' + lineId));
-
-                    // Asignar el evento al nuevo botón de regenerar
-                    $(`.regenerate-qr-link[data-line-id="${lineId}"]`).click(function(e) {
-                        e.preventDefault();
-                        generateQR($(this), true);
-                    });
-                }
-            },
-            error: function(xhr, status, error) {
-                $loading.hide();
-                linkElement.show();
-                alert('Error al generar el QR: ' + error);
-            }
-        });
-    }
-
-    // Generación inicial de QR
-    $('.generate-qr-link').click(function(e) {
-        e.preventDefault();
-        generateQR($(this), false);
-    });
-
-    // Regeneración de QR existente
-    $(document).on('click', '.regenerate-qr-link', function(e) {
-        e.preventDefault();
-        generateQR($(this), true);
-    });
-});
-
+const URLS = {
+    verificarPago: "{{ url_for('siro_blueprint.verificar_pago') }}",
+    siroSuccess: "{{ url_for('siro_blueprint.siro_success', line_id=0) }}",
+    siroNoSuccess: "{{ url_for('siro_blueprint.siro_no_success', line_id=0) }}",
+    generateQR: "{{ url_for('siro_blueprint.generate_qr', line_id=0) }}",
+    showQR: "{{ url_for('siro_blueprint.show_qr', line_id=0) }}"
+};
 </script>
 
-<script type="text/javascript" src="{{ url_for('static',filename='asset/js/comprobantes.js') }}"></script>
+<script>
+let intervaloVerificacion = null;
 
+function iniciarPolling(lineId) {
+    intervaloVerificacion = setInterval(() => {
+        fetch(`${URLS.verificarPago}?id=${lineId}`)
+        .then(r => r.json())
+        .then(data => {
+            if (data.estado === "APROBADO") {
+                window.location.href = URLS.siroSuccess.replace('/0','/' + lineId);
+            }
+        });
+    }, 5000);
+}
+</script>
 
-<!-- -------------------- ionicons ----------------------- -->
+<script type="text/javascript" src="{{ url_for('static', filename='asset/js/comprobantes.js') }}"></script>
+
 <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
 <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
 
-{% endblock javascripts %}
+{% endblock %}
