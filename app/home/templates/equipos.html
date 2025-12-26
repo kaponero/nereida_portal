@@ -35,16 +35,16 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% for i in range(2) %}
+                    {% for es in equipos %}
                         <tr>
-                            <td>{{ 'name' }}</td>
-                            <td>{{ 'mac' }}</td>
-                            <td>{{ 'id' }}</td>
+                            <td>{{ es.equipment.name.rec_name | upper }}</td>
+                            <td>{{ es.equipment.mac_address }}</td>
+                            <td>{{ es.equipment.identification_number }}</td>
                             {# Estado #}
-                            {% if 'activo' == 'activo' %}
+                            {% if es.state == 'active' %}
                                 <td><span class="estado activo">Activo</span></td>
                             {% else %}
-                                <td><span class="estado otro">{{'Otro' }}</span></td>
+                                <td><span class="estado otro">{{ es.state }}</span></td>
                             {% endif %}
                         </tr>
                     {% endfor %}
