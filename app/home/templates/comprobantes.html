@@ -363,7 +363,7 @@ $(document).ready(function() {
                     $(`#generar_qr_${lineId}`).closest('td').html(`
                         <div class="qr-container">
                             <div class="thumbnail">
-                                <img src="/show_qr?line_id=${lineId}&size=1" 
+                                <img src="${URLS.showQR.replace('/0','/' + lineId)}?size=1" 
                                      alt="QR de pago"
                                      onclick="openPopup('qr_siro_popup${lineId}')"
                                      title="Haga click para expandir">
@@ -389,7 +389,8 @@ $(document).ready(function() {
                         </div>
                         <div class="popup" id="qr_siro_popup${lineId}">
                             <span class="popup-close" onclick="closePopup('qr_siro_popup${lineId}')">&times;</span>
-                            <img src="/show_qr?line_id=${lineId}&size=4" alt="Imagen ampliada">
+                            <img src="${URLS.showQR.replace('/0','/' + lineId)}?size=4"
+ alt="Imagen ampliada">
                         </div>
                     `);
 
