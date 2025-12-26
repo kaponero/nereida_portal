@@ -197,9 +197,9 @@
 <script>
 const URLS = {
     verificarPago: "{{ url_for('siro_blueprint.verificar_pago') }}",
-    siroSuccess: "{{ url_for('siro_blueprint.siro_success', line_id=0) }}",
-    siroNoSuccess: "{{ url_for('siro_blueprint.siro_no_success', line_id=0) }}",
-    generateQR: "{{ url_for('siro_blueprint.generate_qr', line_id=0) }}",
+    siroSuccess: "{{ url_for('siro_blueprint.handle_success', voucher_id=0) }}",
+    siroNoSuccess: "{{ url_for('siro_blueprint.siro_no_success', voucher_id=0) }}",
+    generateQR: "{{ url_for('siro_blueprint.generate_qr', voucher_id=0) }}",
     showQR: "{{ url_for('siro_blueprint.show_qr', line_id=0) }}",
     botonPago: "{{ url_for('siro_blueprint.boton_pago', voucher_id=0) }}"
 };

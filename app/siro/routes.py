@@ -351,7 +351,7 @@ def siro_no_success(voucher_id) :
 @blueprint.route('/verificar_pago')
 @tryton.transaction(readonly=False, user=2)
 @login_required
-def verficar_pago():
+def verificar_pago():
     pool = tryton.pool
     Voucher = pool.get('delco.subscriptor.voucher')
     voucher_id = request.args.get('id')
