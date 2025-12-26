@@ -366,7 +366,9 @@ $(document).ready(function() {
                                 </div>
                             </div>
                             <div class="pay_button">
-                                <a class="button-71" role="button" href="/boton_pago/${lineId}">
+                                <a class="button-71" role="button"
+                                href="{{ url_for('siro_blueprint.boton_pago', voucher_id=0) }}"
+                                data-line-id="${lineId}">
                                     Otras opciones de pago
                                 </a>
                             </div>
@@ -376,6 +378,11 @@ $(document).ready(function() {
                             <img src="/show_qr?line_id=${lineId}&size=4" alt="Imagen ampliada">
                         </div>
                     `);
+
+                    // Ajustar el link del botón de pago con el lineId real
+                    const $btnPago = $(`.button-71[data-line-id="${lineId}"]`);
+                    const baseUrl = $btnPago.attr('href');   // /boton_pago/0
+                    $btnPago.attr('href', baseUrl.replace('/0', '/' + lineId));
 
                     // Asignar el evento al nuevo botón de regenerar
                     $(`.regenerate-qr-link[data-line-id="${lineId}"]`).click(function(e) {
