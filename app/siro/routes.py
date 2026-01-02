@@ -20,10 +20,25 @@ import os
 
 SECRET_KEY = os.environ.get('SIRO_SECRET_KEY')
 
+@tryton.default_context
+def default_context():
+    User = tryton.pool.get('res.user')
+    return User.get_preferences(context_only=True)
 
 def generar_hmac(id_referencia):
-    message = f"{id_referencia}{SECRET_KEY}".encode()
-    return hmac.new(SECRET_KEY.encode(), message, hashlib.sha256).hexdigest()
+    SiroConfig = tryton.pool.get('delco.configuration.siro_api')
+    config = SiroConfig(1)
+
+    secret_key = config.secret_key
+    if not secret_key:
+        raise RuntimeError("SIRO secret_key no configurada")
+
+    message = f"{id_referencia}{secret_key}".encode()
+    return hmac.new(
+        secret_key.encode(),
+        message,
+        hashlib.sha256
+    ).hexdigest()
 
 def log_response():
     response_data = {"status": "success"}
