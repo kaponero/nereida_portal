@@ -15,6 +15,11 @@ from .forms import LoginForm
 
 from urllib.parse import urlparse, urljoin
 
+@tryton.default_context
+def default_context():
+    User = tryton.pool.get('res.user')
+    return User.get_preferences(context_only=True)
+
 def is_safe_url(target):
     ref_url = urlparse(request.host_url)
     test_url = urlparse(urljoin(request.host_url, target))

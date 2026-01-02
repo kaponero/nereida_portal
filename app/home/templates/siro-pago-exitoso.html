@@ -38,7 +38,7 @@
         <div class="final-title">Pago exitoso</div>
 
         <div class="final-amount">
-            {{ voucher.amount_to_pay_today | currencyformat(voucher.currency) }}
+            {{ voucher.amount_to_pay + voucher.s_surcharge | currencyformat(voucher.currency) }}
         </div>
 
         <div class="mt-4">
