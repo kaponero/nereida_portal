@@ -200,7 +200,7 @@ const URLS = {
     siroSuccess: "{{ url_for('siro_blueprint.handle_success', voucher_id=0) }}",
     siroNoSuccess: "{{ url_for('siro_blueprint.siro_no_success', voucher_id=0) }}",
     generateQR: "{{ url_for('siro_blueprint.generate_qr', voucher_id=0) }}",
-    showQR: "{{ url_for('siro_blueprint.show_qr', line_id=0) }}",
+    showQR: "{{ url_for('siro_blueprint.show_qr') }}",
     botonPago: "{{ url_for('siro_blueprint.boton_pago', voucher_id=0) }}"
 };
 </script>
@@ -353,8 +353,8 @@ $(document).ready(function() {
 
                 if (isRegeneration) {
                     // Actualizar ambas imágenes del QR (miniatura y popup)
-                    $(`.thumbnail img[src*="line_id=${lineId}"]`).attr('src', `${URLS.showQR.replace('/0','/' + lineId)}?size=1&t=${Date.now()}`);
-                    $(`#qr_siro_popup${lineId} img`).attr('src', `${URLS.showQR.replace('/0','/' + lineId)}?size=4&t=${Date.now()}`);
+                    $(`.thumbnail img[src*="line_id=${lineId}"]`).attr('src', `${URLS.showQR}?line_id=${lineId}&size=1&t=${Date.now()}`);
+                    $(`#qr_siro_popup${lineId} img`).attr('src', `${URLS.showQR}?line_id=${lineId}&size=4&t=${Date.now()}`);
 
                     // Mostrar notificación de éxito
                     alert('QR regenerado correctamente');
@@ -363,7 +363,7 @@ $(document).ready(function() {
                     $(`#generar_qr_${lineId}`).closest('td').html(`
                         <div class="qr-container">
                             <div class="thumbnail">
-                                <img src="${URLS.showQR.replace('/0','/' + lineId)}?size=1" 
+                                <img src="${URLS.showQR}?line_id=${lineId}&size=1" 
                                      alt="QR de pago"
                                      onclick="openPopup('qr_siro_popup${lineId}')"
                                      title="Haga click para expandir">
@@ -389,7 +389,7 @@ $(document).ready(function() {
                         </div>
                         <div class="popup" id="qr_siro_popup${lineId}">
                             <span class="popup-close" onclick="closePopup('qr_siro_popup${lineId}')">&times;</span>
-                            <img src="${URLS.showQR.replace('/0','/' + lineId)}?size=4"
+                            <img src="${URLS.showQR}?line_id=${lineId}&size=4"
  alt="Imagen ampliada">
                         </div>
                     `);
