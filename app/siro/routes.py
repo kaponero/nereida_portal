@@ -280,13 +280,13 @@ def process_siro_success(voucher_id, is_button_call = False):
 
 #  Success para la respuesta y redireccionamiento de página para el QR
 @blueprint.route('/siro_success/<voucher_id>', methods=['GET', 'POST'])
-@tryton.transaction(readonly=False, user=2)
+@tryton.transaction(readonly=False, user=1)
 def handle_success(voucher_id) :
     return process_siro_success(voucher_id)
 
 # Success para el botón
 @blueprint.route('/siro_success_button/<voucher_id>', methods=['GET', 'POST'])
-@tryton.transaction(readonly=False, user=2)
+@tryton.transaction(readonly=False, user=1)
 def handle_button_success(voucher_id):
     pool = tryton.pool
     Voucher = pool.get('delco.subscriptor.voucher')
@@ -312,7 +312,7 @@ def handle_button_success(voucher_id):
 
 @blueprint.route('/siro_no_success_button/<voucher_id>')
 @blueprint.route('/siro_no_success/<voucher_id>')
-@tryton.transaction(readonly=False, user=2)
+@tryton.transaction(readonly=False, user=1)
 def siro_no_success(voucher_id) :
     pool = tryton.pool
     Voucher = pool.get('delco.subscriptor.voucher')
@@ -365,7 +365,7 @@ def siro_no_success(voucher_id) :
 
 
 @blueprint.route('/verificar_pago')
-@tryton.transaction(readonly=False, user=2)
+@tryton.transaction(readonly=False, user=1)
 @login_required
 def verificar_pago():
     pool = tryton.pool
