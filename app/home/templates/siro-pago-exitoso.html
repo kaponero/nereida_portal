@@ -34,8 +34,11 @@
                 fill="none" stroke="white"
                 stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
-
-        <div class="final-title">Pago exitoso</div>
+        {%if voucher.state == 'process_payment_ok' %}
+            <div class="final-title">Pago exitoso</div>
+        {% elif voucher.state == 'processing_payment' %}
+            <div class="final-title">Su pago se procesara en las siguientes 24 hs hábiles </div>
+        {% endif %}
 
      <!--   <div class="final-amount">
             {{ voucher.amount_to_pay_today | currencyformat(voucher.currency) }}
