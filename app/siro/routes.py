@@ -256,7 +256,7 @@ def process_siro_success(voucher_id, is_button_call = False):
         # ACA PROCESAMOS EL PAGO REALMENTE, SI SE PAGO O SE CANCELO
         if voucher.state == 'processing_payment':
             Voucher.check_siro_payments([voucher], is_button_call)
-        print("check_siro_payments ok", voucher.state)
+            print("check_siro_payments ok", voucher.state)
         elif voucher.state == 'process_payment_ok':
             log.status = 'paid'
             log.save()
