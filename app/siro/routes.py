@@ -249,6 +249,7 @@ def process_siro_success(voucher_id, is_button_call = False):
             print('cambiando de estado al cupon')
             voucher.state = 'processing_payment'
             voucher.pay_method = 'qr_siro'
+            voucher.siro_payment_method = 'button' if is_button_call else 'qr'
             voucher.siro_IdResultado = id_resultado
             voucher.save()
         print("cambio de estado del cupón ok")
