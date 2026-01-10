@@ -256,12 +256,12 @@ def process_siro_success(voucher_id, is_button_call = False):
         if voucher.state == 'processing_payment':
             Voucher.check_siro_payments([voucher], is_button_call)
         print("check_siro_payments ok", voucher.state)
-        if voucher.state == 'process_payment_ok':
+        elif voucher.state == 'process_payment_ok':
             log.status = 'paid'
             log.save()
         else:
             log.status = 'error'
-            log.error_message = "No se pudo concretar la corroboración del pago"
+            log.error_message = voucher.siro_result_message
             log.save()
         return jsonify({"status": "OK"}), 200
     else:
