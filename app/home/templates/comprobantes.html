@@ -141,14 +141,14 @@
                                                         <p>Regenerando QR...</p>
                                                     </div>
                                                 </div>
-                                               <!-- {% if line.siro_button_url %}
+                                                {% if line.siro_button_url %}
                                                     <div class="pay_button">
                                                         <a class="button-71" role="button"
                                                             href="{{ url_for('siro_blueprint.boton_pago', voucher_id=line.id) }}">
                                                             Otras opciones de pago
                                                         </a>
                                                     </div>
-                                                {% endif %}-->
+                                                {% endif %}
                                             </div>
 
                                             <div class="popup" id="qr_siro_popup{{ line.id }}">
@@ -379,13 +379,13 @@ $(document).ready(function() {
                                     <p>Regenerando QR...</p>
                                 </div>
                             </div>
-                            // <div class="pay_button">
-                            //     <a class="button-71" role="button"
-                            //     href="${URLS.botonPago.replace('/0','/' + lineId)}"
-                            //     data-line-id="${lineId}">
-                            //         Otras opciones de pago
-                            //     </a>
-                            // </div>
+                            <div class="pay_button">
+                                <a class="button-71" role="button"
+                                href="${URLS.botonPago.replace('/0','/' + lineId)}"
+                                data-line-id="${lineId}">
+                                    Otras opciones de pago
+                                </a>
+                            </div>
                         </div>
                         <div class="popup" id="qr_siro_popup${lineId}">
                             <span class="popup-close" onclick="closePopup('qr_siro_popup${lineId}')">&times;</span>
