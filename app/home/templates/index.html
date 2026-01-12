@@ -7,9 +7,9 @@
    =============================== #}
 {% block links %}
 <link rel="stylesheet"
-      href="{{ url_for('base_blueprint.static', filename='asset/css/portalstyles.css') }}">
+      href="{{ url_for('base_blueprint.static', filename='asset/css/portalstyles.css') }}?v={{ config.APP_VERSION }}">
 <link rel="stylesheet"
-      href="{{ url_for('base_blueprint.static', filename='asset/css/pop-up-img.css') }}">
+      href="{{ url_for('base_blueprint.static', filename='asset/css/pop-up-img.css') }}?v={{ config.APP_VERSION }}">
 {% endblock %}
 
 {# ===============================
@@ -81,7 +81,7 @@
 {% block javascripts %}
 
 <script type="text/javascript"
-        src="{{ url_for('base_blueprint.static', filename='asset/js/main.js') }}"></script>
+        src="{{ url_for('base_blueprint.static', filename='asset/js/main.js') }}?v={{ config.APP_VERSION }}"></script>
 
 <!-- Ionicons -->
 <script type="module"

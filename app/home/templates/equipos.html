@@ -4,7 +4,7 @@
 
 <!-- Specific Page CSS goes HERE  -->
 {% block links %}
-<link rel="stylesheet" href="{{ url_for("static", filename="asset/css/equipos.css") }}">
+<link rel="stylesheet" href="{{ url_for("static", filename="asset/css/equipos.css") }}?v={{ config.APP_VERSION }}">
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
@@ -59,8 +59,8 @@
 {% block javascripts %}
 
 <!-- --------------------- scripts ----------------------- -->
-<script type="text/javascript" src="{{ url_for('static',filename='asset/js/main.js') }}"></script>
-<script type="text/javascript" src="{{ url_for('static',filename='asset/js/equipos.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static',filename='asset/js/main.js') }}?v={{config.APP_VERSION}}"></script>
+<script type="text/javascript" src="{{ url_for('static',filename='asset/js/equipos.js') }}?v={{ config.APP_VERSION }}"></script>
 
 
 <!-- -------------------- ionicons ----------------------- -->

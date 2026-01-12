@@ -10,12 +10,12 @@
 
     <!-- Favicon -->
     <link rel="icon"
-          href="{{ url_for('static', filename='asset/img/favicon-Nereida-logo.png') }}"
+          href="{{ url_for('static', filename='asset/img/favicon-Nereida-logo.png') }}?v={{ config.APP_VERSION }}"
           type="image/png">
 
     <!-- CSS -->
     <link rel="stylesheet"
-          href="{{ url_for('static', filename='asset/css/styles.css') }}">
+          href="{{ url_for('static', filename='asset/css/styles.css') }}?v={{ config.APP_VERSION }}">
 
     {% block links %}{% endblock %}
 </head>

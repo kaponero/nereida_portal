@@ -4,7 +4,8 @@
 
 <!-- Specific Page CSS goes HERE  -->
 {% block links %}
-<link rel="stylesheet" href="{{ url_for("static", filename="asset/css/seguridadstyles.css") }}">
+<link rel="stylesheet"
+    href="{{ url_for("static", filename="asset/css/seguridadstyles.css") }}?v={{ config.APP_VERSION }}">
 {% endblock %}
 
 {% block content %}
@@ -45,7 +46,8 @@
 {% block javascripts %}
 
 <!-- --------------------- scripts ----------------------- -->
-<script type="text/javascript" src="{{ url_for('static',filename='asset/js/seguridad.js') }}"></script>
+<script type="text/javascript"
+    src="{{ url_for('static',filename='asset/js/seguridad.js') }}?v={{ config.APP_VERSION }}"></script>
 
 <!-- -------------------- ionicons ----------------------- -->
 <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>

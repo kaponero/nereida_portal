@@ -3,7 +3,8 @@
 {% block title %}Error 500{% endblock %}
 
 {% block links %}
-<link rel="stylesheet" href="{{ url_for('static', filename='asset/css/errors.css') }}">
+<link rel="stylesheet"
+    href="{{ url_for('static', filename='asset/css/errors.css') }}?v={{ config.APP_VERSION}}">
 {% endblock %}
 
 {% block content %}

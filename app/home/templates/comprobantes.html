@@ -4,12 +4,17 @@
 
 <!-- Specific Page CSS goes HERE  -->
 {% block links %}
-<link rel="stylesheet" href="{{ url_for("static", filename="asset/css/comprobantestyles.css") }}">
-<link rel="stylesheet" href="{{ url_for("static", filename="asset/css/pop-up-img.css") }}">
-<link rel="stylesheet" href="{{ url_for("static", filename="asset/css/spinner.css") }}">
-<link rel="stylesheet" href="{{ url_for("static", filename="asset/css/polling.css") }}">
-<link rel="stylesheet" href="{{ url_for("static", filename="asset/css/qr_style.css" )}}">
-<link rel="stylesheet" href="{{ url_for("static", filename="asset/css/boton_pago.css")}}">
+<link rel="stylesheet" href="{{ url_for("static", filename="asset/css/comprobantestyles.css") }}?v={{ config.APP_VERSION }}">
+<link rel="stylesheet" 
+    href="{{ url_for("static", filename="asset/css/pop-up-img.css") }}?v={{ config.APP_VERSION }}">
+<link rel="stylesheet"
+    href="{{ url_for("static", filename="asset/css/spinner.css") }}?v={{ config.APP_VERSION}}">
+<link rel="stylesheet"
+    href="{{ url_for("static", filename="asset/css/polling.css") }}?v={{ config.APP_VERSION }}">
+<link rel="stylesheet"
+    href="{{ url_for("static", filename="asset/css/qr_style.css" )}}?v={{ config.APP_VERSION }}">
+<link rel="stylesheet"
+    href="{{ url_for("static", filename="asset/css/boton_pago.css")}}?v={{ config.APP_VERSION }}">
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
@@ -191,7 +196,8 @@
 {% block javascripts %}
 
 <!-- --------------------- scripts ----------------------- -->
-<script type="text/javascript" src="{{ url_for('static',filename='asset/js/main.js') }}"></script>
+<script type="text/javascript"
+    src="{{ url_for('static',filename='asset/js/main.js') }}?v={{ config.APP_VERSION }}"></script>
 
 
 <script>
@@ -429,7 +435,7 @@ $(document).ready(function() {
 
 </script>
 
-<script type="text/javascript" src="{{ url_for('static',filename='asset/js/comprobantes.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static',filename='asset/js/comprobantes.js') }}?v={{ config.APP_VERSION }}"></script>
 
 
 <!-- -------------------- ionicons ----------------------- -->

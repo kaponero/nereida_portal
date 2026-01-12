@@ -4,7 +4,8 @@
 
 <!-- Specific Page CSS goes HERE  -->
 {% block links %}
-<link rel="stylesheet" href="{{ url_for("static", filename="asset/css/comprobantestyles.css") }}">
+<link rel="stylesheet"
+    href="{{ url_for("static", filename="asset/css/comprobantestyles.css") }}?v={{ config.APP_VERSION}}">
 {% endblock %}
 
 {% block navigation %}

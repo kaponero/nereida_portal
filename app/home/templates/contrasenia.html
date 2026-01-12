@@ -4,7 +4,7 @@
 
 {% block links %}
 <link rel="stylesheet"
-      href="{{ url_for('static', filename='asset/css/seguridadstyles.css') }}">
+      href="{{ url_for('static', filename='asset/css/seguridadstyles.css') }}?v={{ config.APP_VERSION }}">
 {% endblock %}
 
 {% block content %}
@@ -90,7 +90,7 @@
 {% block javascripts %}
 
 <script type="text/javascript"
-        src="{{ url_for('static', filename='asset/js/seguridad.js') }}">
+        src="{{ url_for('static', filename='asset/js/seguridad.js') }}?v={{ config.APP_VERSION }}">
 </script>
 
 <script type="module"

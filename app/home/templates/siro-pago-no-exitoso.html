@@ -3,14 +3,15 @@
 {% block title %}Pago no exitoso{% endblock %}
 
 {% block links %}
-<link rel="stylesheet" href="{{ url_for('static', filename='asset/css/pago_no_exitoso.css') }}">
+<link rel="stylesheet"
+    href="{{ url_for('static', filename='asset/css/pago_no_exitoso.css') }}?v={{ config.APP_VERSION}}">
 {% endblock %}
 
 {% block content %}
 
 <!-- 🔊 SONIDO -->
 <audio id="pay-sound" preload="auto"
-       src="{{ url_for('static', filename='asset/media/wrong.mp3') }}">
+       src="{{ url_for('static', filename='asset/media/wrong.mp3') }}?v={{ config.APP_VERSION }}">
 </audio>
 
 <!-- Estado inicial -->
@@ -80,7 +81,7 @@
 </script>
 
 <script type="text/javascript"
-        src="{{ url_for('static', filename='asset/js/main.js') }}">
+        src="{{ url_for('static', filename='asset/js/main.js') }}?v={{ config.APP_VERSION }}">
 </script>
 
 {% endblock javascripts %}

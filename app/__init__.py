@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, request
 from flask_tryton import Tryton
 
 from importlib import import_module
@@ -38,3 +38,21 @@ tryton = Tryton(app, configure_jinja=True)
 
 register_blueprints(app)
 
+@app.after_request
+def add_cache_headers(response):
+    path = request.path
+
+    # Assets estáticos: cache fuerte
+    if path.startswith('/static/'):
+        response.headers['Cache-Control'] = (
+            'public, max-age=31536000, immutable'
+        )
+    else:
+        # HTML / JSON / dinámico: no cachear
+        response.headers['Cache-Control'] = (
+            'no-store, no-cache, must-revalidate, max-age=0'
+        )
+        response.headers['Pragma'] = 'no-cache'
+        response.headers['Expires'] = '0'
+
+    return response

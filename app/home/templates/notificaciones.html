@@ -4,7 +4,7 @@
 
 <!-- Specific Page CSS goes HERE  -->
 {% block links %}
-<link rel="stylesheet" href="{{ url_for("static", filename="asset/css/notificacionestyles.css") }}">
+<link rel="stylesheet" href="{{ url_for("static", filename="asset/css/notificacionestyles.css") }}?v={{ config.APP_VERSION }}">
 {% endblock %}
 
 {% block content %}
@@ -21,7 +21,7 @@
 {% block javascripts %}
 
 <!-- --------------------- scripts ----------------------- -->
-<script type="text/javascript" src="{{ url_for('static',filename='asset/js/main.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static',filename='asset/js/main.js') }}?v={{ config.APP_VERSION }}"></script>
 
 <!-- -------------------- ionicons ----------------------- -->
 <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>

@@ -19,6 +19,10 @@ class Config(object):
     TRYTON_CONFIG = 'trytond.conf'
     TRYTON_USER = 1
 
+    #control de versiones
+    APP_VERSION = os.environ.get("APP_VERSION", "dev")
+
+
     # This will create a file in <app> FOLDER
     #SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'db.sqlite3')
     #SQLALCHEMY_TRACK_MODIFICATIONS = False
