@@ -200,7 +200,7 @@
     src="{{ url_for('static',filename='asset/js/main.js') }}?v={{ config.APP_VERSION }}"></script>
 
 
-<script>
+<script nonce="{{ csp_nonce }}">
 const URLS = {
     verificarPago: "{{ url_for('siro_blueprint.verificar_pago') }}",
     siroSuccess: "{{ url_for('siro_blueprint.handle_success', voucher_id=0) }}",
@@ -211,7 +211,7 @@ const URLS = {
 };
 </script>
 
-<script>
+<script nonce="{{ csp_nonce }}">
 // Variables globales para control
 let intervaloVerificacion = null;
 let currentLineId = null;

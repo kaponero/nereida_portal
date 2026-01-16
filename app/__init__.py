@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, request, g
 from flask_tryton import Tryton
 
 from importlib import import_module
@@ -7,6 +7,8 @@ from config import config_dict, Config
 from decouple import config
 
 from werkzeug.middleware.proxy_fix import ProxyFix
+
+import secrets
 
 
 def register_blueprints(app):
@@ -38,21 +40,67 @@ tryton = Tryton(app, configure_jinja=True)
 
 register_blueprints(app)
 
-@app.after_request
-def add_cache_headers(response):
-    path = request.path
+# Generamos el token para nonce del CSP
+@app.before_request
+def generate_csp_nonce():
+    g.csp_nonce = secrets.token_urlsafe(16)
 
-    # Assets estáticos: cache fuerte
-    if path.startswith('/static/'):
+# Inyectamos el nonce en nuestras plantillas
+# con {{ csp_nonce}}
+@app.context_processor
+def inject_csp_nonce():
+    return {
+        'csp_nonce': getattr(g, 'csp_nonce', '')
+    }
+
+@app.after_request
+def apply_response_headers(response):
+    path = request.path
+    nonce = getattr(g, 'csp_nonce', '')
+
+    # =========================
+    # Cache-Control
+    # =========================
+    if '/static/' in path:
+        # Assets versionados → cache fuerte
         response.headers['Cache-Control'] = (
             'public, max-age=31536000, immutable'
         )
     else:
-        # HTML / JSON / dinámico: no cachear
+        # HTML / JSON / dinámico → nunca cachear
         response.headers['Cache-Control'] = (
             'no-store, no-cache, must-revalidate, max-age=0'
         )
         response.headers['Pragma'] = 'no-cache'
         response.headers['Expires'] = '0'
+
+    # =========================
+    # Content Security Policy
+    # =========================
+    response.headers['Content-Security-Policy-Report-Only'] = (
+        "default-src 'self'; "
+        "base-uri 'self'; "
+        "frame-ancestors 'self'; "
+
+        "script-src 'self' "
+        f"'nonce-{nonce}' "
+        "https://cdn.jsdelivr.net "
+        "https://unpkg.com "
+        "https://code.jquery.com "
+        "https://static.cloudflareinsights.com; "
+
+        "style-src 'self' 'unsafe-inline' "
+        "https://cdn.jsdelivr.net "
+        "https://fonts.googleapis.com; "
+
+        "font-src 'self' "
+        "https://cdn.jsdelivr.net "
+        "https://fonts.gstatic.com; "
+
+        "img-src 'self' data:; "
+
+        "connect-src 'self' "
+        "https://static.cloudflareinsights.com;"
+    )
 
     return response
