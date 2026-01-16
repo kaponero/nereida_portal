@@ -85,12 +85,14 @@ def apply_response_headers(response):
         "script-src 'self' "
         f"'nonce-{nonce}' "
         "https://cdn.jsdelivr.net "
+        "https://cdn.datatables.net "
         "https://unpkg.com "
         "https://code.jquery.com "
         "https://static.cloudflareinsights.com; "
 
         "style-src 'self' 'unsafe-inline' "
         "https://cdn.jsdelivr.net "
+        "https://cdn.datatables.net "
         "https://fonts.googleapis.com; "
 
         "font-src 'self' "
@@ -100,6 +102,7 @@ def apply_response_headers(response):
         "img-src 'self' data:; "
 
         "connect-src 'self' "
+        "https://unpkg.com "
         "https://static.cloudflareinsights.com;"
     )
 
