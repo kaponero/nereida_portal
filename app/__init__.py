@@ -77,7 +77,7 @@ def apply_response_headers(response):
     # =========================
     # Content Security Policy
     # =========================
-    response.headers['Content-Security-Policy-Report-Only'] = (
+    response.headers['Content-Security-Policy'] = (
         "default-src 'self'; "
         "base-uri 'self'; "
         "frame-ancestors 'self'; "

@@ -131,9 +131,10 @@
                                             <div class="qr-container">
                                                 <div class="thumbnail">
                                                     <img src="{{ url_for('siro_blueprint.show_qr', line_id=line.id, size=1) }}"
-                                                         alt="QR de pago"
-                                                         onclick="openPopup('qr_siro_popup{{ line.id }}')"
-                                                         title="Haga click para expandir">
+                                                        alt="QR de pago"
+                                                        class="qr-thumbnail"
+                                                        data-popup-id="qr_siro_popup{{ line.id }}"
+                                                        title="Haga click para expandir">
                                                 </div>
                                                 <div class="regenerate-qr-container">
                                                     <a href="#" class="regenerate-qr-link"
@@ -157,8 +158,13 @@
                                             </div>
 
                                             <div class="popup" id="qr_siro_popup{{ line.id }}">
-                                                <span class="popup-close" onclick="closePopup('qr_siro_popup{{line.id }}')">&times;</span>
-                                                <img src="{{ url_for('siro_blueprint.show_qr', line_id=line.id, size=4) }}" alt="Imagen ampliada">
+                                                <span class="popup-close"
+                                                    data-popup-id="qr_siro_popup{{ line.id }}"
+                                                    role="button"
+                                                    aria-label="Cerrar">&times;</span>
+
+                                                <img src="{{ url_for('siro_blueprint.show_qr', line_id=line.id, size=4) }}"
+                                                    alt="Imagen ampliada">
                                             </div>
 
                                         {% else %}
@@ -218,11 +224,18 @@ let currentLineId = null;
 
 // 1. Funciones básicas para popup del QR
 function openPopup(popupId) {
-    document.getElementById(popupId).style.display = 'flex';
+    const popup = document.getElementById(popupId);
+    if (!popup) return;
 
-    // Extraer el line_id del QR clickeado
-    const qrImg = document.querySelector(`#${popupId} img`);
+    popup.style.display = 'flex';
+
+    // Buscar la imagen del QR dentro del popup
+    const qrImg = popup.querySelector('img');
+    if (!qrImg) return;
+
     const src = qrImg.getAttribute('src');
+    if (!src || !src.includes('?')) return;
+
     const urlParams = new URLSearchParams(src.split('?')[1]);
     const lineId = urlParams.get('line_id');
 
@@ -233,25 +246,52 @@ function openPopup(popupId) {
 }
 
 function closePopup(popupId) {
+    const popup = document.getElementById(popupId);
+    if (!popup) return;
+
     if (intervaloVerificacion) {
         const modal = document.getElementById('customConfirmModal');
         modal.style.display = 'flex';
 
-        document.getElementById('confirmCloseCancel').onclick = function() {
+        const cancelBtn = document.getElementById('confirmCloseCancel');
+        const okBtn = document.getElementById('confirmCloseOK');
+
+        cancelBtn.onclick = function () {
             modal.style.display = 'none';
         };
 
-        document.getElementById('confirmCloseOK').onclick = function() {
+        okBtn.onclick = function () {
             modal.style.display = 'none';
-            document.getElementById(popupId).style.display = 'none';
+            popup.style.display = 'none';
             clearInterval(intervaloVerificacion);
             intervaloVerificacion = null;
             ocultarIndicador();
         };
     } else {
-        document.getElementById(popupId).style.display = 'none';
+        popup.style.display = 'none';
     }
 }
+
+document.addEventListener('click', function (e) {
+    const thumb = e.target.closest('.qr-thumbnail');
+    if (!thumb) return;
+
+    const popupId = thumb.dataset.popupId;
+    if (!popupId) return;
+
+    openPopup(popupId);
+});
+
+document.addEventListener('click', function (e) {
+    const closeBtn = e.target.closest('.popup-close');
+    if (!closeBtn) return;
+
+    const popupId = closeBtn.dataset.popupId;
+    if (popupId) {
+        closePopup(popupId);
+    }
+});
+
 
 // 2. Sistema de polling mejorado
 function iniciarPolling(lineId) {
@@ -369,10 +409,12 @@ $(document).ready(function() {
                     $(`#generar_qr_${lineId}`).closest('td').html(`
                         <div class="qr-container">
                             <div class="thumbnail">
-                                <img src="${URLS.showQR}?line_id=${lineId}&size=1" 
-                                     alt="QR de pago"
-                                     onclick="openPopup('qr_siro_popup${lineId}')"
-                                     title="Haga click para expandir">
+                                <img src="${URLS.showQR}?line_id=${lineId}&size=1"
+                                    alt="QR de pago"
+                                    class="qr-thumbnail"
+                                    data-popup-id="qr_siro_popup${lineId}"
+                                    data-line-id="${lineId}"
+                                    title="Haga click para expandir">
                             </div>
                             <div class="regenerate-qr-container">
                                 <a href="#" class="regenerate-qr-link" 
@@ -394,9 +436,12 @@ $(document).ready(function() {
                             </div>
                         </div>
                         <div class="popup" id="qr_siro_popup${lineId}">
-                            <span class="popup-close" onclick="closePopup('qr_siro_popup${lineId}')">&times;</span>
+                            <span class="popup-close"
+                                data-popup-id="qr_siro_popup${lineId}">
+                                &times;
+                            </span>
                             <img src="${URLS.showQR}?line_id=${lineId}&size=4"
- alt="Imagen ampliada">
+                                alt="Imagen ampliada">
                         </div>
                     `);
 
