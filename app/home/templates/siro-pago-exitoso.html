@@ -57,7 +57,7 @@
 {% endblock content %}
 
 {% block javascripts %}
-<script>
+<script nonce="{{ csp_nonce}}">
     setTimeout(() => {
         const spinner = document.querySelector(".spinner");
         const animacion = document.getElementById("animacion");
