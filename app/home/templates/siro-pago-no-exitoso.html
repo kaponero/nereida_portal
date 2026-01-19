@@ -58,7 +58,7 @@
 {% endblock content %}
 
 {% block javascripts %}
-<script>
+<script nonce="{{ csp_nonce }}">
     setTimeout(() => {
         const spinner = document.querySelector(".spinner");
         const loadingView = document.getElementById("loading-view");
