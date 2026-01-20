@@ -141,7 +141,7 @@ def generate_qr(voucher_id):
             # Devolver un error si no se obtuvieron los parámetros del QR
             log.status = 'error'
             log.error_message = "No se pudieron obtener los parámetros del QR"
-            log.erros_message = str(qr)
+            log.error_message = str(qr)
             log.save()
             return jsonify({
                 "status": "error",
@@ -151,6 +151,7 @@ def generate_qr(voucher_id):
         # Manejar cualquier excepción y devolver un error
         log.status = 'error'
         log.error_message = f"Error al generar el QR: {str(e)}"
+        print('Error que quiero capturar: ', e)
         log.save()
         return jsonify({
             "status": "error",

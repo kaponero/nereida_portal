@@ -4,7 +4,8 @@
 
 <!-- Specific Page CSS goes HERE  -->
 {% block links %}
-<link rel="stylesheet" href="{{ url_for("static", filename="asset/css/comprobantestyles.css") }}?v={{ config.APP_VERSION }}">
+<link rel="stylesheet"
+    href="{{ url_for("static", filename="asset/css/comprobantestyles.css") }}?v={{ config.APP_VERSION }}">
 <link rel="stylesheet" 
     href="{{ url_for("static", filename="asset/css/pop-up-img.css") }}?v={{ config.APP_VERSION }}">
 <link rel="stylesheet"
@@ -15,6 +16,8 @@
     href="{{ url_for("static", filename="asset/css/qr_style.css" )}}?v={{ config.APP_VERSION }}">
 <link rel="stylesheet"
     href="{{ url_for("static", filename="asset/css/boton_pago.css")}}?v={{ config.APP_VERSION }}">
+<link rel="stylesheet"
+    href="{{ url_for('static', filename='asset/css/mensaje_emergente.css')}}?v={{ config.APP_VERSION}}">
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
@@ -122,7 +125,7 @@
                                                data-amount-to-pay="{{ line.amount_to_pay_today }}">
                                                 Generar opciones de pago
                                             </a>
-                                            <div class="loading-container" id="loading_{{ line.id }}" style="display:none;">
+                                            <div class="loading-container" id="loading_{{ line.id }}">
                                                 <div class="spinner"></div>
                                                 <p>Generando QR...</p>
                                             </div>
@@ -142,7 +145,7 @@
                                                        data-amount-to-pay="{{ line.amount_to_pay_today }}">
                                                         Regenerar QR <ion-icon name="reload-outline"></ion-icon>
                                                     </a>
-                                                    <div class="loading-container" id="loading_regenerate_{{ line.id }}" style="display:none;">
+                                                    <div class="loading-container" id="loading_regenerate_{{ line.id }}">
                                                         <div class="spinner"></div>
                                                         <p>Regenerando QR...</p>
                                                     </div>
@@ -179,24 +182,33 @@
             </table>
         </div>
     </div>
-
+<!--- - - - - - - - - - - - - - - - -  - - - - - - - -  - - - - - - - -  - - - - - - - -  - - - - - - - -  - - - - - - - -  - - - - - - - -   --->
     <!-- Contenedor del indicador -->
     <div id="polling-indicator">
         <div id="polling-status"></div>
         <span id="polling-message"></span>
-        <div id="polling-count" style="font-size:12px;margin-top:4px;"></div>
+        <div id="polling-count"></div>
     </div>
-    <!--  Confirmación de cerrar el popup del qr    -->
-    <div id="customConfirmModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1000; justify-content:center; align-items:center;">
-        <div style="background:white; padding:20px; border-radius:8px; max-width:400px;">
-            <h3>⚠️ Pago en proceso</h3>
-            <p>¿Estás seguro de que quieres cerrar el QR? Si lo haces, no se redigira automáticamente cuando se acepte el pago.</p>
-            <div style="display:flex; gap:10px; justify-content:flex-end;">
-                <button id="confirmCloseCancel" style="padding:8px 16px;">Cancelar</button>
-                <button id="confirmCloseOK" style="padding:8px 16px; background:#ff4444; color:white;">Cerrar igualmente</button>
+
+    <!--  Confirmación para cerrar el popup del qr    -->
+    <div id="customConfirmModal" class="customConfirmModal hidden">
+        <div class="customConfirmBackground">
+            <h3>Pago en proceso</h3>
+            <p>
+                ¿Estás seguro de que quieres cerrar el QR?
+                Si lo haces, no se redirigirá automáticamente cuando se acepte el pago.
+            </p>
+            <div class="customConfirmButtonDiv">
+                <button id="confirmCloseCancel" class="confirmCloseCancel">
+                    Cancelar
+                </button>
+                <button id="confirmCloseOK" class="confirmCloseOk">
+                    Cerrar igualmente
+                </button>
             </div>
         </div>
     </div>
+
 {% endblock content %}
 
 {% block javascripts %}
@@ -205,8 +217,8 @@
 <script type="text/javascript"
     src="{{ url_for('static',filename='asset/js/main.js') }}?v={{ config.APP_VERSION }}"></script>
 
-
 <script nonce="{{ csp_nonce }}">
+// Varaibles globales para el ruteo de varios endpoints
 const URLS = {
     verificarPago: "{{ url_for('siro_blueprint.verificar_pago') }}",
     siroSuccess: "{{ url_for('siro_blueprint.handle_success', voucher_id=0) }}",
@@ -376,12 +388,26 @@ function pagoFallido(mensaje, lineId) {
 }
 
 // 3. Generación y regeneración de QR
-$(document).ready(function() {
-    // Función compartida para generar/regenerar QR
+/* Lock para evitar error de concurrencia */
+const qrLocks = {};
+
+$(document).ready(function () {
+
     function generateQR(linkElement, isRegeneration = false) {
         const lineId = linkElement.data('line-id');
+
+        if (qrLocks[lineId]) {
+            console.warn(`QR ${lineId} todavía en proceso, ignorando request`);
+            return;
+        }
+        // bloqueamos la transacción a ese lineId hasta que termine
+        qrLocks[lineId] = true;
+
         const amountToPay = linkElement.data('amount-to-pay');
-        const $loading = $(isRegeneration ? '#loading_regenerate_' + lineId : '#loading_' + lineId);
+        const $loading = $(isRegeneration
+                ? '#loading_regenerate_' + lineId 
+                : '#loading_' + lineId
+        );
 
         linkElement.hide();
         $loading.show();
@@ -389,95 +415,135 @@ $(document).ready(function() {
         $.ajax({
             url: URLS.generateQR.replace('/0', '/' + lineId),
             method: 'GET',
-            data: { 
+            data: {
                 amount_to_pay_today: amountToPay,
                 lineId: lineId
             },
-            success: function(response) {
+            success: function () {
                 $loading.hide();
                 linkElement.show();
 
                 if (isRegeneration) {
-                    // Actualizar ambas imágenes del QR (miniatura y popup)
-                    $(`.thumbnail img[src*="line_id=${lineId}"]`).attr('src', `${URLS.showQR}?line_id=${lineId}&size=1&t=${Date.now()}`);
-                    $(`#qr_siro_popup${lineId} img`).attr('src', `${URLS.showQR}?line_id=${lineId}&size=4&t=${Date.now()}`);
+                    document.querySelector(`.thumbnail img[src*="line_id=${lineId}"]`)
+                        .src = `${URLS.showQR}?line_id=${lineId}&size=1&t=${Date.now()}`;
 
-                    // Mostrar notificación de éxito
+                    document.querySelector(`#qr_siro_popup${lineId} img`)
+                        .src = `${URLS.showQR}?line_id=${lineId}&size=4&t=${Date.now()}`;
+
                     alert('QR regenerado correctamente');
-                } else {
-                    // Insertar el QR en el DOM (para generación inicial)
-                    $(`#generar_qr_${lineId}`).closest('td').html(`
-                        <div class="qr-container">
-                            <div class="thumbnail">
-                                <img src="${URLS.showQR}?line_id=${lineId}&size=1"
-                                    alt="QR de pago"
-                                    class="qr-thumbnail"
-                                    data-popup-id="qr_siro_popup${lineId}"
-                                    data-line-id="${lineId}"
-                                    title="Haga click para expandir">
-                            </div>
-                            <div class="regenerate-qr-container">
-                                <a href="#" class="regenerate-qr-link" 
-                                   data-line-id="${lineId}" 
-                                   data-amount-to-pay="${amountToPay}">
-                                    Regenerar QR <ion-icon name="reload-outline"></ion-icon>
-                                </a>
-                                <div class="loading-container" id="loading_regenerate_${lineId}" style="display:none;">
-                                    <div class="spinner"></div>
-                                    <p>Regenerando QR...</p>
-                                </div>
-                            </div>
-                            <div class="pay_button">
-                                <a class="button-71" role="button"
-                                href="${URLS.botonPago.replace('/0','/' + lineId)}"
-                                data-line-id="${lineId}">
-                                    Otras opciones de pago
-                                </a>
-                            </div>
-                        </div>
-                        <div class="popup" id="qr_siro_popup${lineId}">
-                            <span class="popup-close"
-                                data-popup-id="qr_siro_popup${lineId}">
-                                &times;
-                            </span>
-                            <img src="${URLS.showQR}?line_id=${lineId}&size=4"
-                                alt="Imagen ampliada">
-                        </div>
-                    `);
-
-                    // Ajustar el link del botón de pago con el lineId real
-                    const $btnPago = $(`.button-71[data-line-id="${lineId}"]`);
-                    const baseUrl = $btnPago.attr('href');   // /boton_pago/0
-                    $btnPago.attr('href', baseUrl.replace('/0', '/' + lineId));
-
-                    // Asignar el evento al nuevo botón de regenerar
-                    $(`.regenerate-qr-link[data-line-id="${lineId}"]`).click(function(e) {
-                        e.preventDefault();
-                        generateQR($(this), true);
-                    });
+                    return;
                 }
+
+                /* >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+                   CSP FIX: construcción DOM sin innerHTML
+                   >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> */
+                const td = document.getElementById(`generar_qr_${lineId}`).closest('td');
+                td.textContent = '';
+
+                const container = document.createElement('div');
+                container.className = 'qr-container';
+
+                // Thumbnail
+                const thumbDiv = document.createElement('div');
+                thumbDiv.className = 'thumbnail';
+
+                const thumbImg = document.createElement('img');
+                thumbImg.src = `${URLS.showQR}?line_id=${lineId}&size=1`;
+                thumbImg.alt = 'QR de pago';
+                thumbImg.className = 'qr-thumbnail';
+                thumbImg.dataset.popupId = `qr_siro_popup${lineId}`;
+                thumbImg.title = 'Haga click para expandir';
+
+                thumbDiv.appendChild(thumbImg);
+                container.appendChild(thumbDiv);
+
+                // Regenerate
+                const regenDiv = document.createElement('div');
+                regenDiv.className = 'regenerate-qr-container';
+
+                const regenLink = document.createElement('a');
+                regenLink.href = '#';
+                regenLink.className = 'regenerate-qr-link';
+                regenLink.dataset.lineId = lineId;
+                regenLink.dataset.amountToPay = amountToPay;
+                regenLink.textContent = 'Regenerar QR ';
+
+                const icon = document.createElement('ion-icon');
+                icon.setAttribute('name', 'reload-outline');
+                regenLink.appendChild(icon);
+
+                regenDiv.appendChild(regenLink);
+
+                const loadingDiv = document.createElement('div');
+                loadingDiv.className = 'loading-container';
+                loadingDiv.id = `loading_regenerate_${lineId}`;
+                loadingDiv.innerHTML = '<div class="spinner"></div><p>Regenerando QR...</p>';
+
+                regenDiv.appendChild(loadingDiv);
+                container.appendChild(regenDiv);
+
+                // Botón pago
+                const payDiv = document.createElement('div');
+                payDiv.className = 'pay_button';
+
+                const payLink = document.createElement('a');
+                payLink.className = 'button-71';
+                payLink.role = 'button';
+                payLink.href = URLS.botonPago.replace('/0', '/' + lineId);
+                payLink.textContent = 'Otras opciones de pago';
+
+                payDiv.appendChild(payLink);
+                container.appendChild(payDiv);
+
+                td.appendChild(container);
+
+                // Popup
+                const popup = document.createElement('div');
+                popup.className = 'popup';
+                popup.id = `qr_siro_popup${lineId}`;
+
+                const close = document.createElement('span');
+                close.className = 'popup-close';
+                close.dataset.popupId = popup.id;
+                close.innerHTML = '&times;';
+
+                const popupImg = document.createElement('img');
+                popupImg.src = `${URLS.showQR}?line_id=${lineId}&size=4`;
+                popupImg.alt = 'Imagen ampliada';
+
+                popup.appendChild(close);
+                popup.appendChild(popupImg);
+                td.appendChild(popup);
+
+                regenLink.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    generateQR($(this), true);
+                });
             },
-            error: function(xhr, status, error) {
+            error: function (_, __, error) {
                 $loading.hide();
                 linkElement.show();
                 alert('Error al generar el QR: ' + error);
+            },
+            complete: function() {
+                // liberar lock
+                qrLocks[lineId] = false;
+                $loading.hide();
+                linkElement.show();
             }
         });
     }
 
-    // Generación inicial de QR
-    $('.generate-qr-link').click(function(e) {
+    $('.generate-qr-link').click(function (e) {
         e.preventDefault();
         generateQR($(this), false);
     });
 
-    // Regeneración de QR existente
-    $(document).on('click', '.regenerate-qr-link', function(e) {
+    $(document).on('click', '.regenerate-qr-link', function (e) {
         e.preventDefault();
         generateQR($(this), true);
     });
 });
-
 </script>
 
 <script type="text/javascript" src="{{ url_for('static',filename='asset/js/comprobantes.js') }}?v={{ config.APP_VERSION }}"></script>
