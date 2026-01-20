@@ -1,0 +1,50 @@
+/* mensaje de confirmación, utilizado por ejemplo cuando intentas cerrar el popup del qr*/
+/* Overlay del modal */
+.customConfirmModal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    z-index: 1000;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Estado oculto */
+.customConfirmModal.hidden {
+    display: none;
+}
+
+/* Caja blanca */
+.customConfirmBackground {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    max-width: 400px;
+    width: 90%;
+}
+
+/* Contenedor de botones */
+.customConfirmButtonDiv {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    margin-top: 20px;
+}
+
+/* Botones */
+.confirmCloseCancel {
+    padding: 8px 16px;
+}
+
+.confirmCloseOk {
+    padding: 8px 16px;
+    background: #ff4444;
+    color: white;
+    border: none;
+    border-radius: 4px;
+}
