@@ -9,6 +9,11 @@
         z-index: 9999;
         display: none;
     }
+
+    #polling-indicator.visible {
+      display: block;
+    }
+
     #polling-status {
         width: 12px;
         height: 12px;
